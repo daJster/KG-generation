@@ -1,4 +1,6 @@
 nltk
+llm
+pygraft
 rdflib
 scikit-learn
 pytorch
