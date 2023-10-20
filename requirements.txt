@@ -10,3 +10,5 @@ pyspark
 matplotlib
 seaborn
 jupyter
+PyMuPDF
+langdetect
