@@ -12,3 +12,5 @@ seaborn
 jupyter
 PyMuPDF
 langdetect
+transformers
+sequence-transformers
