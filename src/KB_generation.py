@@ -1,13 +1,17 @@
 import math
 import torch
 import wikipedia
-from merge_RDF import merge
-from params import tokenizer, rdf_model
+from rdflib import Graph, URIRef, Literal, Namespace, RDF, RDFS
+import uuid
+import json
+from merge_RDF import similarity_score
+from params import tokenizer, rdf_model, PATH_TO_RDF_FILES, ACTIVATE_SIMILARITY
 
 class KB():
     def __init__(self):
         self.entities = {}
         self.relations = []
+        self.group_name = ""
 
     def get_wikipedia_data(self, candidate_entity):
         try:
@@ -24,8 +28,12 @@ class KB():
     def add_entity(self, e):
         self.entities[e["title"]] = {k:v for k,v in e.items() if k != "title"}
 
-    def are_relations_equal(self, r1, r2):
-        return all(r1[attr] == r2[attr] for attr in ["head", "type", "tail"])
+    def are_relations_equal(self, r1, r2, similarity_threshold=0.8):
+        sim_score = similarity_score(r1, r2)
+        is_equal = all(r1[attr] == r2[attr] for attr in ["head", "type", "tail"]) 
+        if ACTIVATE_SIMILARITY :
+            is_equal = is_equal or sim_score > similarity_threshold
+        return is_equal
 
     def exists_relation(self, r1):
         return any(self.are_relations_equal(r1, r2) for r2 in self.relations)
@@ -141,7 +149,7 @@ def from_small_text_to_kb(text, verbose=False):
 
 
         
-def get_kb(text, span_length=128, verbose=False, kb=KB()):
+def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_new_group=True):
     inputs = tokenizer([text], return_tensors="pt")
 
     num_tokens = len(inputs["input_ids"][0])
@@ -186,8 +194,6 @@ def get_kb(text, span_length=128, verbose=False, kb=KB()):
                                            skip_special_tokens=False)
 
 
-
-
     i = 0
     for sentence_pred in decoded_preds:
         current_span_index = i // num_return_sequences
@@ -198,5 +204,38 @@ def get_kb(text, span_length=128, verbose=False, kb=KB()):
             }
             kb.add_relation(relation)
         i += 1
-
+        
+    kb.group_name = group_name
+    if ACTIVATE_SIMILARITY :
+        kb.group_name += "_sim"
+    kb.is_new_group = is_new_group
     return kb
+
+
+
+def store_kb(kb) :
+    print("storing...")
+    mode="a"
+    if kb.is_new_group :
+        mode = "w"
+    # Save the 'entities' dictionary as a JSON file
+    with open(PATH_TO_RDF_FILES+kb.group_name+'.json', mode) as json_file:
+        json.dump(kb.entities, json_file, indent=4)
+        
+    g = Graph()
+
+    # Define a custom namespace
+    custom_namespace = Namespace("http://example.org/")
+
+    # Iterate over each relation and add it to the RDF graph
+    for relation in kb.relations:
+        head = URIRef(custom_namespace[relation["head"].replace(" ", "_")])
+        relation_type = URIRef(custom_namespace[relation["type"].replace(" ", "_")])
+        tail = URIRef(custom_namespace[relation["tail"].replace(" ", "_")])
+
+        g.add((head, relation_type, tail))
+
+    # Serialize the RDF graph to Turtle format and save it to a file
+    g.serialize(destination=PATH_TO_RDF_FILES+kb.group_name+'.ttl', format="turtle", mode=mode)
+
+    return True

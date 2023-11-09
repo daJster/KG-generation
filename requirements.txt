@@ -6,7 +6,6 @@ scikit-learn
 pytorch
 pandas
 numpy
-pyspark
 matplotlib
 seaborn
 jupyter
