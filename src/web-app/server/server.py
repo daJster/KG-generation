@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, jsonify
+from flask import Flask, render_template, url_for, request, jsonify, send_file
 from utils import CommandStorage
 import os
 import uuid
@@ -10,7 +10,7 @@ HOST = "localhost"
 PORT = 5000
 TEMPLATE_DIR = os.path.abspath("../client/")
 STATIC_DIR = os.path.abspath(TEMPLATE_DIR+"/static/")
-
+GRAPH_DIR = os.path.abspath("../../../graphs/")
 print(f"Host: {HOST} : {PORT}")
 print(f"Template dir: {TEMPLATE_DIR}")
 print(f"Static dir: {STATIC_DIR}")
@@ -21,6 +21,29 @@ app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 @app.route('/')
 def render_index() :
     return render_template('index.html')
+
+@app.route('/search')
+def search():
+    query = request.args.get('query')
+    results = f"Search results for '{query}'"
+    return jsonify({'results': results})
+
+@app.route('/list_graphs')
+def list_graphs():
+    file_names_without_extension = []
+
+    for filename in os.listdir(f"{GRAPH_DIR}/"):
+        if os.path.isfile(os.path.join(f"{GRAPH_DIR}/", filename)):
+            name, extension = os.path.splitext(filename)
+            file_names_without_extension.append(name)
+
+    return jsonify({'graph_files': file_names_without_extension})
+
+@app.route('/get_graph_file/<graph_file>')
+def load_html(graph_file):
+    # Replace this path with the actual path to your HTML files
+    html_path = f'{GRAPH_DIR}/{graph_file}.html'
+    return send_file(html_path, mimetype='text/html')
 
 
 @app.route('/send_command')

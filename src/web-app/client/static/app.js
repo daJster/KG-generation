@@ -1,25 +1,84 @@
-console.log("test")
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const loadingAnimation = document.getElementById("loadingAnimation");
+const searchResults = document.getElementById("searchResults");
+const dropdownMenuButton = document.getElementById("dropdownMenuButton");
+const loadedContent = document.getElementById("loadedContent");
+const htmlFrame = document.getElementById("htmlFrame");
 
 
-// Ajax request template
-async function test_send_recv() {
-    try {
-        const response = await fetch('/test_send_recv_route', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        })
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok')
+document.addEventListener("DOMContentLoaded", function () {
+    
+    searchButton.addEventListener("click", function () {
+        const query = searchInput.value;
+        if (query) {
+            loadingAnimation.style.display = "block";
+            searchResults.innerHTML = "";
+            
+            fetch(`/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    loadingAnimation.style.display = "none";
+                    searchResults.innerHTML = data.results;
+                })
+                .catch(error => {
+                    console.error(error);
+                    loadingAnimation.style.display = "none";
+                });
         }
+    });
 
-        const data = await response.json()
-        console.log(JSON.stringify(data, null, 2))
-    } catch (error) {
-        console.error('Error:', error)
+    dropdownMenuButton.addEventListener("click", function () {
+        event.preventDefault();
+        loadingAnimation.style.display = "block";
+        searchResults.innerHTML = "";
+
+        fetch("/list_graphs")
+            .then(response => response.json())
+            .then(data => {
+                loadingAnimation.style.display = "none";
+                const graphFiles = data.graph_files;
+                updateDropdown(graphFiles);
+            })
+            .catch(error => {
+                console.error(error);
+                loadingAnimation.style.display = "none";
+            });
+    });
+
+    function updateDropdown(graphFiles) {
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+        dropdownMenu.innerHTML = "";
+
+        graphFiles.forEach(graphFile => {
+            const dropdownItem = document.createElement("a");
+            dropdownItem.classList.add("dropdown-item");
+            dropdownItem.href = "#";
+            dropdownItem.textContent = graphFile;
+            dropdownItem.addEventListener("click", function () {
+                loadingAnimation.style.display = "block";
+                dropdownMenuButton.textContent = graphFile
+                loadAndRenderHTML(graphFile);
+            });
+            dropdownMenu.appendChild(dropdownItem);
+        });
     }
-}
 
-test_send_recv()
+    function loadAndRenderHTML(graphFile) {
+        // Fetch the HTML content from Flask
+        fetch(`/get_graph_file/${graphFile}`)
+            .then(response => response.text())
+            .then(htmlContent => {
+                const iframeDocument = htmlFrame.contentDocument || htmlFrame.contentWindow.document;
+                iframeDocument.open();
+                iframeDocument.write(htmlContent);
+                iframeDocument.close();
+                loadingAnimation.style.display = "none";
+            })
+            .catch(error => {
+                console.error(error);
+                loadingAnimation.style.display = "none";
+            });
+    }
+
+});
