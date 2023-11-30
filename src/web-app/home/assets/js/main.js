@@ -263,6 +263,20 @@
 
 
   document.getElementById("search-button").addEventListener('click', () => {
+
+    // automaticaly scroll down to iframe 'id=htmlFrame' in the page
+    const iframe = document.getElementById("htmlFrame");
+    // change iframe to be visible
+    iframe.style.display = "block";
+    // scrolling="auto" width="100%" height="500"
+    iframe.setAttribute("scrolling", "auto");
+    iframe.setAttribute("width", "100%");
+    iframe.setAttribute("height", "750px");
+    // scroll to iframe
+    iframe.scrollIntoView();
+
+
+
     const htmlFrame = document.getElementById("htmlFrame");
     function loadAndRenderHTML(search_entity) {
         // Fetch the HTML content from Flask

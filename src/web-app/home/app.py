@@ -13,7 +13,12 @@ CORS(app)
 
 # Chargement du graph ttl
 graph = Graph()
-graph.parse("example_graph.ttl", format="turtle")
+# graph.parse("example_graph.ttl", format="turtle")
+graph.parse("../../../RDFs/neuron.ttl", format="turtle")
+
+with open('../../../RDFs/neuron.json', "r") as json_file:
+    entities = json.load(json_file)
+
 
 @app.route('/') #, methods=['GET', 'POST'])
 def index():
@@ -28,37 +33,71 @@ def construct_graph():
     data = request.get_json()
     search_term = data.get('search_term')
     # Recherche du nœud dans le graph
-    query = """
-        SELECT ?subject ?predicate ?object
-        WHERE {
-            ?subject ?predicate ?object.
-        }
-    """
-    results = graph.query(query)
+    # query = """
+    #     SELECT ?subject ?predicate ?object
+    #     WHERE {
+    #         ?subject ?predicate ?object.
+    #     }
+    # """
 
-    # Construction d'un sous-graphe centré sur le nœud recherché
-    G = nx.Graph()
-    for triple in results:
-        G.add_node(str(triple['subject']))
-        G.add_node(str(triple['object']))
-        G.add_edge(str(triple['subject']), str(triple['object']))
+    # results = graph.query(query)
 
-    subgraph = nx.ego_graph(G, search_term, radius=5)
+    # # Construction d'un sous-graphe centré sur le nœud recherché
+    # G = nx.Graph()
+    # for triple in results:
+    #     G.add_node(str(triple['subject']), label=str(triple['subject']), id = str(triple['subject']))
+    #     G.add_node(str(triple['object']), label=str(triple['object']), id = str(triple['object']))
+    #     G.add_edge(str(triple['subject']), str(triple['object']), label=str(triple['predicate']))
+
+    # # subgraph = nx.ego_graph(G, search_term, radius=5)
     
-    # Création du graph
-    g = Network(height="600px", width="100%", bgcolor="#222222", font_color="white")
-    g.barnes_hut()
+    # subgraph = nx.Graph()
     
-    # Ajout des nœuds
-    for node in subgraph.nodes():
-        g.add_node(node, label=node, color="#FFA500")
+    # # Création du graph
+    # g = Network(height="650px", width="100%")#, select_menu=True, filter_menu=True)#, bgcolor="#222222", font_color="white")
+    # g.barnes_hut()
+    
+    # # Ajout des nœuds
+    # for node in subgraph.nodes():
+    #     g.add_node(node, label=node, color="#FFA500")
         
-    # Ajout des relations
-    for edge in subgraph.edges():
-        g.add_edge(edge[0], edge[1], color="#FFA500")
+    # # Ajout des relations
+    # for edge in subgraph.edges():
+    #     g.add_edge(edge[0], edge[1], color="#FFA500")
+        
+    # # 
+     
+    # Define the custom namespace used during serialization
+    custom_namespace = Namespace("http://example.org/")
+
+    relations = []
+
+    # Iterate over the RDF triples and extract 'head,' 'type,' and 'tail' information
+    for head, relation_type, tail in graph:
+        head = str(head).replace(str(custom_namespace), "").replace("_", " ")
+        relation_type = str(relation_type).replace(str(custom_namespace), "").replace("_", " ")
+        tail = str(tail).replace(str(custom_namespace), "").replace("_", " ")
+
+        relation = {
+            "head": head,
+            "type": relation_type,
+            "tail": tail
+        }
+        relations.append(relation)
+        
+    # create graph
+    g = Network(height="600px", width="100%", select_menu=True, cdn_resources='remote')#, filter_menu=True)
+    g.barnes_hut()
+
+    # add entities
+    for e in entities.items():
+        g.add_node(e[0], label=e[0], color="#FFA500")
+
+    # add relations
+    for r in relations:
+        g.add_edge(r["head"], r["tail"], label=r["type"], color="#FFA500")
     
     # Sauvegarde du graph
-    
     g.save_graph("graph.html")
     return send_file("graph.html", mimetype='text/html')
     
