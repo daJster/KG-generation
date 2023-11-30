@@ -4,13 +4,31 @@ from rdflib import Graph, URIRef, Literal
 from rdflib.plugins.sparql import prepareQuery
 
 def get_files(path):
+    """
+    Get a list of files with the ".pdf" extension in the specified path.
+
+    Args:
+        path (str): The path to the directory containing the files.
+
+    Returns:
+        list: A list of file names with the ".pdf" extension.
+    """
     files = []
     for file in os.listdir(path):
-        if file.endswith(".pdf") :
+        if file.endswith(".pdf"):
             files.append(file)
     return files
 
 def read_ttl(fname) :
+    """
+    Read and parse an RDF file in Turtle format.
+
+    Parameters:
+    fname (str): The filename of the RDF file to be read.
+
+    Returns:
+    None
+    """
     # Create an RDF graph
     g = Graph()
 

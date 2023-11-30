@@ -8,6 +8,24 @@ from merge_RDF import similarity_score
 from params import tokenizer, rdf_model, PATH_TO_RDF_FILES, ACTIVATE_SIMILARITY
 
 class KB():
+    """
+    Knowledge Base class for storing entities and relations.
+
+    Attributes:
+        entities (dict): A dictionary of entities, where the key is the entity title and the value is a dictionary of entity data.
+        relations (list): A list of relations, where each relation is represented as a dictionary.
+        group_name (str): The name of the group associated with the knowledge base.
+
+    Methods:
+        get_wikipedia_data(candidate_entity): Retrieves Wikipedia data for a given candidate entity.
+        add_entity(e): Adds an entity to the knowledge base.
+        are_relations_equal(r1, r2, similarity_threshold): Checks if two relations are equal.
+        exists_relation(r1): Checks if a relation already exists in the knowledge base.
+        add_relation(r): Adds a relation to the knowledge base.
+        print(): Prints the entities and relations in the knowledge base.
+        merge_relations(r1): Merges two similar relations in the knowledge base.
+    """
+
     def __init__(self):
         self.entities = {}
         self.relations = []
@@ -75,6 +93,15 @@ class KB():
         
 
 def extract_relations_from_model_output(text):
+    """
+    Extracts relations from the model output text.
+
+    Args:
+        text (str): The model output text.
+
+    Returns:
+        list: A list of dictionaries representing the extracted relations. Each dictionary contains the 'head', 'type', and 'tail' of the relation.
+    """
     relations = []
     relation, subject, relation, object_ = '', '', '', ''
     text = text.strip()
@@ -121,6 +148,17 @@ def extract_relations_from_model_output(text):
 
         
 def from_small_text_to_kb(text, verbose=False):
+    """
+    Converts a small text into a knowledge base (KB) by generating relations using a pre-trained model.
+
+    Args:
+        text (str): The input text to convert into a KB.
+        verbose (bool, optional): If True, prints the number of tokens in the model inputs. Defaults to False.
+
+    Returns:
+        KB: The generated knowledge base (KB) containing extracted relations.
+
+    """
     kb = KB()
 
     model_inputs = tokenizer(text, max_length=512, padding=True, truncation=True,
@@ -150,6 +188,20 @@ def from_small_text_to_kb(text, verbose=False):
 
         
 def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_new_group=True):
+    """
+    Generates a knowledge base (KB) from the given text.
+
+    Args:
+        text (str): The input text.
+        span_length (int, optional): The maximum length of each span. Defaults to 128.
+        verbose (bool, optional): Whether to print verbose information. Defaults to False.
+        kb (KB, optional): The knowledge base object to store the generated relations. Defaults to KB().
+        group_name (str, optional): The name of the KB group. Defaults to "test".
+        is_new_group (bool, optional): Whether to create a new KB group. Defaults to True.
+
+    Returns:
+        KB: The generated knowledge base.
+    """
     inputs = tokenizer([text], return_tensors="pt")
 
     num_tokens = len(inputs["input_ids"][0])
@@ -213,15 +265,24 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_
 
 
 
-def store_kb(kb) :
+def store_kb(kb):
+    """
+    Store the knowledge base (KB) as JSON and RDF files.
+
+    Args:
+        kb (KnowledgeBase): The knowledge base object containing the entities and relations.
+
+    Returns:
+        bool: True if the KB is successfully stored, False otherwise.
+    """
     print("storing...")
-    mode="w"
-    if kb.is_new_group :
+    mode = "w"
+    if kb.is_new_group:
         mode = "w"
     # Save the 'entities' dictionary as a JSON file
-    with open(PATH_TO_RDF_FILES+kb.group_name+'.json', mode) as json_file:
+    with open(PATH_TO_RDF_FILES + kb.group_name + '.json', mode) as json_file:
         json.dump(kb.entities, json_file, indent=4)
-        
+
     g = Graph()
 
     # Define a custom namespace
@@ -236,6 +297,6 @@ def store_kb(kb) :
         g.add((head, relation_type, tail))
 
     # Serialize the RDF graph to Turtle format and save it to a file
-    g.serialize(destination=PATH_TO_RDF_FILES+kb.group_name+'.ttl', format="turtle", mode=mode)
+    g.serialize(destination=PATH_TO_RDF_FILES + kb.group_name + '.ttl', format="turtle", mode=mode)
 
     return True

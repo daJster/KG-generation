@@ -2,6 +2,16 @@ from params import merge_model
 from sentence_transformers import util
 
 def similarity_score(trp1, trp2) :
+    """
+    Calculate the similarity score between two triples.
+
+    Parameters:
+    trp1 (dict): The first triple containing 'head', 'type', and 'tail' fields.
+    trp2 (dict): The second triple containing 'head', 'type', and 'tail' fields.
+
+    Returns:
+    float: The similarity score between the two triples.
+    """
     fields = ['head', 'type', 'tail']
     
     # Encode the elements for each field

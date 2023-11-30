@@ -6,6 +6,13 @@ import time
 import streamlit as st
 
 def main() :
+    """
+    Main function for Knowledge Graph Generation.
+    
+    This function allows the user to upload a directory containing PDF files,
+    extract text from the files, and generate a knowledge graph based on the extracted text.
+    The generated graph is then stored and the execution time is displayed.
+    """
     start_time = time.time()
     st.title("Knowledge Graph Generation")
     files = st.file_uploader("Upload a directory contaning PDF files", accept_multiple_files=True, type="pdf")

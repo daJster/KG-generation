@@ -4,6 +4,15 @@ from rdflib import Graph, Namespace
 from params import PATH_TO_RDF_FILES, PATH_TO_GRAPH_FILES
 
 def get_graph(kb):
+    """
+    Generate a graph based on the given knowledge base.
+
+    Parameters:
+    kb (KnowledgeBase): The knowledge base containing entities and relations.
+
+    Returns:
+    Network: The generated graph.
+    """
     # create graph
     g = Network(height="1000px", width="100%", bgcolor="#222222", font_color="white")
     g.barnes_hut()
@@ -20,7 +29,16 @@ def get_graph(kb):
 
 
 
-def get_graph2(group_name) :
+def get_graph2(group_name):
+    """
+    Generate a graph based on the given group name.
+
+    Args:
+        group_name (str): The name of the group.
+
+    Returns:
+        Network: The generated graph.
+    """
     # Read and load the 'entities' from the JSON file
     with open(PATH_TO_RDF_FILES+group_name+'.json', "r") as json_file:
         entities = json.load(json_file)
