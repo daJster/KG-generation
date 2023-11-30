@@ -3,9 +3,9 @@ from params import PATH_TO_PDF_FILES, PATH_TO_RDF_FILES
 from rdflib import Graph, URIRef, Literal
 from rdflib.plugins.sparql import prepareQuery
 
-def get_files():
+def get_files(path):
     files = []
-    for file in os.listdir(PATH_TO_PDF_FILES):
+    for file in os.listdir(path):
         if file.endswith(".pdf") :
             files.append(file)
     return files

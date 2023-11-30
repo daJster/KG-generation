@@ -1,0 +1,155 @@
+@prefix ns1: <http://example.org/> .
+
+ns1:Apache_Hadoop ns1:use ns1:Machine_learning .
+
+ns1:Classification_chart ns1:use ns1:Classification .
+
+ns1:David_H._Hubel ns1:field_of_work ns1:Artificial_neural_network .
+
+ns1:Endoplasmic_reticulum ns1:part_of ns1:Cytoplasm .
+
+ns1:Engine ns1:subclass_of ns1:Neuron .
+
+ns1:Gene ns1:encodes ns1:DNA .
+
+ns1:Institute_of_Electrical_and_Electronics_Engineers ns1:location_of_formation ns1:Paris .
+
+ns1:Interneuron ns1:subclass_of ns1:Neuron .
+
+<http://example.org/Jeopardy!> ns1:uses ns1:Deep_learning .
+
+ns1:Julia_\(programming_language\) ns1:use ns1:Machine_learning .
+
+ns1:KAIST ns1:country ns1:South_Korea ;
+    ns1:located_in_the_administrative_territorial_entity ns1:Daejeon .
+
+ns1:Kinesin ns1:part_of ns1:Microtubule .
+
+ns1:Machine ns1:use ns1:Artificial_intelligence .
+
+ns1:Microsoft_Ignite ns1:subclass_of ns1:Academic_journal .
+
+ns1:Naive_Bayes_classifier ns1:based_on <http://example.org/Bayes'_theorem> .
+
+ns1:Neurotransmitter ns1:subclass_of ns1:Communication .
+
+ns1:Pattern_recognition ns1:instance_of ns1:Classification ;
+    ns1:subclass_of ns1:Image_analysis .
+
+ns1:Preprocessor ns1:facet_of ns1:Supervised_learning ;
+    ns1:part_of ns1:Supervised_learning .
+
+ns1:Python_\(programming_language\) ns1:inception ns1:2016 ;
+    ns1:publication_date ns1:2016 .
+
+ns1:Random_forest ns1:subclass_of ns1:Tree .
+
+ns1:Reinforcement ns1:facet_of ns1:Machine_learning .
+
+ns1:Reinforcement_learning ns1:part_of ns1:Machine_learning ;
+    ns1:subclass_of ns1:Learning .
+
+ns1:Sensory_neuron ns1:subclass_of ns1:Neuron .
+
+ns1:Sound ns1:instance_of ns1:Sense .
+
+ns1:Support_vector_machine ns1:subclass_of ns1:Artificial_intelligence .
+
+ns1:Travelling_salesman_problem ns1:instance_of ns1:Heuristic .
+
+ns1:Unsupervised_learning ns1:subclass_of ns1:Learning .
+
+ns1:Bank ns1:part_of ns1:Financial_services ;
+    ns1:use ns1:Financial_services .
+
+ns1:Brain ns1:connects_with ns1:Spinal_cord .
+
+ns1:Central_nervous_system ns1:has_part ns1:Spinal_cord .
+
+ns1:Chromosome ns1:has_part ns1:DNA .
+
+ns1:Computer_science ns1:has_part ns1:Artificial_intelligence .
+
+ns1:Data_science ns1:field_of_this_occupation ns1:Machine_learning ;
+    ns1:studies ns1:Data .
+
+ns1:Decision_tree ns1:instance_of ns1:Algorithm ;
+    ns1:subclass_of ns1:Decision_tree .
+
+ns1:Dendrite ns1:connects_with ns1:Axon ;
+    ns1:part_of ns1:Neuron .
+
+ns1:Exocytosis ns1:subclass_of ns1:Exocytosis .
+
+ns1:Google ns1:product_or_material_produced ns1:TensorFlow .
+
+ns1:Heuristic ns1:subclass_of ns1:Mathematical_optimization .
+
+ns1:Mathematical_optimization ns1:facet_of ns1:Machine_learning .
+
+ns1:Messenger_RNA ns1:has_part ns1:DNA .
+
+ns1:Microtubule ns1:part_of ns1:Axon .
+
+ns1:Myelin ns1:has_part ns1:Lipid .
+
+ns1:Nervous_system ns1:has_part ns1:Neuron .
+
+ns1:Neural_network ns1:used_by ns1:Deep_learning .
+
+ns1:Phylogenetics ns1:subclass_of ns1:Phylogenetics .
+
+ns1:Sense ns1:use ns1:Perception .
+
+ns1:Synapse ns1:part_of ns1:Neuron .
+
+ns1:TensorFlow ns1:developer ns1:Google ;
+    ns1:use ns1:Deep_learning .
+
+ns1:Algorithm ns1:part_of ns1:Artificial_intelligence .
+
+ns1:Artificial_neural_network ns1:studied_by ns1:Deep_learning .
+
+ns1:Axon ns1:connects_with ns1:Dendrite ;
+    ns1:part_of ns1:Neuron .
+
+ns1:Big_data ns1:facet_of ns1:Big_data ;
+    ns1:has_part ns1:Machine_learning .
+
+ns1:Data ns1:studied_by ns1:Data_science .
+
+ns1:Financial_services ns1:has_part ns1:Bank .
+
+ns1:Spinal_cord ns1:connects_with ns1:Brain ;
+    ns1:part_of ns1:Central_nervous_system .
+
+ns1:Unsupervised ns1:followed_by ns1:Supervised_learning ;
+    ns1:opposite_of ns1:Supervised_learning .
+
+ns1:2016 ns1:point_in_time ns1:2016 .
+
+ns1:DNA ns1:instance_of ns1:Time_series ;
+    ns1:part_of ns1:Chromosome,
+        ns1:Messenger_RNA .
+
+ns1:Artificial_intelligence ns1:part_of ns1:Computer_science .
+
+ns1:Deep_learning ns1:studies ns1:Artificial_neural_network ;
+    ns1:use ns1:Analytics ;
+    ns1:uses ns1:Neural_network .
+
+ns1:Supervised_learning ns1:follows ns1:Unsupervised ;
+    ns1:opposite_of ns1:Unsupervised ;
+    ns1:subclass_of ns1:Machine_learning,
+        ns1:Train ;
+    ns1:use ns1:Train ;
+    ns1:uses ns1:Data .
+
+ns1:Neuron ns1:has_part ns1:Myelin,
+        ns1:Synapse ;
+    ns1:part_of ns1:Nervous_system .
+
+ns1:Machine_learning ns1:has_part ns1:Supervised_learning ;
+    ns1:part_of ns1:Big_data ;
+    ns1:subclass_of ns1:Algorithm .
+

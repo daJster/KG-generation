@@ -215,7 +215,7 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_
 
 def store_kb(kb) :
     print("storing...")
-    mode="a"
+    mode="w"
     if kb.is_new_group :
         mode = "w"
     # Save the 'entities' dictionary as a JSON file
