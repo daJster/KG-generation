@@ -1,155 +1,102 @@
 @prefix ns1: <http://example.org/> .
 
-ns1:Apache_Hadoop ns1:use ns1:Machine_learning .
+ns1:Agriculturist ns1:subclass_of ns1:Agriculture .
 
-ns1:Classification_chart ns1:use ns1:Classification .
+ns1:Apache ns1:inception ns1:1900 .
 
-ns1:David_H._Hubel ns1:field_of_work ns1:Artificial_neural_network .
+ns1:Aude ns1:instance_of ns1:Department_\(administrative_division\) .
 
-ns1:Endoplasmic_reticulum ns1:part_of ns1:Cytoplasm .
+<http://example.org/Centre_pour_l'Édition_Électronique_Ouverte> ns1:located_in_the_administrative_territorial_entity ns1:Paris .
 
-ns1:Engine ns1:subclass_of ns1:Neuron .
+ns1:Diplomacy_\(2014_film\) ns1:part_of ns1:Social .
 
-ns1:Gene ns1:encodes ns1:DNA .
+ns1:Emmanuel_Petit ns1:date_of_birth ns1:1907 ;
+    ns1:occupation ns1:Teacher ;
+    ns1:work_period_\(start\) ns1:1907 .
 
-ns1:Institute_of_Electrical_and_Electronics_Engineers ns1:location_of_formation ns1:Paris .
+ns1:Emotion ns1:has_part ns1:Reason .
 
-ns1:Interneuron ns1:subclass_of ns1:Neuron .
+ns1:Gard ns1:instance_of ns1:Department_\(administrative_division\) .
 
-<http://example.org/Jeopardy!> ns1:uses ns1:Deep_learning .
+ns1:Group_\(military_unit\) ns1:has_part ns1:Chamber_of_Deputies .
 
-ns1:Julia_\(programming_language\) ns1:use ns1:Machine_learning .
+ns1:Januarius ns1:publication_date ns1:2021 .
 
-ns1:KAIST ns1:country ns1:South_Korea ;
-    ns1:located_in_the_administrative_territorial_entity ns1:Daejeon .
+ns1:Jeu ns1:point_in_time ns1:1907 .
 
-ns1:Kinesin ns1:part_of ns1:Microtubule .
+ns1:Le_Mans ns1:country ns1:France .
 
-ns1:Machine ns1:use ns1:Artificial_intelligence .
+ns1:Le_Petit_Parisien ns1:inception ns1:1906 .
 
-ns1:Microsoft_Ignite ns1:subclass_of ns1:Academic_journal .
+ns1:Prison ns1:located_in_the_administrative_territorial_entity ns1:Montpellier .
 
-ns1:Naive_Bayes_classifier ns1:based_on <http://example.org/Bayes'_theorem> .
+ns1:Réunion ns1:country ns1:France .
 
-ns1:Neurotransmitter ns1:subclass_of ns1:Communication .
+ns1:Sabrina_Ebbersmeyer ns1:occupation ns1:Anthropologist .
 
-ns1:Pattern_recognition ns1:instance_of ns1:Classification ;
-    ns1:subclass_of ns1:Image_analysis .
+ns1:Sante ns1:part_of ns1:Social .
 
-ns1:Preprocessor ns1:facet_of ns1:Supervised_learning ;
-    ns1:part_of ns1:Supervised_learning .
+ns1:Southern_France ns1:instance_of ns1:Megatrend .
 
-ns1:Python_\(programming_language\) ns1:inception ns1:2016 ;
-    ns1:publication_date ns1:2016 .
+ns1:Sécurité ns1:instance_of ns1:Principality ;
+    ns1:population ns1:505 .
 
-ns1:Random_forest ns1:subclass_of ns1:Tree .
+ns1:1919 ns1:point_in_time ns1:1919 .
 
-ns1:Reinforcement ns1:facet_of ns1:Machine_learning .
+ns1:2017 ns1:point_in_time ns1:2017 .
 
-ns1:Reinforcement_learning ns1:part_of ns1:Machine_learning ;
-    ns1:subclass_of ns1:Learning .
+ns1:Alpha ns1:followed_by ns1:Beta ;
+    ns1:has_part ns1:Beta .
 
-ns1:Sensory_neuron ns1:subclass_of ns1:Neuron .
+ns1:Arrondissement ns1:located_in_the_administrative_territorial_entity ns1:Subprefecture .
 
-ns1:Sound ns1:instance_of ns1:Sense .
+ns1:Deputy_\(France\) ns1:has_part ns1:Deputy_\(France\) .
 
-ns1:Support_vector_machine ns1:subclass_of ns1:Artificial_intelligence .
+ns1:Historian ns1:conferred_by ns1:Académie_Française ;
+    ns1:part_of ns1:Académie_Française .
 
-ns1:Travelling_salesman_problem ns1:instance_of ns1:Heuristic .
+ns1:Journal_officiel_de_la_République_française ns1:inception ns1:1907 ;
+    ns1:owned_by ns1:Bibliothèque_nationale_de_France ;
+    ns1:publisher ns1:Bibliothèque_nationale_de_France .
 
-ns1:Unsupervised_learning ns1:subclass_of ns1:Learning .
+ns1:Parliament ns1:has_part ns1:Chamber_of_Deputies .
 
-ns1:Bank ns1:part_of ns1:Financial_services ;
-    ns1:use ns1:Financial_services .
+ns1:Skopje ns1:has_part ns1:Skopje .
 
-ns1:Brain ns1:connects_with ns1:Spinal_cord .
+ns1:Subprefecture ns1:contains_administrative_territorial_entity ns1:Arrondissement .
 
-ns1:Central_nervous_system ns1:has_part ns1:Spinal_cord .
+ns1:Étienne ns1:father ns1:Étienne .
 
-ns1:Chromosome ns1:has_part ns1:DNA .
+ns1:1906 ns1:point_in_time ns1:1906 .
 
-ns1:Computer_science ns1:has_part ns1:Artificial_intelligence .
+ns1:2021 ns1:point_in_time ns1:2021 .
 
-ns1:Data_science ns1:field_of_this_occupation ns1:Machine_learning ;
-    ns1:studies ns1:Data .
+ns1:Académie_Française ns1:has_part ns1:Historian .
 
-ns1:Decision_tree ns1:instance_of ns1:Algorithm ;
-    ns1:subclass_of ns1:Decision_tree .
+ns1:Beta ns1:part_of ns1:Alpha .
 
-ns1:Dendrite ns1:connects_with ns1:Axon ;
-    ns1:part_of ns1:Neuron .
+ns1:Bibliothèque_nationale_de_France ns1:owner_of ns1:Journal_officiel_de_la_République_française .
 
-ns1:Exocytosis ns1:subclass_of ns1:Exocytosis .
+ns1:France ns1:capital ns1:Paris .
 
-ns1:Google ns1:product_or_material_produced ns1:TensorFlow .
+ns1:Gabriel_Tarde ns1:sibling ns1:Gustave_Le_Bon ;
+    ns1:student ns1:Gustave_Le_Bon .
 
-ns1:Heuristic ns1:subclass_of ns1:Mathematical_optimization .
+ns1:Gustave_Le_Bon ns1:sibling ns1:Gabriel_Tarde ;
+    ns1:student_of ns1:Gabriel_Tarde .
 
-ns1:Mathematical_optimization ns1:facet_of ns1:Machine_learning .
+<http://example.org/Ibid.> ns1:has_part <http://example.org/Ibid.> ;
+    ns1:instance_of <http://example.org/Ibid.> .
 
-ns1:Messenger_RNA ns1:has_part ns1:DNA .
+ns1:Narbonne ns1:instance_of ns1:Department_\(administrative_division\) ;
+    ns1:shares_border_with ns1:Montpellier ;
+    ns1:twinned_administrative_body ns1:Montpellier .
 
-ns1:Microtubule ns1:part_of ns1:Axon .
+ns1:Chamber_of_Deputies ns1:part_of ns1:Parliament ;
+    ns1:subclass_of ns1:Chamber_of_Deputies .
 
-ns1:Myelin ns1:has_part ns1:Lipid .
+ns1:Montpellier ns1:shares_border_with ns1:Narbonne ;
+    ns1:twinned_administrative_body ns1:Narbonne .
 
-ns1:Nervous_system ns1:has_part ns1:Neuron .
-
-ns1:Neural_network ns1:used_by ns1:Deep_learning .
-
-ns1:Phylogenetics ns1:subclass_of ns1:Phylogenetics .
-
-ns1:Sense ns1:use ns1:Perception .
-
-ns1:Synapse ns1:part_of ns1:Neuron .
-
-ns1:TensorFlow ns1:developer ns1:Google ;
-    ns1:use ns1:Deep_learning .
-
-ns1:Algorithm ns1:part_of ns1:Artificial_intelligence .
-
-ns1:Artificial_neural_network ns1:studied_by ns1:Deep_learning .
-
-ns1:Axon ns1:connects_with ns1:Dendrite ;
-    ns1:part_of ns1:Neuron .
-
-ns1:Big_data ns1:facet_of ns1:Big_data ;
-    ns1:has_part ns1:Machine_learning .
-
-ns1:Data ns1:studied_by ns1:Data_science .
-
-ns1:Financial_services ns1:has_part ns1:Bank .
-
-ns1:Spinal_cord ns1:connects_with ns1:Brain ;
-    ns1:part_of ns1:Central_nervous_system .
-
-ns1:Unsupervised ns1:followed_by ns1:Supervised_learning ;
-    ns1:opposite_of ns1:Supervised_learning .
-
-ns1:2016 ns1:point_in_time ns1:2016 .
-
-ns1:DNA ns1:instance_of ns1:Time_series ;
-    ns1:part_of ns1:Chromosome,
-        ns1:Messenger_RNA .
-
-ns1:Artificial_intelligence ns1:part_of ns1:Computer_science .
-
-ns1:Deep_learning ns1:studies ns1:Artificial_neural_network ;
-    ns1:use ns1:Analytics ;
-    ns1:uses ns1:Neural_network .
-
-ns1:Supervised_learning ns1:follows ns1:Unsupervised ;
-    ns1:opposite_of ns1:Unsupervised ;
-    ns1:subclass_of ns1:Machine_learning,
-        ns1:Train ;
-    ns1:use ns1:Train ;
-    ns1:uses ns1:Data .
-
-ns1:Neuron ns1:has_part ns1:Myelin,
-        ns1:Synapse ;
-    ns1:part_of ns1:Nervous_system .
-
-ns1:Machine_learning ns1:has_part ns1:Supervised_learning ;
-    ns1:part_of ns1:Big_data ;
-    ns1:subclass_of ns1:Algorithm .
+ns1:1907 ns1:point_in_time ns1:1907 .
 

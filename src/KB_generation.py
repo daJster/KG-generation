@@ -226,8 +226,8 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_
     tensor_masks = [inputs["attention_mask"][0][boundary[0]:boundary[1]]
                     for boundary in spans_boundaries]
     inputs = {
-        "input_ids": torch.stack(tensor_ids),
-        "attention_mask": torch.stack(tensor_masks)
+        "input_ids": torch.stack(tensor_ids).to("cuda"),
+        "attention_mask": torch.stack(tensor_masks).to("cuda")
     }
 
     num_return_sequences = 3

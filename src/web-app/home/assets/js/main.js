@@ -278,7 +278,7 @@
 
 
     const htmlFrame = document.getElementById("htmlFrame");
-    function loadAndRenderHTML(search_entity) {
+    function loadAndRenderHTML() {
         // Fetch the HTML content from Flask
         console.log("check inside fun")
 
@@ -287,7 +287,7 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({search_term: search_entity}),
+            body: JSON.stringify({search_term: ""}),
         })
             .then(response => {
                 if (!response.ok) {
@@ -322,7 +322,7 @@
         //     });
     }
 
-    loadAndRenderHTML(document.getElementById("search").value)
+    loadAndRenderHTML()
   });
 
   

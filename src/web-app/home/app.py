@@ -31,7 +31,7 @@ def index():
 @app.route('/generate_html', methods=['POST'])
 def construct_graph():
     data = request.get_json()
-    search_term = data.get('search_term')
+    # search_term = data.get('search_term')
     # Recherche du nœud dans le graph
     # query = """
     #     SELECT ?subject ?predicate ?object

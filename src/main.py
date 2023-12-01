@@ -17,8 +17,8 @@ def main() :
     st.title("Knowledge Graph Generation")
     files = st.file_uploader("Upload a directory contaning PDF files", accept_multiple_files=True, type="pdf")
     # files = get_files(path=upload_path)
-    if files != [] :
-        kb = KB()
+    if files != [] : 
+        kb = KB() #! TODO 
         st.spinner("Generating Graph...")
         for file in files :
             st.write("file :", file.name)
