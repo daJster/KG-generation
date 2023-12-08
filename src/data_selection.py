@@ -44,6 +44,7 @@ def read_ttl(fname) :
         print(f"Subject: {subject_str}")
         print(f"Predicate: {predicate_str}")
         print(f"Object: {obj_str}\n")
+        
 
 if __name__ == "__main__" :
     read_ttl("test_20Go.ttl")

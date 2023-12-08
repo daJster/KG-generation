@@ -14,9 +14,9 @@ CORS(app)
 # Chargement du graph ttl
 graph = Graph()
 # graph.parse("example_graph.ttl", format="turtle")
-graph.parse("../../../RDFs/100m_sim.ttl", format="turtle")
+graph.parse("../../../RDFs/db.ttl", format="turtle")
 
-with open('../../../RDFs/100m_sim.json', "r") as json_file:
+with open('../../../RDFs/db.json', "r") as json_file:
     entities = json.load(json_file)
 
 

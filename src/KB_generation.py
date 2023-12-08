@@ -2,10 +2,12 @@ import math
 import torch
 import wikipedia
 from rdflib import Graph, URIRef, Literal, Namespace, RDF, RDFS
+from urllib.parse import quote
+import re
 import uuid
 import json
 from merge_RDF import similarity_score
-from params import tokenizer, rdf_model, PATH_TO_RDF_FILES, ACTIVATE_SIMILARITY
+from params import tokenizer, rdf_model, PATH_TO_RDF_FILES, ACTIVATE_SIMILARITY, DEVICE
 
 class KB():
     """
@@ -33,11 +35,11 @@ class KB():
 
     def get_wikipedia_data(self, candidate_entity):
         try:
-            page = wikipedia.page(candidate_entity, auto_suggest=False)
+            # page = wikipedia.page(candidate_entity, auto_suggest=False)
             entity_data = {
-                "title": page.title,
-                "url": page.url,
-                "summary": page.summary
+                "title": candidate_entity
+                # "url": page.url,
+                # "summary": page.summary
             }
             return entity_data
         except:
@@ -92,7 +94,7 @@ class KB():
         
         
 
-def extract_relations_from_model_output(text):
+def extract_relations_from_model_output(text, kb, spans):
     """
     Extracts relations from the model output text.
 
@@ -102,7 +104,7 @@ def extract_relations_from_model_output(text):
     Returns:
         list: A list of dictionaries representing the extracted relations. Each dictionary contains the 'head', 'type', and 'tail' of the relation.
     """
-    relations = []
+    # relations = []
     relation, subject, relation, object_ = '', '', '', ''
     text = text.strip()
     current = 'x'
@@ -111,20 +113,26 @@ def extract_relations_from_model_output(text):
         if token == "<triplet>":
             current = 't'
             if relation != '':
-                relations.append({
+                kb.relations.append({
                     'head': subject.strip(),
                     'type': relation.strip(),
-                    'tail': object_.strip()
+                    'tail': object_.strip(),
+                    'meta' : {
+                        'spans' : [spans]
+                    }
                 })
                 relation = ''
             subject = ''
         elif token == "<subj>":
             current = 's'
             if relation != '':
-                relations.append({
+                kb.relations.append({
                     'head': subject.strip(),
                     'type': relation.strip(),
-                    'tail': object_.strip()
+                    'tail': object_.strip(),
+                    'meta' : {
+                        'spans' : [spans]
+                    }
                 })
             object_ = ''
         elif token == "<obj>":
@@ -138,12 +146,16 @@ def extract_relations_from_model_output(text):
             elif current == 'o':
                 relation += ' ' + token
     if subject != '' and relation != '' and object_ != '':
-        relations.append({
+        kb.relations.append({
             'head': subject.strip(),
             'type': relation.strip(),
-            'tail': object_.strip()
+            'tail': object_.strip(),
+                    'meta' : {
+                        'spans' : [spans]
+                    }
         })
-    return relations
+
+    return kb
 
 
         
@@ -202,15 +214,17 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_
     Returns:
         KB: The generated knowledge base.
     """
+    # tokenize whole text
     inputs = tokenizer([text], return_tensors="pt")
 
+    # compute span boundaries
     num_tokens = len(inputs["input_ids"][0])
     if verbose:
         print(f"Input has {num_tokens} tokens")
     num_spans = math.ceil(num_tokens / span_length)
     if verbose:
         print(f"Input has {num_spans} spans")
-    overlap = math.ceil((num_spans * span_length - num_tokens) / 
+    overlap = math.ceil((num_spans * span_length - num_tokens) /
                         max(num_spans - 1, 1))
     spans_boundaries = []
     start = 0
@@ -221,15 +235,20 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_
     if verbose:
         print(f"Span boundaries are {spans_boundaries}")
 
-    tensor_ids = [inputs["input_ids"][0][boundary[0]:boundary[1]]
-                  for boundary in spans_boundaries]
-    tensor_masks = [inputs["attention_mask"][0][boundary[0]:boundary[1]]
-                    for boundary in spans_boundaries]
+
+    # SLOW
+    # transform input with spans
+    tensor_ids, tensor_masks = [], []
+    for boundary in spans_boundaries :
+        tensor_ids += [inputs["input_ids"][0][boundary[0]:boundary[1]]]
+        tensor_masks += [inputs["attention_mask"][0][boundary[0]:boundary[1]]]
+
     inputs = {
-        "input_ids": torch.stack(tensor_ids).to("cuda"),
-        "attention_mask": torch.stack(tensor_masks).to("cuda")
+        "input_ids": torch.stack(tensor_ids).to(DEVICE),
+        "attention_mask": torch.stack(tensor_masks).to(DEVICE)
     }
 
+    # generate relations
     num_return_sequences = 3
     gen_kwargs = {
         "max_length": 256,
@@ -240,29 +259,33 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), group_name="test", is_
     generated_tokens = rdf_model.generate(
         **inputs,
         **gen_kwargs,
-    )
+    ).to(DEVICE)
 
+    # decode relations
     decoded_preds = tokenizer.batch_decode(generated_tokens,
                                            skip_special_tokens=False)
-
-
+    # END SLOW
+    
     i = 0
-    for sentence_pred in decoded_preds:
-        current_span_index = i // num_return_sequences
-        relations = extract_relations_from_model_output(sentence_pred)
-        for relation in relations:
-            relation["meta"] = {
-                "spans": [spans_boundaries[current_span_index]]
-            }
-            kb.add_relation(relation)
-        i += 1
-        
-    kb.group_name = group_name
-    if ACTIVATE_SIMILARITY :
-        kb.group_name += "_sim"
-    kb.is_new_group = is_new_group
-    return kb
+    # for sentence_pred in decoded_preds:
+    #     current_span_index = i // num_return_sequences
+    #     relations = extract_relations_from_model_output(sentence_pred)
+    #     print("Sub part ", i)
+    #     for relation in relations:
+    #         relation["meta"] = {
+    #             "spans": [spans_boundaries[current_span_index]]
+    #         }
+    #         print(relation)
+    #         kb.add_relation(relation)
+    #     i += 1
 
+
+    for sentence_pred in decoded_preds:
+            current_span_index = i // num_return_sequences
+            kb = extract_relations_from_model_output(sentence_pred, kb, spans_boundaries[current_span_index])
+            print("Sub part ", i)
+            i += 1
+    return kb
 
 
 def store_kb(kb):
@@ -277,10 +300,10 @@ def store_kb(kb):
     """
     print("storing...")
     mode = "w"
-    if kb.is_new_group:
-        mode = "w"
+    fname = "db"
+
     # Save the 'entities' dictionary as a JSON file
-    with open(PATH_TO_RDF_FILES + kb.group_name + '.json', mode) as json_file:
+    with open(PATH_TO_RDF_FILES + fname + '.json', mode) as json_file:
         json.dump(kb.entities, json_file, indent=4)
 
     g = Graph()
@@ -290,13 +313,14 @@ def store_kb(kb):
 
     # Iterate over each relation and add it to the RDF graph
     for relation in kb.relations:
-        head = URIRef(custom_namespace[relation["head"].replace(" ", "_")])
-        relation_type = URIRef(custom_namespace[relation["type"].replace(" ", "_")])
-        tail = URIRef(custom_namespace[relation["tail"].replace(" ", "_")])
+        # check if head, rerlation_type, and tail are URI safe
+        head = URIRef(re.sub(r'[^a-zA-Z0-9\-]', '', relation["head"].replace(" ", "_")))
+        relation_type = URIRef(re.sub(r'[^a-zA-Z0-9\-]', '', relation["type"].replace(" ", "_")))
+        tail = URIRef(re.sub(r'[^a-zA-Z0-9\-]', '', relation["tail"].replace(" ", "_")))
 
         g.add((head, relation_type, tail))
 
     # Serialize the RDF graph to Turtle format and save it to a file
-    g.serialize(destination=PATH_TO_RDF_FILES + kb.group_name + '.ttl', format="turtle", mode=mode)
+    g.serialize(destination=PATH_TO_RDF_FILES + fname + '.ttl', format="turtle", mode=mode)
 
     return True

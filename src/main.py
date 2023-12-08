@@ -24,8 +24,8 @@ def main() :
             st.write("file :", file.name)
             text = get_text(file)
             st.write(f"Text extracted from {file.name}.")
-            for i in range(0, len(text), 3500):
-                text_part = text[i:i+3500]
+            for i in range(0, len(text), 1000):
+                text_part = text[i:i+1000]
                 st.write(f"Extracting relations from text part : {i}")
                 kb = get_kb(text_part, group_name="100m", is_new_group=False, verbose=True, kb=kb)
                 st.write(f"Relations extracted from text part : {i}")
