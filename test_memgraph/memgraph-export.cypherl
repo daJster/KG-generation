@@ -1,0 +1,9 @@
+CREATE INDEX ON :__mg_vertex__(__mg_id__);
+CREATE (:__mg_vertex__:`User` {__mg_id__: 35, `name`: "John", `password`: "pass"});
+CREATE (:__mg_vertex__:`User` {__mg_id__: 36, `name`: "Felicien", `password`: "pass"});
+CREATE (:__mg_vertex__:`Hobbies` {__mg_id__: 37, `name`: "Football"});
+CREATE (:__mg_vertex__:`Hobbies` {__mg_id__: 38, `name`: "Technology"});
+MATCH (u:__mg_vertex__), (v:__mg_vertex__) WHERE u.__mg_id__ = 35 AND v.__mg_id__ = 37 CREATE (u)-[:`LIKES`]->(v);
+MATCH (u:__mg_vertex__), (v:__mg_vertex__) WHERE u.__mg_id__ = 36 AND v.__mg_id__ = 38 CREATE (u)-[:`LIKES`]->(v);
+DROP INDEX ON :__mg_vertex__(__mg_id__);
+MATCH (u) REMOVE u:__mg_vertex__, u.__mg_id__;
