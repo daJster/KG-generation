@@ -26,11 +26,11 @@ class KB():
 
     def exists_relation(self, r1):
         # check if relations are equal among those with the same "head_type" for head and "tail_type" for tail, to limit the number of comparisons
-        same_head_type = [r for r in self.relations if r["head_type"] == r1["head_type"]]
-        same_tail_type = [r for r in self.relations if r["tail_type"] == r1["tail_type"]]
-        relations_to_compare = set(same_head_type).intersection(same_tail_type)
+        # same_head_type = [r for r in self.relations if r["head_type"] == r1["head_type"]]
+        # same_tail_type = [r for r in self.relations if r["tail_type"] == r1["tail_type"]]
+        # relations_to_compare = set(same_head_type).intersection(same_tail_type)
 
-        return any(self.are_relations_equal(r1, r2) for r2 in relations_to_compare)
+        # return any(self.are_relations_equal(r1, r2) for r2 in relations_to_compare)
         return any(self.are_relations_equal(r1, r2) for r2 in self.relations)
 
     def merge_relations(self, r1):
@@ -205,70 +205,69 @@ def store_kb(kb):
 
     return True
 
-# def store_kb(kb):
-#     """
-#     Store the knowledge base (KB) as JSON and RDF files.
+def store_kb(kb):
+    """
+    Store the knowledge base (KB) as JSON and RDF files.
 
-#     Args:
-#         kb (KnowledgeBase): The knowledge base object containing the entities and relations.
+    Args:
+        kb (KnowledgeBase): The knowledge base object containing the entities and relations.
 
-#     Returns:
-#         bool: True if the KB is successfully stored, False otherwise.
-#     """
-#     print("c    storing...")
-#     mode = "w"
-#     fname = "new"
+    Returns:
+        bool: True if the KB is successfully stored, False otherwise.
+    """
+    print("c    storing...")
+    mode = "w"
+    fname = "new"
 
-#     # Define correct URI and AUTH arguments (no AUTH by default)
-#     URI = "bolt://localhost:7687"
-#     AUTH = ("", "")
+    # Define correct URI and AUTH arguments (no AUTH by default)
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
  
-#     with GraphDatabase.driver(URI, auth=AUTH) as client:
-#         # Check the connection
-#         client.verify_connectivity()
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        # Check the connection
+        client.verify_connectivity()
 
-#         # records, summary, keys = client.execute_query(
-#         #     "CREATE (u:Userype {name: $name, password: $password}) RETURN u.name AS name;",
-#         #     name="John",
-#         #     password="pass",
-#         #     database_="memgraph",
-#         #     )
-#         history=[]
+        # records, summary, keys = client.execute_query(
+        #     "CREATE (u:Userype {name: $name, password: $password}) RETURN u.name AS name;",
+        #     name="John",
+        #     password="pass",
+        #     database_="memgraph",
+        #     )
+        history=[]
         
-#         for r in kb.relations :
-#             # create a node using head_type and name
-#             records, summary, keys = client.execute_query(
-#             "CREATE ({head_type: $head_type, name: $name, properties: $properties}) RETURN u.name AS name;",
-#             head_type=r["head_type"],
-#             name=r["head"],
-#             properties=r["fname"],
-#             database_="memgraph",
-#             )
-#             history.append(r["head"])
+        for r in kb.relations :
+            # create a node using head_type and name
+            records, summary, keys = client.execute_query(
+            "CREATE ({head_type: $head_type, name: $name, properties: $properties}) RETURN u.name AS name;",
+            head_type=r["head_type"],
+            name=r["head"],
+            properties=r["fname"],
+            database_="memgraph",
+            )
+            history.append(r["head"])
             
-#             if r['tail'] not in history:
-#                 # create the node if it doesn't exist
-#                 records, summary, keys = client.execute_query(
-#                     "CREATE (n:{tail_type} {{name: $name}}) RETURN n.name AS name;",
-#                     tail_type=r["tail_type"],
-#                     name=r["tail"],
-#                     database_="memgraph",
-#                 )
-#                 history.append(r["tail"])
+            if r['tail'] not in history:
+                # create the node if it doesn't exist
+                records, summary, keys = client.execute_query(
+                    "CREATE (n:{tail_type} {{name: $name}}) RETURN n.name AS name;",
+                    tail_type=r["tail_type"],
+                    name=r["tail"],
+                    database_="memgraph",
+                )
+                history.append(r["tail"])
         
                
-#         # Create relation 
-#         records, summary, keys = client.execute_query(
-#             "MATCH ({head_type: $head_type, name: $name, properties: $properties})-[{type: $type}]->({tail_type: $tail_type, name_tail: $name_tail, properties_tail: $properties_tail}) RETURN r;",
-#             head_type=r["head_type"],
-#             name_head=r["head"],
-#             properties=r["fname"],
-#             type=r["type"],
-#             tail_type=r["tail_type"],
-#             name_tail=r["tail"],
-#             properties_tail=r["fname"],
-#             database_="memgraph",
-#         )
-
+        # Create relation 
+        records, summary, keys = client.execute_query(
+            "MATCH ({head_type: $head_type, name: $name, properties: $properties})-[{type: $type}]->({tail_type: $tail_type, name_tail: $name_tail, properties_tail: $properties_tail}) RETURN r;",
+            head_type=r["head_type"],
+            name_head=r["head"],
+            properties=r["fname"],
+            type=r["type"],
+            tail_type=r["tail_type"],
+            name_tail=r["tail"],
+            properties_tail=r["fname"],
+            database_="memgraph",
+        )
         
-#     return True
+    return True
