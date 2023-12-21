@@ -9,7 +9,7 @@ with GraphDatabase.driver(URI, auth=AUTH) as client:
     client.verify_connectivity()
     
     # import the database memgraph-export.cypherl
-    # client.execute_query("CALL mg.import.cypher('memgraph-export.cypher')", database_="memgraph")    
+    client.execute_query("CALL mg.import.cypher('memgraph-export.cypher')", database_="memgraph")    
     
     # Get all the nodes
     records, summary, keys = client.execute_query(

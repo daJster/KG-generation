@@ -13,30 +13,36 @@ def main() :
     extract text from the files, and generate a knowledge graph based on the extracted text.
     The generated graph is then stored and the execution time is displayed.
     """
-    start_time = time.time()
+    
     st.title("Knowledge Graph Generation")
     files = st.file_uploader("Upload a directory contaning PDF files", accept_multiple_files=True, type="pdf")
     # files = get_files(path=upload_path)
     if files != [] : 
+        start_time = time.time()
         kb = KB() #! TODO 
         st.spinner("Generating Graph...")
         for file in files :
             st.write("file :", file.name)
             text = get_text(file)
             st.write(f"Text extracted from {file.name}.")
+            st.write(f"batch size of {1000} letters.")
             for i in range(0, len(text), 1000):
                 text_part = text[i:i+1000]
-                st.write(f"Extracting relations from text part : {i}")
-                kb = get_kb(text_part, group_name="100m", is_new_group=False, verbose=True, kb=kb)
-                st.write(f"Relations extracted from text part : {i}")
+                #st.write(f"Extracting relations from text part : {i}")
+                kb = get_kb(text_part, verbose=True, kb=kb, pdf_name=file.name)
+                #st.write(f"Relations extracted from text part : {i}")
                 
+            st.write(f"Relations extracted from {file.name}.")
+            st.write(f"storing relations from {file.name} ...")
             is_stored = store_kb(kb)
-        # graph = get_graph(kb)
-        #graph2 = get_graph2("neuron")
-        end_time = time.time()
-        execution_time = end_time - start_time
+            st.write(f"stored.")
+            # graph = get_graph(kb)
+            # graph2 = get_graph2("neuron")
+            end_time = time.time()
+            execution_time = end_time - start_time
+            st.write(f"Execution Time for {file.name}: {execution_time:.4f} seconds")
+            
         st.success(f"graph generated.")
-        st.write(f"Execution Time: {execution_time:.4f} seconds")
     
 
 if __name__ == "__main__" :
