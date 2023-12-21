@@ -238,6 +238,75 @@ function highlightFilter(filter) {
              }
 
              
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
 
              
 
@@ -261,117 +330,223 @@ function highlightFilter(filter) {
                             >
                                 <option selected>Select a Node by ID</option>
                                 
-                                    <option value="Emmanuel Petit">Emmanuel Petit</option>
+                                    <option value="Vincent FRIGANT">Vincent FRIGANT</option>
                                 
-                                    <option value="1907">1907</option>
+                                    <option value="Université de Bordeaux">Université de Bordeaux</option>
                                 
-                                    <option value="Jeu">Jeu</option>
+                                    <option value="Véhicules de demain">Véhicules de demain</option>
                                 
-                                    <option value="Gard">Gard</option>
+                                    <option value="voiture citadine">voiture citadine</option>
                                 
-                                    <option value="Department (administrative division)">Department (administrative division)</option>
+                                    <option value="FIAT Cinquecento">FIAT Cinquecento</option>
                                 
-                                    <option value="Aude">Aude</option>
+                                    <option value="Twingo">Twingo</option>
                                 
-                                    <option value="Departments of France">Departments of France</option>
+                                    <option value="Audi A1">Audi A1</option>
                                 
-                                    <option value="1906">1906</option>
+                                    <option value="automobile">automobile</option>
                                 
-                                    <option value="Group (military unit)">Group (military unit)</option>
+                                    <option value="véhicule">véhicule</option>
                                 
-                                    <option value="Chamber of Deputies">Chamber of Deputies</option>
+                                    <option value="Audi">Audi</option>
                                 
-                                    <option value="Southern France">Southern France</option>
+                                    <option value="porte">porte</option>
                                 
-                                    <option value="Megatrend">Megatrend</option>
+                                    <option value="voiture">voiture</option>
                                 
-                                    <option value="Narbonne">Narbonne</option>
+                                    <option value="voiture électrique">voiture électrique</option>
                                 
-                                    <option value="Ibid.">Ibid.</option>
+                                    <option value="electric vehicle">electric vehicle</option>
                                 
-                                    <option value="Prison">Prison</option>
+                                    <option value="poids">poids</option>
                                 
-                                    <option value="Montpellier">Montpellier</option>
+                                    <option value="volume des voitures vendues en Europe">volume des voitures vendues en Europe</option>
                                 
-                                    <option value="Journal officiel de la République française">Journal officiel de la République française</option>
+                                    <option value="haut de gamme">haut de gamme</option>
                                 
-                                    <option value="Réunion">Réunion</option>
+                                    <option value="gammes de véhicules">gammes de véhicules</option>
                                 
-                                    <option value="France">France</option>
+                                    <option value="voitures thermiques">voitures thermiques</option>
                                 
-                                    <option value="Skopje">Skopje</option>
+                                    <option value="Renault">Renault</option>
                                 
-                                    <option value="Diplomacy (2014 film)">Diplomacy (2014 film)</option>
+                                    <option value="Luca de Meo">Luca de Meo</option>
                                 
-                                    <option value="Social">Social</option>
+                                    <option value="Challenges">Challenges</option>
                                 
-                                    <option value="Sante">Sante</option>
+                                    <option value="verre">verre</option>
                                 
-                                    <option value="Agriculturist">Agriculturist</option>
+                                    <option value="matériaux">matériaux</option>
                                 
-                                    <option value="Agriculture">Agriculture</option>
+                                    <option value="RÉALITÉS INDUSTRIELLES - MAI 2023">RÉALITÉS INDUSTRIELLES - MAI 2023</option>
                                 
-                                    <option value="Sécurité">Sécurité</option>
+                                    <option value="2023">2023</option>
                                 
-                                    <option value="Principality">Principality</option>
+                                    <option value="MAI 2023">MAI 2023</option>
                                 
-                                    <option value="Country">Country</option>
+                                    <option value="CO2">CO2</option>
                                 
-                                    <option value="505">505</option>
+                                    <option value="argument de poids">argument de poids</option>
                                 
-                                    <option value="Historian">Historian</option>
+                                    <option value="émissions">émissions</option>
                                 
-                                    <option value="Académie Française">Académie Française</option>
+                                    <option value="Volkswagen">Volkswagen</option>
                                 
-                                    <option value="2021">2021</option>
+                                    <option value="allemands">allemands</option>
                                 
-                                    <option value="Januarius">Januarius</option>
+                                    <option value="Fiat">Fiat</option>
                                 
-                                    <option value="Le Mans">Le Mans</option>
+                                    <option value="CAFE">CAFE</option>
                                 
-                                    <option value="Subprefecture">Subprefecture</option>
+                                    <option value="voitures électriques">voitures électriques</option>
                                 
-                                    <option value="Arrondissement">Arrondissement</option>
+                                    <option value="électriques">électriques</option>
+                                
+                                    <option value="électrique">électrique</option>
+                                
+                                    <option value="electrification">electrification</option>
+                                
+                                    <option value="cellules de batteries">cellules de batteries</option>
+                                
+                                    <option value="batteries">batteries</option>
+                                
+                                    <option value="batterie">batterie</option>
+                                
+                                    <option value="micro-mobilité">micro-mobilité</option>
+                                
+                                    <option value="SUV">SUV</option>
+                                
+                                    <option value="Citroën Ami">Citroën Ami</option>
+                                
+                                    <option value="citadine">citadine</option>
+                                
+                                    <option value="petite citadine urbaine">petite citadine urbaine</option>
+                                
+                                    <option value="véhicules thermiques">véhicules thermiques</option>
+                                
+                                    <option value="constructeurs">constructeurs</option>
+                                
+                                    <option value="produit automobile">produit automobile</option>
+                                
+                                    <option value="concessions">concessions</option>
+                                
+                                    <option value="pari stratégique">pari stratégique</option>
+                                
+                                    <option value="objet social">objet social</option>
+                                
+                                    <option value="permis">permis</option>
+                                
+                                    <option value="automobilisme">automobilisme</option>
+                                
+                                    <option value="contrainte">contrainte</option>
+                                
+                                    <option value="leasing">leasing</option>
+                                
+                                    <option value="propriétaire">propriétaire</option>
+                                
+                                    <option value="petites citadines">petites citadines</option>
+                                
+                                    <option value="chinois">chinois</option>
+                                
+                                    <option value="Tesla">Tesla</option>
+                                
+                                    <option value="Europe">Europe</option>
+                                
+                                    <option value="constructeurs généralistes">constructeurs généralistes</option>
+                                
+                                    <option value="mobilité de demain">mobilité de demain</option>
+                                
+                                    <option value="Véhicules de demain ou mobilité de demain?">Véhicules de demain ou mobilité de demain?</option>
+                                
+                                    <option value="automobile électrique">automobile électrique</option>
+                                
+                                    <option value="leurs équivalents thermiques">leurs équivalents thermiques</option>
+                                
+                                    <option value="keijidōsha">keijidōsha</option>
+                                
+                                    <option value="Japon">Japon</option>
+                                
+                                    <option value="asiatiques">asiatiques</option>
+                                
+                                    <option value="marchés automo- biles">marchés automo- biles</option>
+                                
+                                    <option value="marché">marché</option>
+                                
+                                    <option value="fabrique du marché">fabrique du marché</option>
+                                
+                                    <option value="réglementations">réglementations</option>
+                                
+                                    <option value="péages routiers">péages routiers</option>
+                                
+                                    <option value="assurances">assurances</option>
+                                
+                                    <option value="péages routiers différenciés">péages routiers différenciés</option>
+                                
+                                    <option value="assurances différenciées">assurances différenciées</option>
+                                
+                                    <option value="dieselgate">dieselgate</option>
+                                
+                                    <option value="dette carbone">dette carbone</option>
+                                
+                                    <option value="dette">dette</option>
+                                
+                                    <option value="neutralité technologique">neutralité technologique</option>
+                                
+                                    <option value="Commission européenne">Commission européenne</option>
+                                
+                                    <option value="Commission">Commission</option>
+                                
+                                    <option value="sociétale">sociétale</option>
+                                
+                                    <option value="automo- bile">automo- bile</option>
+                                
+                                    <option value="autono- mie">autono- mie</option>
+                                
+                                    <option value="autono- mie moindre">autono- mie moindre</option>
+                                
+                                    <option value="petite citadine">petite citadine</option>
+                                
+                                    <option value="citadine électrique">citadine électrique</option>
+                                
+                                    <option value="produit">produit</option>
+                                
+                                    <option value="petite citadine électrique">petite citadine électrique</option>
+                                
+                                    <option value="citadines">citadines</option>
+                                
+                                    <option value="mobilité partagée">mobilité partagée</option>
+                                
+                                    <option value="vente faible">vente faible</option>
+                                
+                                    <option value="scooter">scooter</option>
+                                
+                                    <option value="voitures sans permis">voitures sans permis</option>
+                                
+                                    <option value="scooters">scooters</option>
+                                
+                                    <option value="industrie automobile française">industrie automobile française</option>
+                                
+                                    <option value="industrie">industrie</option>
+                                
+                                    <option value="française">française</option>
+                                
+                                    <option value="univers concurrentiel dynamique">univers concurrentiel dynamique</option>
+                                
+                                    <option value="espac">espac</option>
+                                
+                                    <option value="International Journal of Automotive">International Journal of Automotive</option>
+                                
+                                    <option value="M@n@gement">M@n@gement</option>
+                                
+                                    <option value="자동차">자동차</option>
+                                
+                                    <option value="Presses des Mines">Presses des Mines</option>
                                 
                                     <option value="Paris">Paris</option>
                                 
-                                    <option value="Parliament">Parliament</option>
+                                    <option value="ETUI">ETUI</option>
                                 
-                                    <option value="Étienne">Étienne</option>
-                                
-                                    <option value="Gabriel Tarde">Gabriel Tarde</option>
-                                
-                                    <option value="Gustave Le Bon">Gustave Le Bon</option>
-                                
-                                    <option value="Teacher">Teacher</option>
-                                
-                                    <option value="Apache">Apache</option>
-                                
-                                    <option value="1900">1900</option>
-                                
-                                    <option value="Le Petit Parisien">Le Petit Parisien</option>
-                                
-                                    <option value="Bibliothèque nationale de France">Bibliothèque nationale de France</option>
-                                
-                                    <option value="1919">1919</option>
-                                
-                                    <option value="2017">2017</option>
-                                
-                                    <option value="Deputy (France)">Deputy (France)</option>
-                                
-                                    <option value="Alpha">Alpha</option>
-                                
-                                    <option value="Beta">Beta</option>
-                                
-                                    <option value="Emotion">Emotion</option>
-                                
-                                    <option value="Reason">Reason</option>
-                                
-                                    <option value="Sabrina Ebbersmeyer">Sabrina Ebbersmeyer</option>
-                                
-                                    <option value="Anthropologist">Anthropologist</option>
-                                
-                                    <option value="Centre pour l'Édition Électronique Ouverte">Centre pour l'Édition Électronique Ouverte</option>
+                                    <option value="Brussels">Brussels</option>
                                 
                             </select>
                         </div>
@@ -385,6 +560,15 @@ function highlightFilter(filter) {
             <div id="mynetwork" class="card-body"></div>
         </div>
 
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
         
         
 
@@ -425,8 +609,8 @@ function highlightFilter(filter) {
                   
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#FFA500", "id": "Emmanuel Petit", "label": "Emmanuel Petit", "shape": "dot"}, {"color": "#FFA500", "id": "1907", "label": "1907", "shape": "dot"}, {"color": "#FFA500", "id": "Jeu", "label": "Jeu", "shape": "dot"}, {"color": "#FFA500", "id": "Gard", "label": "Gard", "shape": "dot"}, {"color": "#FFA500", "id": "Department (administrative division)", "label": "Department (administrative division)", "shape": "dot"}, {"color": "#FFA500", "id": "Aude", "label": "Aude", "shape": "dot"}, {"color": "#FFA500", "id": "Departments of France", "label": "Departments of France", "shape": "dot"}, {"color": "#FFA500", "id": "1906", "label": "1906", "shape": "dot"}, {"color": "#FFA500", "id": "Group (military unit)", "label": "Group (military unit)", "shape": "dot"}, {"color": "#FFA500", "id": "Chamber of Deputies", "label": "Chamber of Deputies", "shape": "dot"}, {"color": "#FFA500", "id": "Southern France", "label": "Southern France", "shape": "dot"}, {"color": "#FFA500", "id": "Megatrend", "label": "Megatrend", "shape": "dot"}, {"color": "#FFA500", "id": "Narbonne", "label": "Narbonne", "shape": "dot"}, {"color": "#FFA500", "id": "Ibid.", "label": "Ibid.", "shape": "dot"}, {"color": "#FFA500", "id": "Prison", "label": "Prison", "shape": "dot"}, {"color": "#FFA500", "id": "Montpellier", "label": "Montpellier", "shape": "dot"}, {"color": "#FFA500", "id": "Journal officiel de la R\u00e9publique fran\u00e7aise", "label": "Journal officiel de la R\u00e9publique fran\u00e7aise", "shape": "dot"}, {"color": "#FFA500", "id": "R\u00e9union", "label": "R\u00e9union", "shape": "dot"}, {"color": "#FFA500", "id": "France", "label": "France", "shape": "dot"}, {"color": "#FFA500", "id": "Skopje", "label": "Skopje", "shape": "dot"}, {"color": "#FFA500", "id": "Diplomacy (2014 film)", "label": "Diplomacy (2014 film)", "shape": "dot"}, {"color": "#FFA500", "id": "Social", "label": "Social", "shape": "dot"}, {"color": "#FFA500", "id": "Sante", "label": "Sante", "shape": "dot"}, {"color": "#FFA500", "id": "Agriculturist", "label": "Agriculturist", "shape": "dot"}, {"color": "#FFA500", "id": "Agriculture", "label": "Agriculture", "shape": "dot"}, {"color": "#FFA500", "id": "S\u00e9curit\u00e9", "label": "S\u00e9curit\u00e9", "shape": "dot"}, {"color": "#FFA500", "id": "Principality", "label": "Principality", "shape": "dot"}, {"color": "#FFA500", "id": "Country", "label": "Country", "shape": "dot"}, {"color": "#FFA500", "id": "505", "label": "505", "shape": "dot"}, {"color": "#FFA500", "id": "Historian", "label": "Historian", "shape": "dot"}, {"color": "#FFA500", "id": "Acad\u00e9mie Fran\u00e7aise", "label": "Acad\u00e9mie Fran\u00e7aise", "shape": "dot"}, {"color": "#FFA500", "id": "2021", "label": "2021", "shape": "dot"}, {"color": "#FFA500", "id": "Januarius", "label": "Januarius", "shape": "dot"}, {"color": "#FFA500", "id": "Le Mans", "label": "Le Mans", "shape": "dot"}, {"color": "#FFA500", "id": "Subprefecture", "label": "Subprefecture", "shape": "dot"}, {"color": "#FFA500", "id": "Arrondissement", "label": "Arrondissement", "shape": "dot"}, {"color": "#FFA500", "id": "Paris", "label": "Paris", "shape": "dot"}, {"color": "#FFA500", "id": "Parliament", "label": "Parliament", "shape": "dot"}, {"color": "#FFA500", "id": "\u00c9tienne", "label": "\u00c9tienne", "shape": "dot"}, {"color": "#FFA500", "id": "Gabriel Tarde", "label": "Gabriel Tarde", "shape": "dot"}, {"color": "#FFA500", "id": "Gustave Le Bon", "label": "Gustave Le Bon", "shape": "dot"}, {"color": "#FFA500", "id": "Teacher", "label": "Teacher", "shape": "dot"}, {"color": "#FFA500", "id": "Apache", "label": "Apache", "shape": "dot"}, {"color": "#FFA500", "id": "1900", "label": "1900", "shape": "dot"}, {"color": "#FFA500", "id": "Le Petit Parisien", "label": "Le Petit Parisien", "shape": "dot"}, {"color": "#FFA500", "id": "Biblioth\u00e8que nationale de France", "label": "Biblioth\u00e8que nationale de France", "shape": "dot"}, {"color": "#FFA500", "id": "1919", "label": "1919", "shape": "dot"}, {"color": "#FFA500", "id": "2017", "label": "2017", "shape": "dot"}, {"color": "#FFA500", "id": "Deputy (France)", "label": "Deputy (France)", "shape": "dot"}, {"color": "#FFA500", "id": "Alpha", "label": "Alpha", "shape": "dot"}, {"color": "#FFA500", "id": "Beta", "label": "Beta", "shape": "dot"}, {"color": "#FFA500", "id": "Emotion", "label": "Emotion", "shape": "dot"}, {"color": "#FFA500", "id": "Reason", "label": "Reason", "shape": "dot"}, {"color": "#FFA500", "id": "Sabrina Ebbersmeyer", "label": "Sabrina Ebbersmeyer", "shape": "dot"}, {"color": "#FFA500", "id": "Anthropologist", "label": "Anthropologist", "shape": "dot"}, {"color": "#FFA500", "id": "Centre pour l\u0027\u00c9dition \u00c9lectronique Ouverte", "label": "Centre pour l\u0027\u00c9dition \u00c9lectronique Ouverte", "shape": "dot"}]);
-                  edges = new vis.DataSet([{"color": "#FFA500", "from": "Acad\u00e9mie Fran\u00e7aise", "label": "has part", "to": "Historian"}, {"color": "#FFA500", "from": "R\u00e9union", "label": "country", "to": "France"}, {"color": "#FFA500", "from": "2017", "label": "point in time", "to": "2017"}, {"color": "#FFA500", "from": "Narbonne", "label": "instance of", "to": "Department (administrative division)"}, {"color": "#FFA500", "from": "Narbonne", "label": "twinned administrative body", "to": "Montpellier"}, {"color": "#FFA500", "from": "Skopje", "label": "has part", "to": "Skopje"}, {"color": "#FFA500", "from": "Gabriel Tarde", "label": "student", "to": "Gustave Le Bon"}, {"color": "#FFA500", "from": "Sante", "label": "part of", "to": "Social"}, {"color": "#FFA500", "from": "France", "label": "capital", "to": "Paris"}, {"color": "#FFA500", "from": "Jeu", "label": "point in time", "to": "1907"}, {"color": "#FFA500", "from": "Centre pour l\u0027\u00c9dition \u00c9lectronique Ouverte", "label": "located in the administrative territorial entity", "to": "Paris"}, {"color": "#FFA500", "from": "Prison", "label": "located in the administrative territorial entity", "to": "Montpellier"}, {"color": "#FFA500", "from": "S\u00e9curit\u00e9", "label": "instance of", "to": "Principality"}, {"color": "#FFA500", "from": "Alpha", "label": "followed by", "to": "Beta"}, {"color": "#FFA500", "from": "Ibid.", "label": "has part", "to": "Ibid."}, {"color": "#FFA500", "from": "Emmanuel Petit", "label": "occupation", "to": "Teacher"}, {"color": "#FFA500", "from": "Deputy (France)", "label": "has part", "to": "Deputy (France)"}, {"color": "#FFA500", "from": "Arrondissement", "label": "located in the administrative territorial entity", "to": "Subprefecture"}, {"color": "#FFA500", "from": "Aude", "label": "instance of", "to": "Department (administrative division)"}, {"color": "#FFA500", "from": "1919", "label": "point in time", "to": "1919"}, {"color": "#FFA500", "from": "Biblioth\u00e8que nationale de France", "label": "owner of", "to": "Journal officiel de la R\u00e9publique fran\u00e7aise"}, {"color": "#FFA500", "from": "Agriculturist", "label": "subclass of", "to": "Agriculture"}, {"color": "#FFA500", "from": "Emmanuel Petit", "label": "work period (start)", "to": "1907"}, {"color": "#FFA500", "from": "Le Petit Parisien", "label": "inception", "to": "1906"}, {"color": "#FFA500", "from": "Januarius", "label": "publication date", "to": "2021"}, {"color": "#FFA500", "from": "Parliament", "label": "has part", "to": "Chamber of Deputies"}, {"color": "#FFA500", "from": "S\u00e9curit\u00e9", "label": "population", "to": "505"}, {"color": "#FFA500", "from": "Emotion", "label": "has part", "to": "Reason"}, {"color": "#FFA500", "from": "\u00c9tienne", "label": "father", "to": "\u00c9tienne"}, {"color": "#FFA500", "from": "1907", "label": "point in time", "to": "1907"}, {"color": "#FFA500", "from": "Le Mans", "label": "country", "to": "France"}, {"color": "#FFA500", "from": "Diplomacy (2014 film)", "label": "part of", "to": "Social"}, {"color": "#FFA500", "from": "2021", "label": "point in time", "to": "2021"}, {"color": "#FFA500", "from": "Group (military unit)", "label": "has part", "to": "Chamber of Deputies"}, {"color": "#FFA500", "from": "Southern France", "label": "instance of", "to": "Megatrend"}, {"color": "#FFA500", "from": "Chamber of Deputies", "label": "subclass of", "to": "Chamber of Deputies"}, {"color": "#FFA500", "from": "Sabrina Ebbersmeyer", "label": "occupation", "to": "Anthropologist"}, {"color": "#FFA500", "from": "1906", "label": "point in time", "to": "1906"}, {"color": "#FFA500", "from": "Journal officiel de la R\u00e9publique fran\u00e7aise", "label": "inception", "to": "1907"}, {"color": "#FFA500", "from": "Gard", "label": "instance of", "to": "Department (administrative division)"}, {"color": "#FFA500", "from": "Apache", "label": "inception", "to": "1900"}]);
+                  nodes = new vis.DataSet([{"color": "#971007", "id": "Vincent FRIGANT", "label": "Vincent FRIGANT", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Universit\u00e9 de Bordeaux", "label": "Universit\u00e9 de Bordeaux", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "V\u00e9hicules de demain", "label": "V\u00e9hicules de demain", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "voiture citadine", "label": "voiture citadine", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "FIAT Cinquecento", "label": "FIAT Cinquecento", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Twingo", "label": "Twingo", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Audi A1", "label": "Audi A1", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "automobile", "label": "automobile", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "v\u00e9hicule", "label": "v\u00e9hicule", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Audi", "label": "Audi", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "porte", "label": "porte", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "voiture", "label": "voiture", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "voiture \u00e9lectrique", "label": "voiture \u00e9lectrique", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "electric vehicle", "label": "electric vehicle", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "poids", "label": "poids", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "volume des voitures vendues en Europe", "label": "volume des voitures vendues en Europe", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "haut de gamme", "label": "haut de gamme", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "gammes de v\u00e9hicules", "label": "gammes de v\u00e9hicules", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "voitures thermiques", "label": "voitures thermiques", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Renault", "label": "Renault", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Luca de Meo", "label": "Luca de Meo", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Challenges", "label": "Challenges", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "verre", "label": "verre", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "mat\u00e9riaux", "label": "mat\u00e9riaux", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "R\u00c9ALIT\u00c9S INDUSTRIELLES - MAI 2023", "label": "R\u00c9ALIT\u00c9S INDUSTRIELLES - MAI 2023", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "2023", "label": "2023", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "MAI 2023", "label": "MAI 2023", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "CO2", "label": "CO2", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "argument de poids", "label": "argument de poids", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "\u00e9missions", "label": "\u00e9missions", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Volkswagen", "label": "Volkswagen", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "allemands", "label": "allemands", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Fiat", "label": "Fiat", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "CAFE", "label": "CAFE", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "voitures \u00e9lectriques", "label": "voitures \u00e9lectriques", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "\u00e9lectriques", "label": "\u00e9lectriques", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "\u00e9lectrique", "label": "\u00e9lectrique", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "electrification", "label": "electrification", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "cellules de batteries", "label": "cellules de batteries", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "batteries", "label": "batteries", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "batterie", "label": "batterie", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "micro-mobilit\u00e9", "label": "micro-mobilit\u00e9", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "SUV", "label": "SUV", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Citro\u00ebn Ami", "label": "Citro\u00ebn Ami", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "citadine", "label": "citadine", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "petite citadine urbaine", "label": "petite citadine urbaine", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "v\u00e9hicules thermiques", "label": "v\u00e9hicules thermiques", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "constructeurs", "label": "constructeurs", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "produit automobile", "label": "produit automobile", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "concessions", "label": "concessions", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "pari strat\u00e9gique", "label": "pari strat\u00e9gique", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "objet social", "label": "objet social", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "permis", "label": "permis", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "automobilisme", "label": "automobilisme", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "contrainte", "label": "contrainte", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "leasing", "label": "leasing", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "propri\u00e9taire", "label": "propri\u00e9taire", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "petites citadines", "label": "petites citadines", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "chinois", "label": "chinois", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Tesla", "label": "Tesla", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Europe", "label": "Europe", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "constructeurs g\u00e9n\u00e9ralistes", "label": "constructeurs g\u00e9n\u00e9ralistes", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "mobilit\u00e9 de demain", "label": "mobilit\u00e9 de demain", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "V\u00e9hicules de demain ou mobilit\u00e9 de demain?", "label": "V\u00e9hicules de demain ou mobilit\u00e9 de demain?", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "automobile \u00e9lectrique", "label": "automobile \u00e9lectrique", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "leurs \u00e9quivalents thermiques", "label": "leurs \u00e9quivalents thermiques", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "keijid\u014dsha", "label": "keijid\u014dsha", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Japon", "label": "Japon", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "asiatiques", "label": "asiatiques", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "march\u00e9s automo- biles", "label": "march\u00e9s automo- biles", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "march\u00e9", "label": "march\u00e9", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "fabrique du march\u00e9", "label": "fabrique du march\u00e9", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "r\u00e9glementations", "label": "r\u00e9glementations", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "p\u00e9ages routiers", "label": "p\u00e9ages routiers", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "assurances", "label": "assurances", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "p\u00e9ages routiers diff\u00e9renci\u00e9s", "label": "p\u00e9ages routiers diff\u00e9renci\u00e9s", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "assurances diff\u00e9renci\u00e9es", "label": "assurances diff\u00e9renci\u00e9es", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "dieselgate", "label": "dieselgate", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "dette carbone", "label": "dette carbone", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "dette", "label": "dette", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "neutralit\u00e9 technologique", "label": "neutralit\u00e9 technologique", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Commission europ\u00e9enne", "label": "Commission europ\u00e9enne", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Commission", "label": "Commission", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "soci\u00e9tale", "label": "soci\u00e9tale", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "automo- bile", "label": "automo- bile", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "autono- mie", "label": "autono- mie", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "autono- mie moindre", "label": "autono- mie moindre", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "petite citadine", "label": "petite citadine", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "citadine \u00e9lectrique", "label": "citadine \u00e9lectrique", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "produit", "label": "produit", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "petite citadine \u00e9lectrique", "label": "petite citadine \u00e9lectrique", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "citadines", "label": "citadines", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "mobilit\u00e9 partag\u00e9e", "label": "mobilit\u00e9 partag\u00e9e", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "vente faible", "label": "vente faible", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "scooter", "label": "scooter", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "voitures sans permis", "label": "voitures sans permis", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "scooters", "label": "scooters", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "industrie automobile fran\u00e7aise", "label": "industrie automobile fran\u00e7aise", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "industrie", "label": "industrie", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "fran\u00e7aise", "label": "fran\u00e7aise", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "univers concurrentiel dynamique", "label": "univers concurrentiel dynamique", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "espac", "label": "espac", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "International Journal of Automotive", "label": "International Journal of Automotive", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "M@n@gement", "label": "M@n@gement", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "\uc790\ub3d9\ucc28", "label": "\uc790\ub3d9\ucc28", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Presses des Mines", "label": "Presses des Mines", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Paris", "label": "Paris", "shape": "dot", "title": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "ETUI", "label": "ETUI", "shape": "dot", "titre": " from file : 2023-05-12.pdf"}, {"color": "#971007", "id": "Brussels", "label": "Brussels", "shape": "dot", "title": " from file : 2023-05-12.pdf"}]);
+                  edges = new vis.DataSet([{"color": "#971007", "from": "Vincent FRIGANT", "label": "employer", "to": "Universit\u00e9 de Bordeaux"}, {"color": "#971007", "from": "V\u00e9hicules de demain", "label": "follows", "to": "voiture citadine"}, {"color": "#971007", "from": "FIAT Cinquecento", "label": "part of", "to": "Twingo"}, {"color": "#971007", "from": "Audi A1", "label": "instance of", "to": "automobile"}, {"color": "#971007", "from": "v\u00e9hicule", "label": "part of", "to": "automobile"}, {"color": "#971007", "from": "Audi A1", "label": "manufacturer", "to": "Audi"}, {"color": "#971007", "from": "porte", "label": "subclass of", "to": "voiture"}, {"color": "#971007", "from": "voiture \u00e9lectrique", "label": "subclass of", "to": "voiture"}, {"color": "#971007", "from": "electric vehicle", "label": "subclass of", "to": "voiture"}, {"color": "#971007", "from": "voiture", "label": "has quality", "to": "poids"}, {"color": "#971007", "from": "volume des voitures vendues en Europe", "label": "has quality", "to": "poids"}, {"color": "#971007", "from": "haut de gamme", "label": "instance of", "to": "gammes de v\u00e9hicules"}, {"color": "#971007", "from": "voitures thermiques", "label": "manufacturer", "to": "Renault"}, {"color": "#971007", "from": "Luca de Meo", "label": "26 26 26 26 Challenges Challenges Challenges Challenges Challenges Challenges", "to": "Challenges"}, {"color": "#971007", "from": "verre", "label": "instance of", "to": "mat\u00e9riaux"}, {"color": "#971007", "from": "R\u00c9ALIT\u00c9S INDUSTRIELLES - MAI 2023", "label": "point in time", "to": "2023"}, {"color": "#971007", "from": "MAI 2023", "label": "point in time", "to": "2023"}, {"color": "#971007", "from": "CO2", "label": "instance of", "to": "argument de poids"}, {"color": "#971007", "from": "CO2", "label": "instance of", "to": "\u00e9missions"}, {"color": "#971007", "from": "Volkswagen", "label": "country", "to": "allemands"}, {"color": "#971007", "from": "Volkswagen", "label": "subsidiary", "to": "Fiat"}, {"color": "#971007", "from": "CAFE", "label": "main subject", "to": "Fiat"}, {"color": "#971007", "from": "voitures \u00e9lectriques", "label": "subclass of", "to": "\u00e9lectriques"}, {"color": "#971007", "from": "voitures \u00e9lectriques", "label": "subclass of", "to": "\u00e9lectrique"}, {"color": "#971007", "from": "voiture \u00e9lectrique", "label": "subclass of", "to": "\u00e9lectrique"}, {"color": "#971007", "from": "voitures \u00e9lectriques", "label": "has quality", "to": "electrification"}, {"color": "#971007", "from": "cellules de batteries", "label": "part of", "to": "batteries"}, {"color": "#971007", "from": "cellules de batteries", "label": "part of", "to": "batterie"}, {"color": "#971007", "from": "micro-mobilit\u00e9", "label": "subclass of", "to": "batterie"}, {"color": "#971007", "from": "SUV", "label": "subclass of", "to": "batterie"}, {"color": "#971007", "from": "Citro\u00ebn Ami", "label": "instance of", "to": "Citro\u00ebn Ami"}, {"color": "#971007", "from": "SUV", "label": "subclass of", "to": "citadine"}, {"color": "#971007", "from": "petite citadine urbaine", "label": "subclass of", "to": "citadine"}, {"color": "#971007", "from": "voiture \u00e9lectrique", "label": "subclass of", "to": "voiture \u00e9lectrique"}, {"color": "#971007", "from": "voiture \u00e9lectrique", "label": "subclass of", "to": "v\u00e9hicules thermiques"}, {"color": "#971007", "from": "automobile", "label": "manufacturer", "to": "constructeurs"}, {"color": "#971007", "from": "produit automobile", "label": "manufacturer", "to": "constructeurs"}, {"color": "#971007", "from": "concessions", "label": "rer", "to": "constructeurs"}, {"color": "#971007", "from": "voiture", "label": "manufacturer", "to": "constructeurs"}, {"color": "#971007", "from": "pari strat\u00e9gique", "label": "subclass of", "to": "pari strat\u00e9gique"}, {"color": "#971007", "from": "automobile", "label": "subclass of", "to": "objet social"}, {"color": "#971007", "from": "permis", "label": "subclass of", "to": "v\u00e9hicule"}, {"color": "#971007", "from": "v\u00e9hicule", "label": "used by", "to": "automobilisme"}, {"color": "#971007", "from": "automobile", "label": "has quality", "to": "contrainte"}, {"color": "#971007", "from": "leasing", "label": "participant", "to": "propri\u00e9taire"}, {"color": "#971007", "from": "petites citadines", "label": "country", "to": "chinois"}, {"color": "#971007", "from": "Tesla", "label": "country", "to": "chinois"}, {"color": "#971007", "from": "chinois", "label": "continent", "to": "Europe"}, {"color": "#971007", "from": "petites citadines", "label": "subclass of", "to": "constructeurs g\u00e9n\u00e9ralistes"}, {"color": "#971007", "from": "V\u00e9hicules de demain", "label": "subclass of", "to": "mobilit\u00e9 de demain"}, {"color": "#971007", "from": "V\u00e9hicules de demain ou mobilit\u00e9 de demain?", "label": "subclass of", "to": "mobilit\u00e9 de demain"}, {"color": "#971007", "from": "V\u00e9hicules de demain ou mobilit\u00e9 de demain?", "label": "subclass of", "to": "automobile \u00e9lectrique"}, {"color": "#971007", "from": "leurs \u00e9quivalents thermiques", "label": "manufacturer", "to": "Tesla"}, {"color": "#971007", "from": "keijid\u014dsha", "label": "country", "to": "Japon"}, {"color": "#971007", "from": "Japon", "label": "continent", "to": "asiatiques"}, {"color": "#971007", "from": "march\u00e9s automo- biles", "label": "subclass of", "to": "march\u00e9"}, {"color": "#971007", "from": "march\u00e9s automo- biles", "label": "subclass of", "to": "fabrique du march\u00e9"}, {"color": "#971007", "from": "march\u00e9s automo- biles", "label": "subclass of", "to": "r\u00e9glementations"}, {"color": "#971007", "from": "p\u00e9ages routiers", "label": "subclass of", "to": "assurances"}, {"color": "#971007", "from": "p\u00e9ages routiers diff\u00e9renci\u00e9s", "label": "subclass of", "to": "assurances diff\u00e9renci\u00e9es"}, {"color": "#971007", "from": "p\u00e9ages routiers", "label": "subclass of", "to": "assurances diff\u00e9renci\u00e9es"}, {"color": "#971007", "from": "dieselgate", "label": "has cause", "to": "dieselgate"}, {"color": "#971007", "from": "dette carbone", "label": "subclass of", "to": "dette"}, {"color": "#971007", "from": "neutralit\u00e9 technologique", "label": "creator", "to": "Commission europ\u00e9enne"}, {"color": "#971007", "from": "Commission europ\u00e9enne", "label": "subsidiary", "to": "Commission"}, {"color": "#971007", "from": "march\u00e9", "label": "part of", "to": "soci\u00e9tale"}, {"color": "#971007", "from": "automo- bile", "label": "subclass of", "to": "autono- mie"}, {"color": "#971007", "from": "autono- mie moindre", "label": "subclass of", "to": "automo- bile"}, {"color": "#971007", "from": "petite citadine urbaine", "label": "subclass of", "to": "petite citadine"}, {"color": "#971007", "from": "citadine \u00e9lectrique", "label": "subclass of", "to": "produit"}, {"color": "#971007", "from": "petite citadine \u00e9lectrique", "label": "subclass of", "to": "produit"}, {"color": "#971007", "from": "citadines", "label": "subclass of", "to": "mobilit\u00e9 partag\u00e9e"}, {"color": "#971007", "from": "citadine", "label": "subclass of", "to": "mobilit\u00e9 partag\u00e9e"}, {"color": "#971007", "from": "vente faible", "label": "facet of", "to": "mobilit\u00e9 partag\u00e9e"}, {"color": "#971007", "from": "scooter", "label": "subclass of", "to": "voitures sans permis"}, {"color": "#971007", "from": "scooters", "label": "subclass of", "to": "voitures sans permis"}, {"color": "#971007", "from": "scooter", "label": "subclass of", "to": "scooters"}, {"color": "#971007", "from": "industrie automobile fran\u00e7aise", "label": "instance of", "to": "industrie"}, {"color": "#971007", "from": "voiture \u00e9lectrique", "label": "instance of", "to": "industrie"}, {"color": "#971007", "from": "industrie automobile fran\u00e7aise", "label": "country", "to": "fran\u00e7aise"}, {"color": "#971007", "from": "univers concurrentiel dynamique", "label": "opposite of", "to": "espac"}, {"color": "#971007", "from": "International Journal of Automotive", "label": "publisher", "to": "M@n@gement"}, {"color": "#971007", "from": "electric vehicle", "label": "subclass of", "to": "\uc790\ub3d9\ucc28"}, {"color": "#971007", "from": "Presses des Mines", "label": "headquarters location", "to": "Paris"}, {"color": "#971007", "from": "ETUI", "label": "headquarters location", "to": "Brussels"}]);
 
                   nodeColors = {};
                   allNodes = nodes.get({ returnType: "Object" });
@@ -491,6 +675,23 @@ function highlightFilter(filter) {
                   
 
 
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
                   
 
                   return network;

@@ -166,44 +166,46 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
     return kb
 
 
-def store_kb(kb):
-    """
-    Store the knowledge base (KB) as JSON and RDF files.
+# def store_kb(kb):
+#     """
+#     Store the knowledge base (KB) as JSON and RDF files.
 
-    Args:
-        kb (KnowledgeBase): The knowledge base object containing the entities and relations.
+#     Args:
+#         kb (KnowledgeBase): The knowledge base object containing the entities and relations.
 
-    Returns:
-        bool: True if the KB is successfully stored, False otherwise.
-    """
-    mode = "w"
-    store_fname = "new"
+#     Returns:
+#         bool: True if the KB is successfully stored, False otherwise.
+#     """
+#     mode = "w"
+#     store_fname = "new"
 
-    # Your existing code to create and populate the RDF graph
-    relations = []
+#     # Your existing code to create and populate the RDF graph
+#     relations = []
 
-    # Iterate over each relation and add it to the relations list
-    for relation in kb.relations:
-        # check if head, relation_type, and tail are URI safe
-        head = relation["head"]
-        relation_type = relation["type"]
-        tail = relation["tail"]
-        fname = relation["fname"]
-        # Add the triple to the list
-        relation_dict = {
-            "head": head,
-            "type": relation_type,
-            "tail": tail,
-            "fname" : fname
-        }
-        relations.append(relation_dict)
+#     # Iterate over each relation and add it to the relations list
+#     for relation in kb.relations:
+#         # check if head, relation_type, and tail are URI safe
+#         head = relation["head"]
+#         relation_type = relation["type"]
+#         tail = relation["tail"]
+#         fname = relation["fname"]
+#         # Add the triple to the list
+#         relation_dict = {
+#             "head": head,
+#             "type": relation_type,
+#             "tail": tail,
+#             "fname" : fname
+#         }
+#         relations.append(relation_dict)
 
-    # Save the list of triples to a JSON file
-    json_filename = "../RDFs/" + store_fname + '_r.json'
-    with open(json_filename, 'w') as json_file:
-        json.dump(relations, json_file)
+#     # Save the list of triples to a JSON file
+#     json_filename = "../RDFs/" + store_fname + '_r.json'
+#     with open(json_filename, 'w') as json_file:
+#         json.dump(relations, json_file)
 
-    return True
+#     return True
+
+
 
 def store_kb(kb):
     """
@@ -216,8 +218,6 @@ def store_kb(kb):
         bool: True if the KB is successfully stored, False otherwise.
     """
     print("c    storing...")
-    mode = "w"
-    fname = "new"
 
     # Define correct URI and AUTH arguments (no AUTH by default)
     URI = "bolt://localhost:7687"
@@ -227,47 +227,61 @@ def store_kb(kb):
         # Check the connection
         client.verify_connectivity()
 
-        # records, summary, keys = client.execute_query(
-        #     "CREATE (u:Userype {name: $name, password: $password}) RETURN u.name AS name;",
-        #     name="John",
-        #     password="pass",
-        #     database_="memgraph",
-        #     )
         history=[]
-        
+                
         for r in kb.relations :
-            # create a node using head_type and name
-            records, summary, keys = client.execute_query(
-            "CREATE ({head_type: $head_type, name: $name, properties: $properties}) RETURN u.name AS name;",
-            head_type=r["head_type"],
-            name=r["head"],
-            properties=r["fname"],
-            database_="memgraph",
-            )
-            history.append(r["head"])
-            
-            if r['tail'] not in history:
-                # create the node if it doesn't exist
-                records, summary, keys = client.execute_query(
-                    "CREATE (n:{tail_type} {{name: $name}}) RETURN n.name AS name;",
-                    tail_type=r["tail_type"],
-                    name=r["tail"],
-                    database_="memgraph",
-                )
-                history.append(r["tail"])
+            head = r["head"]
+            head_type = r["head_type"]
+            relation_type = r["type"]
+            tail = r["tail"]
+            tail_type = r["tail_type"]
+            fname = r["fname"]
+
+            # check if head with head_type is aleady in the database memgraph
+            query = f"MATCH (n:{head_type}) WHERE n.name = '{head}' RETURN n"
+            with client.session() as session:
+                result = session.run(query)
+                if not result.single():
+                    # add head with head_type to the database memgraph
+                    query = f"CREATE (n:{head_type} {{name: '{head}', fname: '{fname}'}})"
+                    with client.session() as session:
+                        result = session.run(query)
+                        history.append(query)
+                        print("c    ", query)
+                else :
+                    print("c    ", query, "already in the database")
+                    
+            # check if tail with tail_type is aleady in the database memgraph
+            query = f"MATCH (n:{tail_type}) WHERE n.name = '{tail}' RETURN n"
+            with client.session() as session:
+                result = session.run(query)
+                if not result.single():
+                    # add tail with tail_type to the database memgraph
+                    query = f"CREATE (n:{tail_type} {{name: '{tail}', fname: '{fname}'}})"
+                    with client.session() as session:
+                        result = session.run(query)
+                        history.append(query)
+                        print("c    ", query)
+                else :
+                    print("c    ", query, "already in the database")
+                    
+            # check if relation between head and tail is aleady in the database memgraph
+            query = f"MATCH (n:{head_type})-[r:`{relation_type}`]->(m:{tail_type}) WHERE n.name = '{head}' AND m.name = '{tail}' RETURN n"
+            with client.session() as session:
+                result = session.run(query)
+                if not result.single():
+                    # add relation between head and tail to the database memgraph
+                    query = f"MATCH (n:{head_type}), (m:{tail_type}) WHERE n.name = '{head}' AND m.name = '{tail}' CREATE (n)-[r:`{relation_type}`]->(m)"
+                    with client.session() as session:
+                        result = session.run(query)
+                        history.append(query)
+                        print("c    ", query)
+                else :
+                    print("c    ", query, "already in the database")
         
-               
-        # Create relation 
-        records, summary, keys = client.execute_query(
-            "MATCH ({head_type: $head_type, name: $name, properties: $properties})-[{type: $type}]->({tail_type: $tail_type, name_tail: $name_tail, properties_tail: $properties_tail}) RETURN r;",
-            head_type=r["head_type"],
-            name_head=r["head"],
-            properties=r["fname"],
-            type=r["type"],
-            tail_type=r["tail_type"],
-            name_tail=r["tail"],
-            properties_tail=r["fname"],
-            database_="memgraph",
-        )
+        # save the history of queries
+        with open("../RDFs/" + fname + "_history.txt", "w") as f:
+            for query in history:
+                f.write(query + "\n")
+                
         
-    return True

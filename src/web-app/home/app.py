@@ -16,8 +16,26 @@ CORS(app)
 
 
 # Chargement du graph 
-with open('../../../RDFs/new_r.json', "r") as json_file:
-    relations = json.load(json_file)
+# with open('../../../RDFs/new_r.json', "r") as json_file:
+#     relations = json.load(json_file)
+
+
+def load_data_from_db():
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
+ 
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        # Check the connection
+        client.verify_connectivity()
+        # Get all the relations with type of relation
+        relations, summary, keys = client.execute_query(
+            "MATCH (n)-[r]->(m) RETURN n.name AS head, m.name AS tail,  type(r) AS type, n.fname AS fname;",
+            database_="memgraph",
+        )        
+        relations = [dict(record) for record in relations]
+        return relations
+    
+
 
 # Function to clean and process a string
 def clean_string(value):
@@ -48,6 +66,7 @@ def construct_graph():
     data = request.get_json()
 
     relations_clean = []
+    relations = load_data_from_db()
 
     # Iterate over the RDF triples and extract 'head,' 'type,' and 'tail' information
     for relation in relations:
