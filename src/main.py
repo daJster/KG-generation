@@ -18,31 +18,23 @@ def main() :
     files = st.file_uploader("Upload a directory contaning PDF files", accept_multiple_files=True, type="pdf")
     # files = get_files(path=upload_path)
     if files != [] : 
-        start_time = time.time()
-        kb = KB() #! TODO 
-        st.spinner("Generating Graph...")
-        for file in files :
-            st.write("file :", file.name)
-            text = get_text(file)
-            st.write(f"Text extracted from {file.name}.")
-            st.write(f"batch size of {1000} letters.")
-            for i in range(0, len(text), 1000):
-                text_part = text[i:i+1000]
-                #st.write(f"Extracting relations from text part : {i}")
-                kb = get_kb(text_part, verbose=True, kb=kb, pdf_name=file.name)
-                #st.write(f"Relations extracted from text part : {i}")
-                
-            st.write(f"Relations extracted from {file.name}.")
-            st.write(f"storing relations from {file.name} ...")
-            is_stored = store_kb(kb)
-            st.write(f"stored.")
-            # graph = get_graph(kb)
-            # graph2 = get_graph2("neuron")
-            end_time = time.time()
-            execution_time = end_time - start_time
-            st.write(f"Execution Time for {file.name}: {execution_time:.4f} seconds")
-            
-        st.success(f"graph generated.")
+        with st.status("Generating graph...", expanded=True) as status:
+            start_time = time.time()
+            kb = KB()
+            for file in files :
+                st.write("Generating graph for : ", file.name)
+                pourcentage_progress_bar = st.progress(0)
+                text = get_text(file)
+                for i in range(0, len(text), 1000):
+                    text_part = text[i:i+1000]
+                    kb = get_kb(text_part, verbose=False, kb=kb, pdf_name=file.name)
+                    pourcentage_progress_bar.progress(int(i/len(text)*100))
+                is_stored = store_kb(kb)
+                end_time = time.time()
+                execution_time = end_time - start_time
+                pourcentage_progress_bar.progress(int(100))
+                st.write(f"Execution Time for {file.name}: {execution_time:.4f} seconds")         
+            st.success(f"graph generated.")
     
 
 if __name__ == "__main__" :

@@ -9,7 +9,7 @@ import uuid
 import json
 from merge_RDF import similarity_score
 from params import tokenizer, rdf_model, PATH_TO_RDF_FILES, ACTIVATE_SIMILARITY, DEVICE
-
+from all_mini import compare_with_all_mini
 
 # knowledge base class for meta data collection
 class KB():
@@ -17,34 +17,35 @@ class KB():
         self.relations = []
         self.pdf_name = ""
 
-    def are_relations_equal(self, r1, r2, similarity_threshold=0.8):
-        is_equal = all(r1[attr] == r2[attr] for attr in ["head", "type", "tail"])
-        if ACTIVATE_SIMILARITY :
-            sim_score = similarity_score(r1, r2)
-            is_equal = is_equal or sim_score > similarity_threshold
-        return is_equal
+    # def are_relations_equal(self, r1, r2, similarity_threshold=0.8):
+    #     is_equal = all(r1[attr] == r2[attr] for attr in ["head", "type", "tail"])
+    #     if ACTIVATE_SIMILARITY :
+    #         sim_score = similarity_score(r1, r2)
+    #         is_equal = is_equal or sim_score > similarity_threshold
+    #     return is_equal
 
-    def exists_relation(self, r1):
-        # check if relations are equal among those with the same "head_type" for head and "tail_type" for tail, to limit the number of comparisons
-        # same_head_type = [r for r in self.relations if r["head_type"] == r1["head_type"]]
-        # same_tail_type = [r for r in self.relations if r["tail_type"] == r1["tail_type"]]
-        # relations_to_compare = set(same_head_type).intersection(same_tail_type)
+    # def exists_relation(self, r1):
+    #     # check if relations are equal among those with the same "head_type" for head and "tail_type" for tail, to limit the number of comparisons
+        
+    #     # get all relations with the same "head_type" for head and "tail_type" for tail
+    #     relations_with_same_head_type = [r for r in self.relations if r["head_type"] == r1["head_type"]]
+    #     relations_with_same_tail_type = [r for r in self.relations if r["tail_type"] == r1["tail_type"]]
+                
+    #     return any(self.are_relations_equal(r1, r) for r in relations_with_same_head_type) or any(self.are_relations_equal(r1, r) for r in relations_with_same_tail_type)
 
-        # return any(self.are_relations_equal(r1, r2) for r2 in relations_to_compare)
-        return any(self.are_relations_equal(r1, r2) for r2 in self.relations)
-
-    def merge_relations(self, r1):
-        r2 = [r for r in self.relations
-              if self.are_relations_equal(r1, r)][0]
-        spans_to_add = [span for span in r1["meta"]["spans"]
-                        if span not in r2["meta"]["spans"]]
-        r2["meta"]["spans"] += spans_to_add
+    # def merge_relations(self, r1):
+    #     r2 = [r for r in self.relations
+    #           if self.are_relations_equal(r1, r)][0]
+    #     spans_to_add = [span for span in r1["meta"]["spans"]
+    #                     if span not in r2["meta"]["spans"]]
+    #     r2["meta"]["spans"] += spans_to_add
 
     def add_relation(self, r):
-        if not self.exists_relation(r):
-            self.relations.append(r)
-        else:
-            self.merge_relations(r)
+        # if not self.exists_relation(r):
+        #     self.relations.append(r)
+        # else:
+        #     self.merge_relations(r)
+        self.relations.append(r)
 
     def print(self):
         print("Relations:")
@@ -153,13 +154,13 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
     for sentence_pred in decoded_preds:
         current_span_index = i // num_return_sequences
         relations = extract_relations_from_model_output(sentence_pred)
-        print("Sub part ", i)
+        # print("Sub part ", i)
         for relation in relations:
             relation["meta"] = {
                 "spans": [spans_boundaries[current_span_index]]
             }
             relation["fname"] = pdf_name
-            print(relation)
+            # print(relation)
             kb.add_relation(relation)
         i += 1
 
@@ -206,6 +207,11 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
 #     return True
 
 
+def clear_str(word):
+    # remove all caractere like : ',|- and replace them by space
+    word = re.sub(r'[\',\|\-]', ' ', word)
+    return word
+    
 
 def store_kb(kb):
     """
@@ -236,51 +242,121 @@ def store_kb(kb):
             tail = r["tail"]
             tail_type = r["tail_type"]
             fname = r["fname"]
-
-            # check if head with head_type is aleady in the database memgraph
-            query = f"MATCH (n:{head_type}) WHERE n.name = '{head}' RETURN n"
+            
+            head = clear_str(head)
+            tail = clear_str(tail)
+            head_type = clear_str(head_type)
+            tail_type = clear_str(tail_type)
+            relation_type = clear_str(relation_type)
+            fname = clear_str(fname)
+            
+            # get all node's name where node's head_type is the same as the head_type of the current head node
+            query_head = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
+            query_tail = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
+            
             with client.session() as session:
-                result = session.run(query)
+                try :
+                    result = session.run(query_head)
+                except :
+                    print("query error : ", query_head)
+                nodes_with_same_head_type = [r["n.name"] for r in result]
+                
+                try :
+                    result = session.run(query_tail)
+                except :
+                    print("query error : ", query_tail)
+                nodes_with_same_tail_type = [r["n.name"] for r in result]
+                
+                best_node_head = ""
+                best_score_head = 0
+                best_node_tail = ""
+                best_score_tail = 0
+                for node in nodes_with_same_head_type and nodes_with_same_tail_type :
+                    if node == head :
+                        best_node_head = node
+                        best_score_head = 1
+                        break
+                    if node == tail :
+                        best_node_tail = node
+                        best_score_tail = 1
+                        break
+                    score_head = compare_with_all_mini(head, node)
+                    score_tail = compare_with_all_mini(tail, node)
+                    
+                    if score_head > best_score_head :
+                        best_score_head = score_head
+                        best_node_head = node
+                        
+                    if score_tail > best_score_tail :
+                        best_score_tail = score_tail
+                        best_node_tail = node
+                        
+                if best_score_head > 0.8 :
+                    head = best_node_head
+                    print("c    ", head, "is the same as", best_node_head)
+                    
+    
+                if best_score_tail > 0.8 :
+                    tail = best_node_tail
+                    print("c    ", tail, "is the same as", best_node_tail)
+                     
+            
+            # check if head with head_type is aleady in the database memgraph
+            query = f"MATCH (n:`{head_type}`) WHERE n.name = '{head}' RETURN n"
+            with client.session() as session:
+                try :
+                    result = session.run(query)
+                except :
+                    print("query error : ", query)
                 if not result.single():
                     # add head with head_type to the database memgraph
-                    query = f"CREATE (n:{head_type} {{name: '{head}', fname: '{fname}'}})"
+                    query = f"CREATE (n:`{head_type}` {{name: '{head}', fname: '{fname}', head_type: '{head_type}'}})"
                     with client.session() as session:
-                        result = session.run(query)
+                        try :
+                            result = session.run(query)
+                        except :
+                            print("query error : ", query)
                         history.append(query)
-                        print("c    ", query)
                 else :
                     print("c    ", query, "already in the database")
                     
             # check if tail with tail_type is aleady in the database memgraph
-            query = f"MATCH (n:{tail_type}) WHERE n.name = '{tail}' RETURN n"
+            query = f"MATCH (n:`{tail_type}`) WHERE n.name = '{tail}' RETURN n"
             with client.session() as session:
                 result = session.run(query)
                 if not result.single():
                     # add tail with tail_type to the database memgraph
-                    query = f"CREATE (n:{tail_type} {{name: '{tail}', fname: '{fname}'}})"
+                    query = f"CREATE (n:`{tail_type}` {{name: '{tail}', fname: '{fname}', head_type: '{tail_type}'}})"
                     with client.session() as session:
-                        result = session.run(query)
+                        try :
+                            result = session.run(query)
+                        except :
+                            print("query error : ", query)
                         history.append(query)
-                        print("c    ", query)
                 else :
                     print("c    ", query, "already in the database")
                     
             # check if relation between head and tail is aleady in the database memgraph
-            query = f"MATCH (n:{head_type})-[r:`{relation_type}`]->(m:{tail_type}) WHERE n.name = '{head}' AND m.name = '{tail}' RETURN n"
+            query = f"MATCH (n:`{head_type}`)-[r:`{relation_type}`]->(m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' RETURN n"
             with client.session() as session:
-                result = session.run(query)
+                try :
+                    result = session.run(query)
+                except :
+                    print("query error : ", query)
                 if not result.single():
                     # add relation between head and tail to the database memgraph
-                    query = f"MATCH (n:{head_type}), (m:{tail_type}) WHERE n.name = '{head}' AND m.name = '{tail}' CREATE (n)-[r:`{relation_type}`]->(m)"
+                    query = f"MATCH (n:`{head_type}`), (m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' CREATE (n)-[r:`{relation_type}`]->(m)"
                     with client.session() as session:
-                        result = session.run(query)
+                        try :
+                            result = session.run(query)
+                        except :
+                            print("query error : ", query)
                         history.append(query)
-                        print("c    ", query)
                 else :
                     print("c    ", query, "already in the database")
         
         # save the history of queries
-        with open("../RDFs/" + fname + "_history.txt", "w") as f:
+        with open("../RDFs/_history.txt", "w") as f:
             for query in history:
                 f.write(query + "\n")
                 

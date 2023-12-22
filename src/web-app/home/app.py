@@ -9,7 +9,7 @@ from unidecode import unidecode
 from neo4j import GraphDatabase
 from pyvis.network import Network
 from rdflib import Graph, Namespace
-
+import re
 
 app = Flask(__name__, template_folder='./', static_folder='assets')
 CORS(app)
@@ -18,6 +18,65 @@ CORS(app)
 # Chargement du graph 
 # with open('../../../RDFs/new_r.json', "r") as json_file:
 #     relations = json.load(json_file)
+
+def record_str_to_dict(record_str):
+    # Pattern to match relationships
+    rel_pattern = re.compile(r"<Relationship element_id='(\d+)' nodes=\((.*?)\) type='(.*?)' properties={(.*?)}>\]")
+    # Pattern to match nodes
+    node_pattern = re.compile(r"<Node element_id='(\d+)' labels=frozenset\((.*?)\) properties={(.*?)}>")
+    
+    # Extract relationships
+    rel_matches = rel_pattern.findall(record_str)
+    relationships = [{'element_id': rel[0], 
+                      'nodes': [{'element_id': node[0], 
+                                 'labels': eval(node[1]), 
+                                 'properties': eval(node[2])} 
+                                for node in [tuple(part.strip() for part in node.split(',')) for node in rel[1].split('),')]], 
+                      'type': rel[2], 
+                      'properties': eval(rel[3])} for rel in rel_matches]
+    
+    # Extract nodes
+    node_matches = node_pattern.findall(record_str)
+    nodes = [{'element_id': node[0], 
+              'labels': eval(node[1]), 
+              'properties': eval(node[2])} for node in node_matches]
+    
+    return {'relationships': relationships, 'nodes': nodes}
+
+def transform_to_json(input_data):
+    output_data = []
+    
+    for entry in input_data:
+        output_data.append(record_str_to_dict(str(entry)))
+    return output_data
+
+
+def convert_to_desired_format(data):
+    result_list = []
+    
+    for json in data:
+
+        for rel in json["relationships"]:
+            if rel != None:
+                start_node_id = rel["start"]
+                end_node_id = rel["end"]
+                relationship_type = rel["label"]
+
+                start_node = next(node for node in json["nodes"] if node["id"] == start_node_id)
+                end_node = next(node for node in json["nodes"] if node["id"] == end_node_id)
+
+                result_dict = {
+                    "head": start_node["properties"]["name"],
+                    "tail": end_node["properties"]["name"],
+                    "type": relationship_type,
+                    "fname": start_node["properties"]["fname"]
+                }
+                
+                # avoid duplicates
+                if result_dict not in result_list:
+                    result_list.append(result_dict)
+
+    return result_list
 
 
 def load_data_from_db():
@@ -32,8 +91,31 @@ def load_data_from_db():
             "MATCH (n)-[r]->(m) RETURN n.name AS head, m.name AS tail,  type(r) AS type, n.fname AS fname;",
             database_="memgraph",
         )        
-        relations = [dict(record) for record in relations]
+        relations = [dict(record) for record in relations] # convert to dict
         return relations
+    
+    
+def load_data_from_db_with_node_and_radius(node_name, radius):
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
+ 
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        # Check the connection
+        client.verify_connectivity()
+        # Get all the relations connected to the node with a range of radius in maximum
+        
+        relations, summary, keys = client.execute_query(
+            f"MATCH path = (startNode {{name: '{node_name}'}})-[*1..{radius}]-(endNode) RETURN relationships(path) AS relationships,  nodes(path) AS nodes;",
+            database_="memgraph",
+        )
+        
+        #! TODO  convert to dict with transform_to_json(relations)
+        
+        relations = convert_to_desired_format(transform_to_json(relations))
+        
+        return relations       
+
+    
     
 
 
@@ -67,6 +149,7 @@ def construct_graph():
 
     relations_clean = []
     relations = load_data_from_db()
+    # relations = load_data_from_db_with_node_and_radius('Audi A1', 3)
 
     # Iterate over the RDF triples and extract 'head,' 'type,' and 'tail' information
     for relation in relations:
