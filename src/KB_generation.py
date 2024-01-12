@@ -359,5 +359,4 @@ def store_kb(kb):
         with open("../RDFs/_history.txt", "w") as f:
             for query in history:
                 f.write(query + "\n")
-                
         

@@ -88,7 +88,8 @@ def load_data_from_db():
         client.verify_connectivity()
         # Get all the relations with type of relation
         relations, summary, keys = client.execute_query(
-            "MATCH (n)-[r]->(m) RETURN n.name AS head, m.name AS tail,  type(r) AS type, n.fname AS fname;",
+            # "MATCH (n)-[r]->(m) RETURN n.name AS head, m.name AS tail,  type(r) AS type, n.fname AS fname;",
+            "MATCH (n)-[r]->(m) RETURN n.name AS head, n.head_type AS type_head, m.name AS tail, m.head_type AS type_tail, type(r) AS type, n.fname AS fname;",
             database_="memgraph",
         )        
         relations = [dict(record) for record in relations] # convert to dict
@@ -156,17 +157,21 @@ def construct_graph():
         head = str(relation["head"])
         relation_type = str(relation["type"])
         tail = str(relation["tail"])
+        fname = str(relation["fname"])
 
         # Clean and process each component
         head = clean_string(head)
         relation_type = clean_string(relation_type)
         tail = clean_string(tail)
+        # fname = clean_string(fname)
 
         # Skip the iteration if the node is equal to the filename
         relation = {
-            "head": head,
+            # if len(head) > 20 take the first 20 characters else take the whole string
+            "head": head[:20] + "..." if len(head) > 20 else head,
             "type": relation_type,
-            "tail": tail
+            "tail": tail[:20] + "..." if len(tail) > 20 else tail,
+            "fname": fname
         }
         relations_clean.append(relation)
         
@@ -175,17 +180,82 @@ def construct_graph():
     g.barnes_hut()
 
     # add entities
-    for r in relations:
-        g.add_node(r['head'], label=r['head'], titre=f" from file : {r['fname']}", color=create_color_from_string(r['fname']))
+    for r in relations_clean:
+        g.add_node(r['head'], label=r['head'], titre=f" from file : {r['fname']} \n full name : {r['head']}", color=create_color_from_string(r['fname']))
         if r['tail'] not in g.nodes:
-            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']}", color=create_color_from_string(r['fname']))
+            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['head']}", color=create_color_from_string(r['fname']))
 
     # add relations
-    for r in relations:
+    for r in relations_clean:
         g.add_edge(r["head"], r["tail"], label=r["type"], color=create_color_from_string(r['fname']))
     
+        
+    # Définition des options en tant que dictionnaire Python
+    options = {
+        # for more lisible graph avoid overlap of nodes and edges
+        "edges": {
+            "smooth": {
+                "forceDirection": "none",
+                "roundness": 0.15
+            }
+        },
+        "nodes": {
+            "shape": "dot",
+            "size": 16
+        },
+        "physics": {
+            "forceAtlas2Based": {
+                "gravitationalConstant": -26,
+                "centralGravity": 0.005,
+                "springLength": 230,
+                "springConstant": 0.18
+            },
+            "maxVelocity": 146,
+            "solver": "forceAtlas2Based",
+            "timestep": 0.35,
+            "stabilization": {
+                "enabled": True,
+                "iterations": 2000,
+                "updateInterval": 25
+            }
+        }
+    }
+
+    # Conversion du dictionnaire en chaîne JSON
+    options_str = json.dumps(options)
+
+    # Activation du zoom lors du clic sur un nœud
+    g.set_options(options_str)
+        
+        
     # Sauvegarde du graph
     g.save_graph("graph.html")
+    
+    event_listener_code = """
+    network.on("click", function (params) {
+    if (params.nodes.length > 0) {
+        var nodeId = params.nodes[0];
+        network.focus(nodeId, {
+        scale: 1.5,  // Adjust the scale as needed
+        locked: false,
+        animation: {
+            duration: 1000,
+            easingFunction: "easeInOutQuad"
+        }
+        });
+    }
+    });
+    """
+
+    # Add the event listener code to the HTML file
+    # g.set_edge_smooth("continuous")
+    # g.show_buttons()
+
+    # Add the event listener code to the generated HTML file
+    with open("graph.html", "a") as file:
+        file.write("<script>{}</script>".format(event_listener_code))
+    
+    
     return send_file("graph.html", mimetype='text/html')
 
 def create_color_from_string(string):
@@ -205,7 +275,7 @@ def create_graph_from_db():
         client.verify_connectivity()
         # Get all the relations with type of relation
         relations, summary, keys = client.execute_query(
-            "MATCH (n)-[r]->(m) RETURN n.name_head AS name_head, m.name_tail AS name_tail,  type(r) AS relation;",
+            "MATCH (n)-[r]->(m) RETURN n.name AS name_head, m.name AS name_tail,  type(r) AS relation;",
             database_="memgraph",
         )
         
