@@ -169,8 +169,10 @@ def construct_graph():
         relation = {
             # if len(head) > 20 take the first 20 characters else take the whole string
             "head": head[:20] + "..." if len(head) > 20 else head,
+            "head_full": head,
             "type": relation_type,
             "tail": tail[:20] + "..." if len(tail) > 20 else tail,
+            "tail_full": tail,
             "fname": fname
         }
         relations_clean.append(relation)
@@ -181,9 +183,9 @@ def construct_graph():
 
     # add entities
     for r in relations_clean:
-        g.add_node(r['head'], label=r['head'], titre=f" from file : {r['fname']} \n full name : {r['head']}", color=create_color_from_string(r['fname']))
+        g.add_node(r['head'], label=r['head'], titre=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']))
         if r['tail'] not in g.nodes:
-            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['head']}", color=create_color_from_string(r['fname']))
+            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname']))
 
     # add relations
     for r in relations_clean:
