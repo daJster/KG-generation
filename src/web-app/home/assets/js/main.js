@@ -360,38 +360,48 @@
     return filteredWords;
   }
 
-  // Function to display suggestions
   function displaySuggestions() {
     const input = document.querySelector('#searchInput').value;
     suggestedButtonsDiv.innerHTML = '';
-
-    if (input.length === 0) return;
-
-    const suggestions = filterSuggestions(input);
-    suggestions.forEach(entry => {
-      const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `${match}`);
-      
-      // Create a button for each suggestion
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'btn btn-light mb-2 p-2 col-md-12 text-left d-flex shadow bg-white rounded';
-      button.innerHTML = highlightedWord;
-      
-      // Create a separate element for entry.type
-      const typeElement = document.createElement('div');
-      typeElement.className = 'text-center';
-      typeElement.innerText = entry.type;
-      typeElement.style.opacity = 0.5;
-      typeElement.style.marginLeft = "40%";
   
-      // Add both the button and type element to the suggestedButtonsDiv
-      button.appendChild(typeElement);
+    if (input.length === 0) return;
+  
+    const suggestions = filterSuggestions(input);
+  
+    suggestions.forEach((entry, index) => {
+      const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `<span class="highlight">${match}</span>`);
+  
+      const button = createSuggestionButton(highlightedWord, entry.type);
       suggestedButtonsDiv.appendChild(button);
+  
+      // Triggering reflow to apply transition on dynamically added elements
+      void button.offsetWidth;
+  
+      // Set a timeout to add a class after 300ms
+      setTimeout(() => {
+        button.classList.add('visible');
+      }, 300);
   
       button.addEventListener('click', () => addSelectedWord(entry.word));
     });
   }
-
+  
+  function createSuggestionButton(highlightedWord, type) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-light mb-2 p-2 col-md-12 text-left d-flex shadow bg-white rounded suggestion';
+    button.innerHTML = highlightedWord;
+  
+    const typeElement = document.createElement('div');
+    typeElement.className = 'text-center';
+    typeElement.innerText = type;
+    typeElement.style.opacity = 0; // Start with opacity 0
+  
+    button.appendChild(typeElement);
+  
+    return button;
+  }
+  
 
   function addSelectedWord(word) {
     const searchInput = document.getElementById('searchInput');
