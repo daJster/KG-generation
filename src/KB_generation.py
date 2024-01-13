@@ -210,7 +210,127 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
 def clear_str(word):
     # remove all caractere like : ',|- and replace them by space
     word = re.sub(r'[\',\|\-]', ' ', word)
+
+    # if their are repetition of a word like : "the the" we remove the second "the" until there is no more repetition
+    while re.search(r'(\w+) \1', word) :
+        word = re.sub(r'(\w+) \1', r'\1', word)
+        
+    # if a word is ending with numbers without space like : "the2" we remove the numbers
+    for w in word.split() :
+        if re.search(r'\w+\d+', w) :
+            word = re.sub(r'\d+', '', word)
+            
+    # same if a word is starting with numbers without space like : "2the" we remove the numbers
+    for w in word.split() :
+        if re.search(r'\d+\w+', w) :
+            word = re.sub(r'\d+', '', word)
+            
+    # delete double space
+    word = re.sub(r' +', ' ', word)
+    
     return word
+
+
+def date_detection_in_string(string):
+    # detect if there is a date in the string whatever the format is
+    return 0
+
+
+def add_in_file(text, file_name):
+    with open(file_name, "a") as f:
+        f.write(text + "\n")
+
+def text_compare(text1, text2):
+    # compare two text and return a score between 0 and 1
+    # 0 means that the two text are different
+    # 1 means that the two text are the same
+    # consider capital letters or not as the same
+    # consider the order of words or not as the same
+    
+    # remove all caractere like : ',|- and replace them by space
+    
+    if text1 == text2 :
+        return 1
+    
+    text1 = clear_str(text1)
+    text2 = clear_str(text2)
+    
+    if text1 == text2 :
+        return 1
+    
+    # split text into words
+    words1 = text1.split()
+    words2 = text2.split()
+    
+    # get the number of words in each text
+    nb_words1 = len(words1)
+    nb_words2 = len(words2)
+    
+    nb_cara1 = 0
+    nb_cara2 = 0
+    for word1 in words1 :
+        nb_cara1 += len(word1)
+    for word2 in words2 :
+        nb_cara2 += len(word2)
+    
+    first_letters1 = ""
+    first_letters2 = ""
+    
+    for word1 in words1 :
+        if word1 != "of" and word1 != "the" and word1 != "and" :
+            first_letters1 += word1[0]
+    for word2 in words2 :
+        if word2 != "of" and word2 != "the" and word2 != "and" :
+            first_letters2 += word2[0]
+
+    if first_letters1 == text2 :
+        print("text2", text2, "is the acronym of text1", text1)
+        return 1
+    if first_letters2 == text1 :
+        print("text1", text1, "is the acronym of text2", text2)
+        return 1
+        
+    if first_letters1 == text2 :
+        print("text2", text2, "is the acronym of text1", text1)
+        add_in_file(text1 + " = " + text2, "../datasets/acronyms.txt")
+        return 1
+    if first_letters2 == text1 :
+        print("text1", text1, "is the acronym of text2", text2)
+        add_in_file(text2 + " = " + text1, "../datasets/acronyms.txt")
+        return 1
+    
+    # if it's just the plural of the other text
+    if nb_cara1 >= nb_cara2 + 1 and nb_cara1 <= nb_cara2 + nb_words2 + 1 :
+        if text2 in text1 and (text1[-1] == "s" or text1[-1] == "x") and (text2[-1] != "s" and text2[-1] != "x") :
+            print("text1", text1, "is the plural of text2", text2)
+            add_in_file(text1 + " = " + text2, "../datasets/plurals.txt")
+            return 1
+    elif nb_cara2 >= nb_cara1 + 1 and nb_cara2 <= nb_cara1 + nb_words1 + 1:
+        if text1 in text2 and (text2[-1] == "s" or text2[-1] == "x") and (text1[-1] != "s" and text1[-1] != "x") :
+            print("text2", text2, "is the plural of text1", text1)
+            add_in_file(text2 + " = " + text1, "../datasets/plurals.txt")
+            return 1
+    
+    # get the number of words in common between the two text consider capital letters or not as the same
+    nb_letters_in_common = 0
+    for word1 in words1 :
+        for word2 in words2 :
+            for i in range(min(len(word1), len(word2))) :
+                # consider é and e and è as the same
+                if word1[i].lower() == word2[i].lower() or (word1[i] in "éèe" and word2[i] in "éèe"):
+                    nb_letters_in_common += 1
+            
+    score = nb_letters_in_common / (max(len(text1), len(text2)))
+    if score > 0.8 :
+        print("score = ", score, "text1 = ", text1, "text2 = ", text2)
+        add_in_file(text1 + " = " + text2, "../datasets/similarities.txt")
+    elif score > 0.5 :
+        add_in_file(text1 + " ~ " + text2, "../datasets/nearly_similarities.txt")
+    ##else :
+        ##add_in_file(text1 + " != " + text2, "../datasets/differences.txt")
+    return score
+
+
     
 
 def store_kb(kb):
@@ -272,16 +392,22 @@ def store_kb(kb):
                 best_node_tail = ""
                 best_score_tail = 0
                 for node in nodes_with_same_head_type and nodes_with_same_tail_type :
-                    if node == head :
+                    score_text_compare = text_compare(node, head)
+                    if score_text_compare > 0.8 :
                         best_node_head = node
-                        best_score_head = 1
+                        best_score_head = score_text_compare
                         break
-                    if node == tail :
+                    else :
+                        score_head = compare_with_all_mini(head, node)
+                        # print("We need to use all_mini, score is : ", score_head)
+                    score_text_compare = text_compare(node, tail)   
+                    if score_text_compare > 0.8 :
                         best_node_tail = node
-                        best_score_tail = 1
+                        best_score_tail = score_text_compare
                         break
-                    score_head = compare_with_all_mini(head, node)
-                    score_tail = compare_with_all_mini(tail, node)
+                    else :
+                        score_tail = compare_with_all_mini(tail, node)
+                        # print("We need to use all_mini, score is : ", score_head)
                     
                     if score_head > best_score_head :
                         best_score_head = score_head

@@ -1,0 +1,8 @@
+Contracting farmers = Contracting farmer
+contracts = contract
+quality products = quality product
+cereals = cereal
+small farms = small farm
+grasslands = grassland
+grasslands = grassland
+MAEts = MAEt

@@ -170,7 +170,7 @@ def construct_graph():
             # if len(head) > 20 take the first 20 characters else take the whole string
             "head": head[:20] + "..." if len(head) > 20 else head,
             "head_full": head,
-            "type": relation_type,
+            "type": relation_type + "..." if len(relation_type) > 20 else relation_type,
             "tail": tail[:20] + "..." if len(tail) > 20 else tail,
             "tail_full": tail,
             "fname": fname
@@ -189,7 +189,8 @@ def construct_graph():
 
     # add relations
     for r in relations_clean:
-        g.add_edge(r["head"], r["tail"], label=r["type"], color=create_color_from_string(r['fname']))
+        # orientated graph
+        g.add_edge(r["head"], r["tail"], label=r["type"], color=create_color_from_string(r['fname']), arrows='to')
     
         
     # Définition des options en tant que dictionnaire Python

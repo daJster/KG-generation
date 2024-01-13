@@ -1,0 +1,403 @@
+voitures thermiques ~ véhicules thermiques
+automobile ~ produit automobile
+automobile ~ automobilisme
+voiture citadine ~ petites citadines
+citadine ~ petites citadines
+voiture citadine ~ petites citadines
+citadine ~ petites citadines
+constructeurs ~ constructeurs généralistes
+gammes de véhicules ~ Véhicules demain
+micro mobilité ~ mobilité demain
+véhicule ~ Véhicules demain
+automobile ~ automobile électrique
+gammes de véhicules ~ Véhicules demain ou mobilité demain?
+voitures électriques ~ automobile électrique
+électriques ~ automobile électrique
+électrique ~ automobile électrique
+voiture électrique ~ automobile électrique
+produit automobile ~ automobile électrique
+Véhicules demain ~ Véhicules demain ou mobilité demain?
+mobilité demain ~ Véhicules demain ou mobilité demain?
+gammes de véhicules ~ Véhicules demain ou mobilité demain?
+micro mobilité ~ mobilité demain
+Véhicules demain ~ Véhicules demain ou mobilité demain?
+Véhicules demain ~ mobilité demain
+mobilité demain ~ Véhicules demain ou mobilité demain?
+véhicules thermiques ~ leurs équivalents thermiques
+péages routiers ~ péages routiers différenciés
+automobile ~ automo bile
+automobile ~ automo bile
+autono mie ~ autono mie moindre
+autono mie ~ automo bile
+automobile ~ automo bile
+autono mie ~ automo bile
+voiture citadine ~ petite citadine
+citadine ~ petite citadine
+petites citadines ~ petite citadine urbaine
+voiture citadine ~ petite citadine
+citadine ~ petite citadine
+petites citadines ~ petite citadine urbaine
+voitures électriques ~ citadine électrique
+électriques ~ citadine électrique
+électrique ~ citadine électrique
+voiture électrique ~ citadine électrique
+petites citadines ~ citadine électrique
+automobile électrique ~ citadine électrique
+voitures électriques ~ citadine électrique
+électriques ~ citadine électrique
+électrique ~ citadine électrique
+voiture électrique ~ citadine électrique
+petites citadines ~ citadine électrique
+automobile électrique ~ citadine électrique
+petites citadines ~ petite citadine électrique
+automobile électrique ~ petite citadine électrique
+petite citadine urbaine ~ petite citadine électrique
+citadine électrique ~ petite citadine électrique
+micro mobilité ~ mobilité partagée
+micro mobilité ~ mobilité partagée
+micro mobilité ~ mobilité partagée
+mobilité demain ~ mobilité partagée
+voiture électrique ~ electric vehicle
+petite citadine urbaine ~ Emmanuel Petit Hermann
+New Institutional Economics ~ New Institutional Economics Abstract
+éco nomie institutionnelle ~ institutionnel
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèles mentaux
+modèle cognitif ~ déve loppement cognitif
+modèle cognitif ~ modèles mentaux
+modèle cognitif ~ déve loppement cognitif
+modèle cognitif ~ schéma cognitif
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+porte ~ North
+éco nomie institutionnelle ~ nouvelle économie institutionnelle
+espac ~ essai
+espac ~ essai
+modèle cognitif ~ modèle mental
+environnement physique ~ environnement
+environnement physique ~ environnement
+environnement physique ~ environnement
+processus de créativité ~ processus dynamique
+comportement ~ comportement routinier
+environnement physique ~ environnement
+aptitude ~ habitude
+poursuite d’une vie ~ poursuite de la vie
+Mantzavinos ~ Mantzavinos et al.
+théorie des émotions ~ théorie des émotions de Dewey
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ cognitif
+schéma cognitif ~ cognitif
+théorie des émotions ~ théorie des émotions de Dewey
+théorie des émotions ~ théorie des émotions de Dewey
+théorie des émotions ~ théorie des émotions de Dewey
+affectif ~ affect
+affectif ~ affect
+théorie des émotions ~ théorie des émotions de Dewey
+théorie des émotions ~ théorie des émotions de Dewey
+Antonio Damasio ~ Damasio
+Antonio Damasio ~ Damasio
+porte ~ North
+modèle cognitif ~ modèle mental
+porte ~ North
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+modèle cognitif ~ modèle mental
+éco nomie institutionnelle ~ économie institutionnelle
+éco nomie institutionnelle ~ économie institutionnelle
+éco nomie institutionnelle ~ économie institutionnelle
+éco nomie institutionnelle ~ économie institutionnelle
+système motivationnel ~ motivations des individus
+système motivationnel ~ motivations des individus
+système motivationnel ~ motivations des individus
+modèle cognitif ~ tournant cognitif
+schéma cognitif ~ tournant cognitif
+cognitif ~ tournant cognitif
+modèle cognitif ~ tournant cognitif
+schéma cognitif ~ tournant cognitif
+cognitif ~ tournant cognitif
+institutions informelles ~ néo institution
+institutionnel ~ néo institution
+porte ~ honte
+éco nomie institutionnelle ~ néo institutionnelle
+éco nomie institutionnelle ~ économie institutionnelle
+institutions informelles ~ néo institutionnelle
+institutions informelles ~ économie institutionnelle
+institutionnel ~ néo institutionnelle
+institutionnel ~ économie institutionnelle
+nouvelle économie institutionnelle de North ~ économie institutionnelle
+néo institution ~ néo institutionnelle
+éco nomie institutionnelle ~ néo institutionnelle
+éco nomie institutionnelle ~ institutionnelle
+institutions informelles ~ néo institutionnelle
+institutions informelles ~ institutionnelle
+institutionnel ~ néo institutionnelle
+système de croyances ~ système de penser
+façon de penser ~ système de penser
+philosophi ~ philosophie sociale
+philosophi ~ philosophie sociale
+philosophie critique ~ philosophie sociale
+philosophie critique ~ philosophie sociale
+philosophi ~ philosophie sociale
+philosophi ~ philosophie sociale
+philosophie critique ~ philosophie sociale
+philosophie critique ~ philosophie sociale
+philosophi ~ philosophie sociale
+philosophi ~ philosophie critique
+philosophie critique ~ philosophie sociale
+philosophi ~ philosophie sociale
+philosophi ~ philosophie sociale
+philosophie critique ~ philosophie sociale
+philosophie critique ~ philosophie sociale
+sentiment ~ Sentiment même de soi
+système de penser ~ Sentiment même de soi
+Dewey ~ Dewey J.
+John Dewey ~ Dewey J.
+théorie des émotions ~ Theory of Emotion
+Dewey ~ Dewey J.
+Dewey ~ Dewey J.
+Dewey ~ Dewey J.
+Dewey ~ Dewey J.
+towards organizational institutionalism ~ Research on emotion in organizations
+organizational institutionalism ~ Research on emotion in organizations
+towards organizational institutionalism ~ Research on emotion in organizations
+organizational institutionalism ~ Research on emotion in organizations
+towards organizational institutionalism ~ Research on emotion in organizations
+organizational institutionalism ~ Research on emotion in organizations
+middle class preferences and expectations ~ middle class preferences
+middle class ~ middle income
+retired ~ retirees
+French Development Agency ~ Agence française de développement
+économie du développement ~ Agence française de développement
+French Development Agency ~ Agence française de développement
+The middle class in Argentina ~ middle class membership in Argentina
+middle class preferences and expectations ~ middle class membership in Argentina
+The middle class in Argentina ~ Argentinean middle classes
+The middle class in Argentina ~ Argentinean middle class
+institutions informelles ~ qualitative institutional survey
+institutions informelles ~ institutional survey
+institutionnel ~ institutional survey
+néo institution ~ institutional survey
+néo institutionnelle ~ institutional survey
+organizational institutionalism ~ qualitative institutional survey
+qualitative survey ~ qualitative institutional survey
+qualitative survey ~ institutional survey
+institutions informelles ~ institutional survey
+institutionnel ~ institutional survey
+néo institution ~ institutional survey
+néo institutionnelle ~ institutional survey
+qualitative survey ~ qualitative
+qualitative survey ~ institutional survey
+institutions informelles ~ qualitative institutional survey
+institutions informelles ~ institutional survey
+institutionnel ~ institutional survey
+néo institution ~ institutional survey
+néo institutionnelle ~ institutional survey
+organizational institutionalism ~ qualitative institutional survey
+qualitative survey ~ qualitative institutional survey
+qualitative survey ~ institutional survey
+pari stratégique ~ marketing strategies
+colère ~ Coca Cola
+colère ~ Coca Cola
+pro market ~ marketing
+colère ~ Coca Cola
+pro market ~ marketing
+The middle class in Argentina ~ middle class in Argentina
+The middle class in Argentina ~ middle class in Argentina
+The middle class in Argentina ~ middle class in Argentina
+The middle class in Argentina ~ middle class in Argentina
+middle class ~ lower middle class
+capitaliste ~ Capitalisation
+capitaliste ~ capitalisation
+economic downturn ~ Economic methods
+cattle farm ~ beef cattle farm
+Pig and beef cattle farms ~ beef cattle farm
+Les Études Sociales ~ Emmanuel Petit Dans Les Études Sociales
+Les Études Sociales ~ Emmanuel Petit Dans Les Études Sociales
+Les Études Sociales ~ Emmanuel Petit Dans Les Études Sociales
+études clémencistes ~ Recherches clemencistes
+études clémencistes ~ Recherches clemencistes
+péages routiers différenciés ~ Société d études jaurésiennes
+Société d économiet de science sociales ~ Société d études jaurésiennes
+études clémencistes ~ Société d études jaurésiennes
+péages routiers différenciés ~ Société d études jaurésiennes
+Société d économiet de science sociales ~ Société d études jaurésiennes
+études clémencistes ~ Société d études jaurésiennes
+Clemenceau et les arts ~ Clemenceau l’inca pable
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Ne vous laissez pas enchaîner par aucun règlement ni bride ni éperon c’est une bonne devise pour un orateur
+Clemenceau l’inca pable ~ L’année Clemenceau
+Louise Michel ~ Louise Michel 6
+Véhicules demain ou mobilité demain? ~ Emmanuel Petit Revue des revues 
+théorie des émotions de Dewey ~ Emmanuel Petit Revue des revues 
+Université de Bordeaux ~ University of Rennes 2
+Université de Bordeaux ~ University of Rennes
+Université de Bordeaux ~ University of Rennes
+Université de Bordeaux ~ University of Rennes
+Understanding economichange ~ ecological economics
+sustained economic growth ~ ecological economics
+economic downturn ~ ecological economics
+Economic methods ~ ecological economics
+Bordeaux School of Economics ~ ecological economics
+Economie Rurale ~ ecological economics
+agri environmental policy in France ~ agri environmental instruments
+agri environmental policy in France ~ agri environmental
+agri environmental policy in France ~ agri environmental instruments
+agri environmental policy in France ~ Territorial agri environmental measures
+agri environmental policy in France ~ environmental effort
+agri environmental instruments ~ Territorial agri environmental measures
+agri environmental instruments ~ environmental effort
+agri environmental ~ Territorial agri environmental measures
+agri environmental ~ environmental effort
+agri environmental policy in France ~ Territorial agri environmental measures
+agri environmental instruments ~ Territorial agri environmental measures
+agri environmental ~ Territorial agri environmental measures
+agri environmental policy in France ~ Territorial agri environmental measures
+agri environmental policy in France ~ agri environmental measures
+agri environmental instruments ~ Territorial agri environmental measures
+agri environmental instruments ~ agri environmental measures
+agri environmental ~ Territorial agri environmental measures
+agri environmental ~ agri environmental measures
+Capitalisation ~ liberalisation
+industrie ~ industry
+pro market ~ market
+marketing ~ market
+industrie ~ industry
+pro market ~ market
+marketing ~ market
+industrie ~ industry
+pro market ~ market
+marketing ~ market
+agriculturaland ~ agricultural activity
+agricultural activity ~ allenges for agriculture
+ A. Berthet al. sector’s place in land use dynamics ~  A. Berthet al. sector’s place in land use dynamics or environmental protection
+contrainte ~ contracts
+incentive instrument ~ incentives
+contrainte ~ contracts
+contrainte ~ contract
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Territorial agri environmental measures and inequality equity of MAEt
+agri environmental policy in France ~ Territorial agri environmental measures and inequality equity of MAEt
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Territorial agri environmental measures and inequality equity of MAEt
+agri environmental policy in France ~ Territorial agri environmental measures and inequality equity of MAEt
+Territorial agri environmental measures ~ Territorial agri environmental measures and inequality equity of MAEt
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Territorial agri environmental measures and inequality equity of MAEt
+agri environmental policy in France ~ Territorial agri environmental measures and inequality equity of MAEt
+Territorial agri environmental measures ~ Territorial agri environmental measures and inequality equity of MAEt
+equity criteria ~ equitarian criterion
+agriculturaland ~ ine agriculture
+agricultural activity ~ ine agriculture
+allenges for agriculture ~ ine agriculture
+agriculturaland ~ ine agriculture
+agricultural activity ~ ine agriculture
+allenges for agriculture ~ ine agriculture
+agriculturaland ~ agricultural activity
+pro market ~ market
+marketing ~ market
+agriculturaland ~ agricultural production
+pro market ~ market
+marketing ~ market
+agriculturaland ~ agricultural production
+subsidy ~ public subsidy
+agri environmental policy in France ~ environmental effort
+agri environmental policy in France ~ environmental effort
+retired ~ retirement
+retired ~ retirement
+retirees ~ retirement
+retirees ~ retirement
+retired ~ retirement
+retired ~ retirement
+retirees ~ retirement
+retirees ~ retirement
+industrie ~ injustice
+industrie ~ injustice
+industry ~ injustice
+industry ~ injustice
+agri environmental policy in France ~ environmental effort
+agriculturaland ~ agricultural census
+agricultural activity ~ agricultural census
+ine agriculture ~ agricultural census
+agricultural production ~ agricultural census
+agricultural activity ~ agricultural census (RA )
+agricultural production ~ agricultural census (RA )
+agricultural census ~ agricultural census (RA )
+tree based segmentation ~ tree based segmentation method
+dette carbone ~ CART method
+cattle farm ~ CART method
+Contracting farmers ~ CART regression tree on contracting farms
+agricultural production ~ gross production
+agricultural production ~ gross production
+agricultural production ~ gross production
+agricultural production ~ gross production
+farm ~ farmers
+Contracting farmers ~ contract holders
+contracts ~ contract holders
+Contracting farmers ~ contract holders
+contracts ~ contract holders
+Contracting farmers ~ contract holders
+contracts ~ contract holders
+gross production ~ quality products
+gross production ~ production system
+public subsidy ~ quality product
+gross production ~ quality product
+gross production ~ production system
+phytosanitary treatment ~ phytosanitary
+ A. Berthet al. ~ A. Berthe
+CART regression tree on contracting farms ~ A typology for characterising the contracting parties
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Territorial agri environmental measures and inequality overepresented
+Territorial agri environmental measures ~ Territorial agri environmental measures and inequality overepresented
+pesticide ~ herbicide
+livestock ~ livestock farm
+pesticide ~ herbicide
+pesticide ~ herbicide
+pesticide ~ herbicide
+pesticide ~ herbicides
+pesticide ~ herbicide
+hierarchical clustering ~ hierarchical clustering (continued)
+Contracting farmers ~ contracting farms
+CART regression tree on contracting farms ~ contracting farms
+contract holders ~ contracting farms
+hierarchical clustering ~ hierarchical clustering (continued)
+hierarchical clustering ~ hierarchical clustering (continued)
+cattle farm ~ small farm
+Contracting farmers ~ contracting logic
+contracts ~ contracting logic
+contract holders ~ contracting logic
+cattle farm ~ small farms
+Contracting farmers ~ contracting logic
+contracts ~ contracting logic
+contract holders ~ contracting logic
+grasslands ~ permanent grasslands
+grasslands ~ permanent grassland
+pesticide ~ herbicide
+fertilisation ~ fertiliser
+pesticide ~ herbicide
+leasing ~ weeding
+leasing ~ weeding
+agri environmental policy in France ~ Territorial agri environmental measures and inequality
+inequality ~ inequalities
+ecological economics ~ economic inequalities
+inequality ~ inequalities
+economic inequalities ~ economic inequalities between farmers
+economic inequalities ~ inequalities
+ecological economics ~ economic inequalities
+economic inequalities ~ economic inequalities between farmers
+inequality ~ inequality indicators
+economic inequalities ~ inequality indicators
+inequality ~ inequality indicators
+inequality ~ inequality indicators
+inequality ~ inequality index
+economic inequalities ~ inequality index
+concentration indicators ~ concentration index
+inequality ~ inequality index
+inequality ~ inequality index
+economic inequalities ~ inequality index
+economic inequalities ~ inequality index
