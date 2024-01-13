@@ -266,6 +266,8 @@
 
     // automaticaly scroll down to iframe 'id=htmlFrame' in the page
     const iframe = document.getElementById("htmlFrame");
+    // TODO : code showGraph
+    showGraph();
     // change iframe to be visible
     iframe.style.display = "block";
     // scrolling="auto" width="100%" height="500"
@@ -327,6 +329,102 @@
 
   
 
+
+
+
+
+  // SEARCH BAR CODE
+
+  // Simulated database with words and types
+  const database = [
+    { word: 'example1', type: 'concept' },
+    { word: 'example2', type: 'unknown' },
+    { word: 'example3', type: 'organization' },
+    { word: 'example1', type: 'concept' },
+    { word: 'example2', type: 'unknown' },
+    { word: 'example3', type: 'organization' },
+    { word: 'example1', type: 'concept' },
+    { word: 'example2', type: 'unknown' },
+    { word: 'example3', type: 'organization' },
+    { word: 'example1', type: 'concept' },
+    { word: 'example2', type: 'unknown' },
+    { word: 'example3', type: 'organization' },
+    // Add more data as needed
+  ];
+
+  const suggestedButtonsDiv = document.getElementById('suggestedButtons');
+
+  // Function to filter suggestions based on user input
+  function filterSuggestions(input) {
+    const filteredWords = database.filter(entry => entry.word.includes(input));
+    return filteredWords;
+  }
+
+  function displaySuggestions() {
+    const input = document.querySelector('#searchInput').value;
+    suggestedButtonsDiv.innerHTML = '';
+  
+    if (input.length === 0) return;
+  
+    const suggestions = filterSuggestions(input);
+  
+    suggestions.forEach((entry, index) => {
+      const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `<span class="highlight">${match}</span>`);
+  
+      const button = createSuggestionButton(highlightedWord, entry.type);
+      suggestedButtonsDiv.appendChild(button);
+  
+      // Triggering reflow to apply transition on dynamically added elements
+      void button.offsetWidth;
+  
+      // Set a timeout to add a class after 300ms
+      setTimeout(() => {
+        button.classList.add('visible');
+      }, 300);
+  
+      button.addEventListener('click', () => addSelectedWord(entry.word));
+    });
+  }
+  
+  function createSuggestionButton(highlightedWord, type) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-light mb-2 p-2 col-md-12 text-left d-flex shadow bg-white rounded suggestion';
+    button.innerHTML = highlightedWord;
+  
+    const typeElement = document.createElement('div');
+    typeElement.className = 'text-center';
+    typeElement.innerText = type;
+    typeElement.style.opacity = 0; // Start with opacity 0
+  
+    button.appendChild(typeElement);
+  
+    return button;
+  }
+  
+
+  function addSelectedWord(word) {
+    const searchInput = document.getElementById('searchInput');
+
+    // Append the highlighted word to the search input
+    searchInput.value = word;
+
+    // Clear the suggestions and reset the input value for better user experience
+    document.querySelector('#suggestions').innerHTML = '';
+  }
+
+  // Function to handle the search and show graph
+  function showGraph() {
+    const searchInput = document.querySelector('#searchInput').value;
+    const groupBy = document.querySelector('#groupBy').value;
+    const radius = document.querySelector('#radius').value;
+
+    // Implement your logic to show the graph based on the input parameters
+    console.log(`Search Input: ${searchInput}, Group By: ${groupBy}, Radius: ${radius}`);
+  }
+
+  // Attach event listeners
+  document.querySelector('#searchInput').addEventListener('input', displaySuggestions);
 })()
 
 

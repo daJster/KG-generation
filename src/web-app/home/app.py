@@ -8,6 +8,7 @@ import re
 from unidecode import unidecode
 from neo4j import GraphDatabase
 from pyvis.network import Network
+import networkx as nx
 from rdflib import Graph, Namespace
 import re
 
@@ -178,20 +179,25 @@ def construct_graph():
         relations_clean.append(relation)
         
     # create graph
-    g = Network(height="600px", width="100%", select_menu=True, cdn_resources='remote')#, filter_menu=True)
-    g.barnes_hut()
+    g = nx.DiGraph()
 
-    # add entities
+   # Add entities
     for r in relations_clean:
-        g.add_node(r['head'], label=r['head'], titre=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']))
+        g.add_node(r['head'], label=r['head'], title=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']))
         if r['tail'] not in g.nodes:
             g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname']))
 
-    # add relations
+    # Add relations
     for r in relations_clean:
         # orientated graph
         g.add_edge(r["head"], r["tail"], label=r["type"], color=create_color_from_string(r['fname']), arrows='to')
     
+    # Create a Network instance from the directed graph
+    net = Network(height="600px", width="100%", directed=True, notebook=True, select_menu=True, cdn_resources='remote')
+
+    # Add nodes and edges from the directed graph to the Network instance
+    net.from_nx(g)
+    net.barnes_hut()
         
     # Définition des options en tant que dictionnaire Python
     options = {
@@ -228,11 +234,11 @@ def construct_graph():
     options_str = json.dumps(options)
 
     # Activation du zoom lors du clic sur un nœud
-    g.set_options(options_str)
+    net.set_options(options_str)
         
         
     # Sauvegarde du graph
-    g.save_graph("graph.html")
+    net.save_graph("graph.html")
     
     event_listener_code = """
     network.on("click", function (params) {
