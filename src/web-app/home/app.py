@@ -12,6 +12,7 @@ import networkx as nx
 from rdflib import Graph, Namespace
 import re
 import wikipedia
+from GoogleNews import GoogleNews
 
 
 app = Flask(__name__, template_folder='./', static_folder='assets')
@@ -338,27 +339,7 @@ def construct_graph():
         // ask js function details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull) to get the details of the node
         
         popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull);
-        
-        var button = document.createElement("button");
-        button.innerHTML = "Change name";
-        button.onclick = function() {
-            var new_name = prompt("Please enter the new name", nodeLabel);
-            if (new_name != null) {
-                console.log("change name");
-                node.options.label = new_name;
-                node.options.title = new_name;
-                node.options.head_full = new_name;
-                node.options.tail_full = new_name;
-
-                
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://localhost:5000/change_name", true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(JSON.stringify({"old_name": nodeLabel, "new_name": new_name}));
-                console.log("requete envoye");
-            }
-        };
-        //popup.appendChild(button);   
+              
         
         // call the python function wikipedia_details to get the html details code of the node
         var xhr = new XMLHttpRequest();
@@ -371,13 +352,41 @@ def construct_graph():
             if (this.readyState == 4 && this.status == 200) {
                 var details = JSON.parse(this.responseText);
                 popup.innerHTML += details["html"];
-                popup.appendChild(button);       
+                //popup.appendChild(button);       
                 // loading animation stop
-                popup.innerHTML = popup.innerHTML.replace('<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>', "");                        
+                popup.innerHTML = popup.innerHTML.replace('<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>', "");                    
+                
+                // button to change the name of the node
+                var button = document.createElement("button");
+                button.innerHTML = "Change name";
+                button.onclick = function() {
+                    
+                    var new_name = prompt("Please enter the new name", nodeLabel);
+                    if (new_name != null) {
+                        // call the python function change_name to change the name of the node
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://localhost:5000/change_name", true);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(JSON.stringify({"old_name": nodeLabel, "new_name": new_name}));
+                        xhr.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                // change the name of the node
+                                node.options.label = new_name;
+                                node.options.title = node.options.title.replace(nodeLabel, new_name);
+                                nodeLabel = new_name;
+                                nodeTitle = node.options.title;
+                                // update the popup
+                                popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull);
+                            }
+                        };
+                    }
+                };
+                popup.appendChild(button);
+                    
             }
         };
         
-            
+    
         popup.classList.toggle("show");
         // update body size to take into account the popup
         network.setSize("100%", "100%");       
@@ -451,8 +460,6 @@ def construct_graph():
     """
     
     
-    ## import js code wikipedia_details.js in the directory
-    import_js_code =  "<script type='text/javascript' src='wikipedia_details.js'></script>"
 
 
     # Add the event listener code to the HTML file
@@ -461,7 +468,7 @@ def construct_graph():
 
     # Add the event listener code to the generated HTML file
     with open("graph.html", "a") as file:
-        file.write(html_popup + style + import_js_code + "<script>" + event_listener_code + "</script>")
+        file.write(html_popup + style + "<script>" + event_listener_code + "</script>")
         
     
     
