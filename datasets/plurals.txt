@@ -6,3 +6,7 @@ small farms = small farm
 grasslands = grassland
 grasslands = grassland
 MAEts = MAEt
+PAEC zonings = PAEC zoning
+PAEC zonings = PAEC zoning
+great wines = great wine
+consumers = consumer

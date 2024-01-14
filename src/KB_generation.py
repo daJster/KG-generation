@@ -370,117 +370,120 @@ def store_kb(kb):
             relation_type = clear_str(relation_type)
             fname = clear_str(fname)
             
-            # get all node's name where node's head_type is the same as the head_type of the current head node
-            query_head = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
-            query_tail = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
-            
-            with client.session() as session:
-                try :
-                    result = session.run(query_head)
-                except :
-                    print("query error : ", query_head)
-                nodes_with_same_head_type = [r["n.name"] for r in result]
+            if head != "" and tail != "" and relation_type != "" and head != tail and head != relation_type and tail != relation_type :
+                # get all node's name where node's head_type is the same as the head_type of the current head node
+                query_head = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
+                query_tail = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
                 
-                try :
-                    result = session.run(query_tail)
-                except :
-                    print("query error : ", query_tail)
-                nodes_with_same_tail_type = [r["n.name"] for r in result]
-                
-                best_node_head = ""
-                best_score_head = 0
-                best_node_tail = ""
-                best_score_tail = 0
-                for node in nodes_with_same_head_type and nodes_with_same_tail_type :
-                    score_text_compare = text_compare(node, head)
-                    if score_text_compare > 0.8 :
-                        best_node_head = node
-                        best_score_head = score_text_compare
-                        break
-                    else :
-                        score_head = compare_with_all_mini(head, node)
-                        # print("We need to use all_mini, score is : ", score_head)
-                    score_text_compare = text_compare(node, tail)   
-                    if score_text_compare > 0.8 :
-                        best_node_tail = node
-                        best_score_tail = score_text_compare
-                        break
-                    else :
-                        score_tail = compare_with_all_mini(tail, node)
-                        # print("We need to use all_mini, score is : ", score_head)
+                with client.session() as session:
+                    try :
+                        result = session.run(query_head)
+                    except :
+                        print("query error : ", query_head)
+                    nodes_with_same_head_type = [r["n.name"] for r in result]
                     
-                    if score_head > best_score_head :
-                        best_score_head = score_head
-                        best_node_head = node
+                    try :
+                        result = session.run(query_tail)
+                    except :
+                        print("query error : ", query_tail)
+                    nodes_with_same_tail_type = [r["n.name"] for r in result]
+                    
+                    best_node_head = ""
+                    best_score_head = 0
+                    best_node_tail = ""
+                    best_score_tail = 0
+                    for node in nodes_with_same_head_type and nodes_with_same_tail_type :
+                        score_text_compare = text_compare(node, head)
+                        if score_text_compare > 0.8 :
+                            best_node_head = node
+                            best_score_head = score_text_compare
+                            break
+                        else :
+                            score_head = compare_with_all_mini(head, node)
+                            # print("We need to use all_mini, score is : ", score_head)
+                        score_text_compare = text_compare(node, tail)   
+                        if score_text_compare > 0.8 :
+                            best_node_tail = node
+                            best_score_tail = score_text_compare
+                            break
+                        else :
+                            score_tail = compare_with_all_mini(tail, node)
+                            # print("We need to use all_mini, score is : ", score_head)
                         
-                    if score_tail > best_score_tail :
-                        best_score_tail = score_tail
-                        best_node_tail = node
+                        if score_head > best_score_head :
+                            best_score_head = score_head
+                            best_node_head = node
+                            
+                        if score_tail > best_score_tail :
+                            best_score_tail = score_tail
+                            best_node_tail = node
+                            
+                    if best_score_head > 0.8 :
+                        head = best_node_head
+                        print("c    ", head, "is the same as", best_node_head)
                         
-                if best_score_head > 0.8 :
-                    head = best_node_head
-                    print("c    ", head, "is the same as", best_node_head)
-                    
-    
-                if best_score_tail > 0.8 :
-                    tail = best_node_tail
-                    print("c    ", tail, "is the same as", best_node_tail)
-                     
-            
-            # check if head with head_type is aleady in the database memgraph
-            query = f"MATCH (n:`{head_type}`) WHERE n.name = '{head}' RETURN n"
-            with client.session() as session:
-                try :
-                    result = session.run(query)
-                except :
-                    print("query error : ", query)
-                if not result.single():
-                    # add head with head_type to the database memgraph
-                    query = f"CREATE (n:`{head_type}` {{name: '{head}', fname: '{fname}', head_type: '{head_type}'}})"
-                    with client.session() as session:
-                        try :
-                            result = session.run(query)
-                        except :
-                            print("query error : ", query)
-                        history.append(query)
-                else :
-                    print("c    ", query, "already in the database")
-                    
-            # check if tail with tail_type is aleady in the database memgraph
-            query = f"MATCH (n:`{tail_type}`) WHERE n.name = '{tail}' RETURN n"
-            with client.session() as session:
-                result = session.run(query)
-                if not result.single():
-                    # add tail with tail_type to the database memgraph
-                    query = f"CREATE (n:`{tail_type}` {{name: '{tail}', fname: '{fname}', head_type: '{tail_type}'}})"
-                    with client.session() as session:
-                        try :
-                            result = session.run(query)
-                        except :
-                            print("query error : ", query)
-                        history.append(query)
-                else :
-                    print("c    ", query, "already in the database")
-                    
-            # check if relation between head and tail is aleady in the database memgraph
-            query = f"MATCH (n:`{head_type}`)-[r:`{relation_type}`]->(m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' RETURN n"
-            with client.session() as session:
-                try :
-                    result = session.run(query)
-                except :
-                    print("query error : ", query)
-                if not result.single():
-                    # add relation between head and tail to the database memgraph
-                    query = f"MATCH (n:`{head_type}`), (m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' CREATE (n)-[r:`{relation_type}`]->(m)"
-                    with client.session() as session:
-                        try :
-                            result = session.run(query)
-                        except :
-                            print("query error : ", query)
-                        history.append(query)
-                else :
-                    print("c    ", query, "already in the database")
         
+                    if best_score_tail > 0.8 :
+                        tail = best_node_tail
+                        print("c    ", tail, "is the same as", best_node_tail)
+                        
+                
+                # check if head with head_type is aleady in the database memgraph
+                query = f"MATCH (n:`{head_type}`) WHERE n.name = '{head}' RETURN n"
+                with client.session() as session:
+                    try :
+                        result = session.run(query)
+                    except :
+                        print("query error : ", query)
+                    if not result.single():
+                        # add head with head_type to the database memgraph
+                        query = f"CREATE (n:`{head_type}` {{name: '{head}', fname: '{fname}', head_type: '{head_type}'}})"
+                        with client.session() as session:
+                            try :
+                                result = session.run(query)
+                            except :
+                                print("query error : ", query)
+                            history.append(query)
+                    else :
+                        print("c    ", query, "already in the database")
+                        
+                # check if tail with tail_type is aleady in the database memgraph
+                query = f"MATCH (n:`{tail_type}`) WHERE n.name = '{tail}' RETURN n"
+                with client.session() as session:
+                    result = session.run(query)
+                    if not result.single():
+                        # add tail with tail_type to the database memgraph
+                        query = f"CREATE (n:`{tail_type}` {{name: '{tail}', fname: '{fname}', head_type: '{tail_type}'}})"
+                        with client.session() as session:
+                            try :
+                                result = session.run(query)
+                            except :
+                                print("query error : ", query)
+                            history.append(query)
+                    else :
+                        print("c    ", query, "already in the database")
+                        
+                # check if relation between head and tail is aleady in the database memgraph
+                query = f"MATCH (n:`{head_type}`)-[r:`{relation_type}`]->(m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' RETURN n"
+                with client.session() as session:
+                    try :
+                        result = session.run(query)
+                    except :
+                        print("query error : ", query)
+                    if not result.single():
+                        # add relation between head and tail to the database memgraph
+                        query = f"MATCH (n:`{head_type}`), (m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' CREATE (n)-[r:`{relation_type}`]->(m)"
+                        with client.session() as session:
+                            try :
+                                result = session.run(query)
+                            except :
+                                print("query error : ", query)
+                            history.append(query)
+                    else :
+                        print("c    ", query, "already in the database")
+            else :
+                print("something is wrong with the relation : ", head, relation_type, tail)
+            
         # save the history of queries
         with open("../RDFs/_history.txt", "w") as f:
             for query in history:

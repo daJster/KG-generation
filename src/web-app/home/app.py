@@ -12,6 +12,7 @@ import networkx as nx
 from rdflib import Graph, Namespace
 import re
 
+
 app = Flask(__name__, template_folder='./', static_folder='assets')
 CORS(app)
 
@@ -183,9 +184,12 @@ def construct_graph():
 
    # Add entities
     for r in relations_clean:
-        g.add_node(r['head'], label=r['head'], title=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']))
+        g.add_node(r['head'], label=r['head'], title=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']), fname=r['fname'], head_full=r['head_full'])
         if r['tail'] not in g.nodes:
-            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname']))
+            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname']), fname=r['fname'], head_full=r['tail_full'])
+
+
+
 
     # Add relations
     for r in relations_clean:
@@ -227,6 +231,9 @@ def construct_graph():
                 "iterations": 2000,
                 "updateInterval": 25
             }
+        },
+        "interaction": {
+            "hover": True,
         }
     }
 
@@ -252,9 +259,52 @@ def construct_graph():
             easingFunction: "easeInOutQuad"
         }
         });
+        
+        // Popup the node information and button change name
+        var node = network.body.nodes[nodeId];
+        var nodeLabel = node.options.label;
+        var nodeTitle = node.options.title;
+        var nodeFname = node.options.fname;
+        var nodeHeadFull = node.options.head_full;
+        var nodeTailFull = node.options.tail_full;
+        
+        var popup = document.getElementById("myPopup");
+        popup.innerHTML = "<h3>Node information</h3><br><b>Label</b> : " + nodeLabel + "<br><b>Full name</b> : " + nodeTitle + "<br><b>File name</b> : " + nodeFname;
+        
+        // Add button to change the name of the node and connect to the database and run 2 queries : MATCH (n)-[r]->(m) WHERE n.name = "oldname" SET n.name = "newname" RETURN n, r, m; MATCH (n)-[r]->(m) WHERE m.name = "oldname" SET m.name = "newname" RETURN n, r, m;
+        var button = document.createElement("button");
+        button.innerHTML = "Change name";
+        button.onclick = function() {
+            var new_name = prompt("Please enter the new name", nodeLabel);
+            if (new_name != null) {
+                console.log("change name");
+                // Change the name of the node
+                node.options.label = new_name;
+                node.options.title = new_name;
+                node.options.head_full = new_name;
+                node.options.tail_full = new_name;
+                //node.updateLabel(); existe pas 
+                //node.updateTitle();
+                //node.update();
+                
+                // Connect to the database and run 2 queries
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:5000/change_name", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(JSON.stringify({"old_name": nodeLabel, "new_name": new_name}));
+                console.log("requete envoye");
+            }
+        };
+        popup.appendChild(button);       
+        popup.classList.toggle("show");       
     }
     });
     """
+    html_popup = """
+    <div class="popup" id="myPopup"></div>
+    """
+    
+
 
     # Add the event listener code to the HTML file
     # g.set_edge_smooth("continuous")
@@ -262,10 +312,39 @@ def construct_graph():
 
     # Add the event listener code to the generated HTML file
     with open("graph.html", "a") as file:
-        file.write("<script>{}</script>".format(event_listener_code))
+        file.write(html_popup + "<script>" + event_listener_code + "</script>")
+        
     
     
     return send_file("graph.html", mimetype='text/html')
+
+@app.route('/change_name', methods=['POST'])
+def change_name():
+    data = request.get_json()
+    old_name = data["old_name"]
+    new_name = data["new_name"]
+    
+    # Connect to the database and run 2 queries
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
+ 
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        # Check the connection
+        client.verify_connectivity()
+        # Get all the relations with type of relation
+        relations, summary, keys = client.execute_query(
+            f"MATCH (n)-[r]->(m) WHERE n.name = '{old_name}' SET n.name = '{new_name}' RETURN n, r, m;",
+            database_="memgraph",
+        )
+        
+        relations, summary, keys = client.execute_query(
+            f"MATCH (n)-[r]->(m) WHERE m.name = '{old_name}' SET m.name = '{new_name}' RETURN n, r, m;",
+            database_="memgraph",
+        )
+        
+        return "ok"
+    
+    
 
 def create_color_from_string(string):
     # Create a color based on the string

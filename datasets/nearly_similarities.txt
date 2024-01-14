@@ -401,3 +401,132 @@ inequality ~ inequality index
 inequality ~ inequality index
 economic inequalities ~ inequality index
 economic inequalities ~ inequality index
+inequality ~ inequality index
+inequality ~ inequality indexes
+economic inequalities ~ inequality index
+economic inequalities ~ inequality indexes
+income distribution ~ income inequalities
+inequality ~ income inequalities
+income distribution ~ income inequalities
+inequality ~ income inequalities
+subsidy ~ subsidies
+subsidy ~ subsidies
+subsidy ~ subsidies
+public subsidy ~ subsidies
+public subsidy ~ subsidies
+subsidy ~ subsidies
+subsidy ~ subsidies
+public subsidy ~ subsidies
+public subsidy ~ subsidies
+middle income ~ income
+subsidy ~ subsidies
+public subsidy ~ subsidies
+subsidy ~ subsidies
+subsidy ~ subsidies
+public subsidy ~ subsidies
+public subsidy ~ subsidies
+middle income ~ income
+subsidy ~ subsidies
+public subsidy ~ subsidies
+middle income ~ income
+subsidy ~ subsidies
+public subsidy ~ subsidies
+NUTS 3 ~ NUTS 2
+NUTS 3 ~ NUTS 2
+grasslands ~ permanent grasslands
+zoning ~ PAEC zoning
+industrie ~ injustice
+industry ~ injustice
+public subsidy ~ Direct subsidies
+industrie ~ injustice
+industry ~ injustice
+public subsidy ~ Direct subsidies
+compensation ~ MAEt compensation
+economic inequalities between farmers ~ economic analysis of the inequality level
+inequality ~ inequality level
+inequality ~ inequalities
+economic inequalities ~ inequalities
+inequality indicators ~ inequality level
+inequality indicators ~ inequalities
+economic downturn ~ economic principle
+Economic methods ~ economic principle
+ecological economics ~ economic principle
+contracts ~ theory of contracts
+theory of contracts and incentives ~ theory of contracts
+contract holders ~ theory of contracts
+contracting logic ~ theory of contracts
+economic downturn ~ economic principle
+Economic methods ~ economic principle
+ecological economics ~ economic principle
+contracts ~ theory of contracts
+theory of contracts and incentives ~ theory of contracts
+contract holders ~ theory of contracts
+contracting logic ~ theory of contracts
+economic downturn ~ economic principle
+Economic methods ~ economic principle
+ecological economics ~ economic principle
+contracts ~ theory of contracts
+theory of contracts and incentives ~ theory of contracts
+contract holders ~ theory of contracts
+contracting logic ~ theory of contracts
+système de penser ~ member state
+système de penser ~ member state
+système de penser ~ member state
+cattle farm ~ farm complexity
+cattle farm ~ farm complexity
+efficiency ~ Efficient
+efficiency ~ Efficient
+efficiency ~ Efficient
+CART regression tree on contracting farms ~ Classification and Regression Trees
+CART regression tree on contracting farms ~ Classification and Regression Trees
+European Common Agricultural Policy ~ Framework of the Common Agricultural Policy and Repealing Council Regulation
+Council Regulation° / on Support for Rural Development ~ Framework of the Common Agricultural Policy and Repealing Council Regulation
+Council Regulation° / on Support for Rural Development ~ Framework of the Common Agricultural Policy and Repealing Council Regulation (EC) No. / and Council Regulation (EC)
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Framework of the Common Agricultural Policy and Repealing Council Regulation (EC) No. / and Council Regulation (EC)
+Council Regulation° / on Support for Rural Development ~ Framework of the Common Agricultural Policy and Repealing Council Regulation (EC) No. / and Council Regulation (EC)
+multifunctionality ~ Multifunctionality of Agriculture
+Multifunctionality of Agriculture ~ Multifunctionality of Agriculture in the European Union
+Multifunctionality of Agriculture ~ Multifunctionality of Agriculture in the European Union
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Territorial agri environmental measures and inequality Ministry of Agriculture and Fisheries
+Territorial agri environmental measures ~ Territorial agri environmental measures and inequality Ministry of Agriculture and Fisheries
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Territorial agri environmental measures and inequality Ministry of Agriculture and Fisheries
+Territorial agri environmental measures ~ Territorial agri environmental measures and inequality Ministry of Agriculture and Fisheries
+porte ~ Parti
+théorie des émotions de Dewey ~ Mémoire de Diplôme d’études Approfondi en Sciences de gestion Université de Bordeaux IV
+Swimming in a sea of shame: Incorporating emotion into explanations of institutional reproduction and change ~ Mémoire de Diplôme d’études Approfondi en Sciences de gestion Université de Bordeaux IV
+Société d économiet de science sociales ~ Mémoire de Diplôme d’études Approfondi en Sciences de gestion Université de Bordeaux IV
+Ne vous laissez pas enchaîner par aucun règlement ni bride ni éperon ~ Mémoire de Diplôme d’études Approfondi en Sciences de gestion Université de Bordeaux IV
+Territorial agri environmental measures and inequality equity of MAEt ~ Mémoire de Diplôme d’études Approfondi en Sciences de gestion Université de Bordeaux IV
+R rpart package ~ R rpart
+Université de Bordeaux ~ Bordeaux School of Economics Bordeaux University
+Bordeaux School of Economics ~ Bordeaux School of Economics Bordeaux University
+University of Bordeaux ~ Bordeaux School of Economics Bordeaux University
+INRAE Bordeaux ~ Bordeaux
+Bordeaux Montaigne University ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux IV ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux ~ Bordeaux School of Economics Bordeaux University
+Bordeaux School of Economics ~ Bordeaux School of Economics Bordeaux University
+University of Bordeaux ~ Bordeaux School of Economics Bordeaux University
+INRAE Bordeaux ~ Bordeaux
+Bordeaux Montaigne University ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux IV ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux ~ Bordeaux School of Economics Bordeaux University
+Bordeaux School of Economics ~ Bordeaux School of Economics Bordeaux University
+University of Bordeaux ~ Bordeaux School of Economics Bordeaux University
+INRAE Bordeaux ~ Bordeaux
+Bordeaux Montaigne University ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux IV ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux ~ Bordeaux School of Economics Bordeaux University
+Bordeaux School of Economics ~ Bordeaux School of Economics Bordeaux University
+University of Bordeaux ~ Bordeaux School of Economics Bordeaux University
+INRAE Bordeaux ~ Bordeaux
+Bordeaux Montaigne University ~ Bordeaux School of Economics Bordeaux University
+Université de Bordeaux IV ~ Bordeaux School of Economics Bordeaux University
+bordeaux wine ~ bordeaux
+bordeaux wine ~ bordeaux
+Ginindex ~ Gironde
+bordeaux wine ~ Bordeaux
+Ginindex ~ Gironde
+bordeaux wine ~ Bordeaux
+vineyard ~ Gironde vineyard
+vineyard ~ Gironde vineyard
