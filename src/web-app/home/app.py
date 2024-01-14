@@ -11,6 +11,7 @@ from pyvis.network import Network
 import networkx as nx
 from rdflib import Graph, Namespace
 import re
+import wikipedia
 
 
 app = Flask(__name__, template_folder='./', static_folder='assets')
@@ -146,6 +147,54 @@ def index():
     # else:
     return render_template('index.html')
 
+
+
+        # var xhr = new XMLHttpRequest();
+        # xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
+        # xhr.setRequestHeader("Content-Type", "application/json");
+        # xhr.send(JSON.stringify({"node": nodeLabel}));
+        # xhr.onreadystatechange = function() {
+        #     if (this.readyState == 4 && this.status == 200) {
+        #         var details = JSON.parse(this.responseText);
+        #         popup.innerHTML = details["html"];
+        #         popup.appendChild(button);
+        #     }
+        # };
+        
+@app.route('/wikipedia_details', methods=['POST'])
+def wikipedia_details():
+    data = request.get_json()
+    node = data["node"]
+    ## check if there are information on wikipedia if yes return the html code else return "no information found on wikipedia"    
+    try :
+        ## give a summury of the wikipedia page and then a button to go to the wikipedia page
+        html = f"""
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Wikipedia</h1>
+                    <p>{wikipedia.summary(node)}</p>
+                    <a href="{wikipedia.page(node).url}" target="_blank">Go to wikipedia page</a>
+                </div>
+            </div>
+        </div>
+        """
+    except wikipedia.exceptions.PageError :        
+        html = f"""
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Wikipedia</h1>
+                    <p>No information found on wikipedia</p>
+                </div>
+            </div>
+        </div>
+        """
+    return {"html": html}
+
+
+
+
 @app.route('/generate_html', methods=['POST'])
 def construct_graph():
     data = request.get_json()
@@ -248,6 +297,24 @@ def construct_graph():
     net.save_graph("graph.html")
     
     event_listener_code = """
+    
+    
+    // function to get wikipedia details of a node    
+    function details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull) {
+        return `
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>${nodeHeadFull}</h1>
+                    <p>${nodeFname}</p>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    
+    
+    
     network.on("click", function (params) {
     if (params.nodes.length > 0) {
         var nodeId = params.nodes[0];
@@ -268,7 +335,9 @@ def construct_graph():
         var nodeTailFull = node.options.tail_full;
         
         var popup = document.getElementById("myPopup");
-        popup.innerHTML = "<h3>Node information</h3><br><b>Label</b> : " + nodeLabel + "<br><b>Full name</b> : " + nodeTitle + "<br><b>File name</b> : " + nodeFname;
+        // ask js function details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull) to get the details of the node
+        
+        popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull);
         
         var button = document.createElement("button");
         button.innerHTML = "Change name";
@@ -289,15 +358,101 @@ def construct_graph():
                 console.log("requete envoye");
             }
         };
-        popup.appendChild(button);       
-        popup.classList.toggle("show");       
+        //popup.appendChild(button);   
+        
+        // call the python function wikipedia_details to get the html details code of the node
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({"node": nodeLabel}));
+        // loading animation
+        popup.innerHTML += '<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var details = JSON.parse(this.responseText);
+                popup.innerHTML += details["html"];
+                popup.appendChild(button);       
+                // loading animation stop
+                popup.innerHTML = popup.innerHTML.replace('<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>', "");                        
+            }
+        };
+        
+            
+        popup.classList.toggle("show");
+        // update body size to take into account the popup
+        network.setSize("100%", "100%");       
     }
     });
     """
     html_popup = """
-    <div class="popup" id="myPopup"></div>
+    <div class="popup" id="myPopup"></div>    
     """
     
+    style = """
+    <style>
+    .lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    top: 5%;
+    width: 90px;
+    height: 90px;
+    }
+    .lds-ellipsis div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #cef;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    .lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+    }
+    @keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+    }
+    @keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(24px, 0);
+    }
+    }
+    </style>
+    """
+    
+    
+    ## import js code wikipedia_details.js in the directory
+    import_js_code =  "<script type='text/javascript' src='wikipedia_details.js'></script>"
 
 
     # Add the event listener code to the HTML file
@@ -306,7 +461,7 @@ def construct_graph():
 
     # Add the event listener code to the generated HTML file
     with open("graph.html", "a") as file:
-        file.write(html_popup + "<script>" + event_listener_code + "</script>")
+        file.write(html_popup + style + import_js_code + "<script>" + event_listener_code + "</script>")
         
     
     
