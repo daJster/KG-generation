@@ -356,34 +356,61 @@
 
   // Function to filter suggestions based on user input
   function filterSuggestions(input) {
+    // JAVA FETCH FUNCTION
     const filteredWords = database.filter(entry => entry.word.includes(input));
     return filteredWords;
   }
 
+  function switchPLaceholderGlow(valueStr) {
+    let placehoderGlowDiv = document.querySelector('.placeholder-glow')
+    suggestedButtonsDiv.innerHTML = '';
+
+    if (valueStr === "hidden") {
+      placehoderGlowDiv.classList.remove('shown');
+      placehoderGlowDiv.classList.add('hidden');
+    } else if (valueStr === "shown") {
+      placehoderGlowDiv.classList.remove('hidden');
+      placehoderGlowDiv.classList.add('shown');
+    }
+  }
+
   function displaySuggestions() {
     const input = document.querySelector('#searchInput').value;
-    suggestedButtonsDiv.innerHTML = '';
   
-    if (input.length === 0) return;
-  
-    const suggestions = filterSuggestions(input);
-  
-    suggestions.forEach((entry, index) => {
-      const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `<span class="highlight">${match}</span>`);
-  
-      const button = createSuggestionButton(highlightedWord, entry.type);
-      suggestedButtonsDiv.appendChild(button);
-  
-      // Triggering reflow to apply transition on dynamically added elements
-      void button.offsetWidth;
-  
-      // Set a timeout to add a class after 300ms
-      setTimeout(() => {
-        button.classList.add('visible');
-      }, 300);
-  
-      button.addEventListener('click', () => addSelectedWord(entry.word));
-    });
+    if (input.length !== 0) {
+      const suggestions = filterSuggestions(input);
+
+      // if suggestion is empty then keep placeholderGlow "shown" and return nothing
+      if (suggestions.length === 0) {
+        switchPLaceholderGlow("shown");
+        return;
+      } else {
+        switchPLaceholderGlow("hidden");
+        suggestions.forEach((entry, index) => {
+            const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `<span class="highlight">${match}</span>`);
+        
+            const button = createSuggestionButton(highlightedWord, entry.type);
+            suggestedButtonsDiv.appendChild(button);
+            suggestedButtonsDiv.style.overflowY = 'scroll';
+        
+            // Triggering reflow to apply transition on dynamically added elements
+            void button.offsetWidth;
+        
+            // Set a timeout to add a class after 300ms
+            setTimeout(() => {
+              button.classList.add('visible');
+            }, 300);
+        
+            button.addEventListener('click', () => addSelectedWord(entry.word));
+          });
+      }
+
+      
+    } else {
+      switchPLaceholderGlow("shown");
+      // GET ALL ENTITIES
+    }
+    
   }
   
   function createSuggestionButton(highlightedWord, type) {
@@ -425,6 +452,7 @@
 
   // Attach event listeners
   document.querySelector('#searchInput').addEventListener('input', displaySuggestions);
+  switchPLaceholderGlow("shown");
 })()
 
 

@@ -1208,3 +1208,20 @@ section {
 .suggestion.visible {
   opacity: 1;
 }
+
+.suggestedButtons {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.suggestedButtons.hidden {
+  opacity: 0;
+}
+
+.placeholder-glow.shown {
+  display: block;
+}
+
+.placeholder-glow.hidden {
+  display: none ;
+}

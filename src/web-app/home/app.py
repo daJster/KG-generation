@@ -197,7 +197,7 @@ def construct_graph():
         g.add_edge(r["head"], r["tail"], label=r["type"], color=create_color_from_string(r['fname']), arrows='to')
     
     # Create a Network instance from the directed graph
-    net = Network(height="600px", width="100%", directed=True, notebook=True, select_menu=True, cdn_resources='remote')
+    net = Network(height="600px", width="100%", directed=True, notebook=True, cdn_resources='remote')
 
     # Add nodes and edges from the directed graph to the Network instance
     net.from_nx(g)
@@ -260,7 +260,6 @@ def construct_graph():
         }
         });
         
-        // Popup the node information and button change name
         var node = network.body.nodes[nodeId];
         var nodeLabel = node.options.label;
         var nodeTitle = node.options.title;
@@ -271,23 +270,18 @@ def construct_graph():
         var popup = document.getElementById("myPopup");
         popup.innerHTML = "<h3>Node information</h3><br><b>Label</b> : " + nodeLabel + "<br><b>Full name</b> : " + nodeTitle + "<br><b>File name</b> : " + nodeFname;
         
-        // Add button to change the name of the node and connect to the database and run 2 queries : MATCH (n)-[r]->(m) WHERE n.name = "oldname" SET n.name = "newname" RETURN n, r, m; MATCH (n)-[r]->(m) WHERE m.name = "oldname" SET m.name = "newname" RETURN n, r, m;
         var button = document.createElement("button");
         button.innerHTML = "Change name";
         button.onclick = function() {
             var new_name = prompt("Please enter the new name", nodeLabel);
             if (new_name != null) {
                 console.log("change name");
-                // Change the name of the node
                 node.options.label = new_name;
                 node.options.title = new_name;
                 node.options.head_full = new_name;
                 node.options.tail_full = new_name;
-                //node.updateLabel(); existe pas 
-                //node.updateTitle();
-                //node.update();
+
                 
-                // Connect to the database and run 2 queries
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "http://localhost:5000/change_name", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
