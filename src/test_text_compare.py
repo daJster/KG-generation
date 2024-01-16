@@ -133,24 +133,18 @@ print("date : ", detecter_date("1abc2"), "1abc2")
 print("date : ", detecter_date("abc2122"), "abc2122")
 
 def clear_num(text):
-    #replace alpha-num-alpha by alpha-alpha and keep alpha-space-num-space-alpha
-    # if there is space between the number it's ok we keep it otherwise if number is directly after or before a letter we remove the number
-    
-    new_text = ""
-    for i in range(len(text)) :
-        if text[i].isalpha() :
-            new_text += text[i]
-        elif text[i].isdigit() :
-            if i > 0 and text[i-1].isalpha() :
-                if i < len(text)-1 and text[i+1].isalpha() :
-                    new_text += text[i]
-            elif i < len(text)-1 and text[i+1].isalpha() :
-                new_text += text[i]
-            else :
-                new_text += " "
-        else :
-            new_text += text[i]
-    return new_text
+    result = []
+    for word in text.split(" "):
+        try :
+            int_val = int(word)
+            result.append(str(int_val))
+        except ValueError :
+            clean_word = [l for l in word if not l.isdigit()]
+            if len(clean_word) > 1: # TO CHANGE STV XD
+                result.append("".join(clean_word))
+
+    return " ".join(result) 
+
 
 
         

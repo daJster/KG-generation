@@ -11,6 +11,9 @@ from pyvis.network import Network
 import networkx as nx
 from rdflib import Graph, Namespace
 import re
+import wikipedia
+from GoogleNews import GoogleNews
+from googlesearch import search
 
 
 app = Flask(__name__, template_folder='./', static_folder='assets')
@@ -146,6 +149,153 @@ def index():
     # else:
     return render_template('index.html')
 
+
+
+        # var xhr = new XMLHttpRequest();
+        # xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
+        # xhr.setRequestHeader("Content-Type", "application/json");
+        # xhr.send(JSON.stringify({"node": nodeLabel}));
+        # xhr.onreadystatechange = function() {
+        #     if (this.readyState == 4 && this.status == 200) {
+        #         var details = JSON.parse(this.responseText);
+        #         popup.innerHTML = details["html"];
+        #         popup.appendChild(button);
+        #     }
+        # };
+        
+@app.route('/wikipedia_details', methods=['POST'])
+def wikipedia_details():
+    data = request.get_json()
+    node = data["node"]
+    try : 
+        node_type = data["node_type"]
+    except :
+        node_type = data["node_tail_type"]
+    print("node : ", node, "node_type : ", node_type)
+    html, wiki = get_wikipedia(node, node_type)
+    html = get_google(node, node_type, wiki, html)
+    html += get_news(node, node_type)
+    return {"html": html}
+
+def get_wikipedia(node, node_type):
+    wiki = 0
+    try :
+        ## give a summury of the wikipedia page and then a button to go to the wikipedia page
+        html = f"""
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Wikipedia</h1>
+                    <p>{wikipedia.summary(node)}</p>
+                    <a href="{wikipedia.page(node).url}" target="_blank">Go to wikipedia page</a>
+                </div>
+            </div>
+        </div>
+        """
+        wiki = 1
+    ## if there are too many possible pages get the list of possible pages and then let the user choose the node name he wants and recall the function
+    except wikipedia.exceptions.DisambiguationError as e:
+        html = f"""
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Wikipedia</h1>
+                    <p>Too many possible pages</p>    
+                </div>
+            </div>
+        </div>
+        """
+    ## if there are no information on wikipedia return "no information found on wikipedia"
+    except wikipedia.exceptions.PageError as e:
+        html = f"""
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Wikipedia</h1>
+                    <div class="nowiki">
+                        <p>No information found on wikipedia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+    return html, wiki
+def get_google(node, node_type, wiki, html):
+    ## return html code of the google search
+    html += f"""
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Google search</h1>
+                <ul>
+    """
+    i=0
+    try :
+        for url in search(node + " " + node_type, num_results=5):
+            i+=1
+            html += f"""
+            <li>
+                <a href="{url}" target="_blank">{url}</a>
+            </li>
+            """
+            ## if we found a wikipedia page then we modify the wikipedia html code to add the summary of the wikipedia page found by google
+            if "wikipedia" in url:
+                ## si on avait pas trouvé de page wikipedia a l'étape de get_wikipedia alors on ajoute le résumé de la page wikipedia trouvé par google dans la section wikipedia class = nowiki
+                if wiki == 0 :
+                    html = html.replace("""<div class="nowiki">
+                        <p>No information found on wikipedia</p>
+                    </div>""", '<div class="nowiki"><p>Wikipedia failed to find a page for this node but google seems to have found one, here is the link</p><a href="{url}" target="_blank">Go to wikipedia page</a></div>')
+    except :
+        pass
+    if i == 0:
+        html += "<p>We were not able to find any results</p>"
+    html += """
+                </ul>
+            </div>
+        </div>
+    </div>
+    """
+    return html
+
+
+def get_news(node, node_type):
+    ## return html code of the news (max 5 news summary)
+    try :
+        googlenews = GoogleNews()
+        googlenews.search(node + " " + node_type)
+        result = googlenews.result()
+    except :
+        result = []
+        
+    html = f"""
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>News</h1>
+                <ul>
+    """
+    i=0
+    for news in result[:5]:
+        if len(news["title"]) > 5:
+            i+=1
+            html += f"""
+            <li>
+                <p>{news["title"]}</p>
+                <a href="{news["link"]}" target="_blank">Go to news page</a>
+            </li>
+            """
+    if i == 0:
+        html += "<p>We were not able to find any news</p>"
+    html += """
+                </ul>
+            </div>
+        </div>
+    </div>
+    """
+    return html
+
+
+
 @app.route('/generate_html', methods=['POST'])
 def construct_graph():
     data = request.get_json()
@@ -172,8 +322,10 @@ def construct_graph():
             # if len(head) > 20 take the first 20 characters else take the whole string
             "head": head[:20] + "..." if len(head) > 20 else head,
             "head_full": head,
+            "head_type": relation["type_head"],
             "type": relation_type + "..." if len(relation_type) > 20 else relation_type,
             "tail": tail[:20] + "..." if len(tail) > 20 else tail,
+            "tail_type": relation["type_tail"],
             "tail_full": tail,
             "fname": fname
         }
@@ -184,9 +336,9 @@ def construct_graph():
 
    # Add entities
     for r in relations_clean:
-        g.add_node(r['head'], label=r['head'], title=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']), fname=r['fname'], head_full=r['head_full'])
+        g.add_node(r['head'], label=r['head'], title=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname']), fname=r['fname'], head_full=r['head_full'], head_type=r['head_type'])
         if r['tail'] not in g.nodes:
-            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname']), fname=r['fname'], head_full=r['tail_full'])
+            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname']), fname=r['fname'], head_full=r['tail_full'], tail_type=r['head_type'])
 
 
 
@@ -248,6 +400,24 @@ def construct_graph():
     net.save_graph("graph.html")
     
     event_listener_code = """
+    
+    
+    // function to get wikipedia details of a node    
+    function details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull, nodeHeadType, nodeTailType) {
+        return `
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>${nodeHeadFull}</h1>
+                    <p>From : ${nodeFname}</p>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    
+    
+    
     network.on("click", function (params) {
     if (params.nodes.length > 0) {
         var nodeId = params.nodes[0];
@@ -266,37 +436,132 @@ def construct_graph():
         var nodeFname = node.options.fname;
         var nodeHeadFull = node.options.head_full;
         var nodeTailFull = node.options.tail_full;
+        var nodeHeadType = node.options.head_type;
+        var nodeTailType = node.options.tail_type;
         
         var popup = document.getElementById("myPopup");
-        popup.innerHTML = "<h3>Node information</h3><br><b>Label</b> : " + nodeLabel + "<br><b>Full name</b> : " + nodeTitle + "<br><b>File name</b> : " + nodeFname;
         
-        var button = document.createElement("button");
-        button.innerHTML = "Change name";
-        button.onclick = function() {
-            var new_name = prompt("Please enter the new name", nodeLabel);
-            if (new_name != null) {
-                console.log("change name");
-                node.options.label = new_name;
-                node.options.title = new_name;
-                node.options.head_full = new_name;
-                node.options.tail_full = new_name;
-
+        popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull, nodeHeadType, nodeTailType);
+              
+        
+        // call the python function wikipedia_details to get the html details code of the node
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        console.log("nodeLabel : ", nodeLabel, "nodeHeadType : ", nodeHeadType, "nodeTailType : ", nodeTailType);
+        xhr.send(JSON.stringify({"node": nodeLabel, "node_type": nodeHeadType, "node_tail_type": nodeTailType}));
+        // loading animation
+        popup.innerHTML += '<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var details = JSON.parse(this.responseText);
+                popup.innerHTML += details["html"];
+                //popup.appendChild(button);       
+                // loading animation stop
+                popup.innerHTML = popup.innerHTML.replace('<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>', "");                    
                 
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://localhost:5000/change_name", true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(JSON.stringify({"old_name": nodeLabel, "new_name": new_name}));
-                console.log("requete envoye");
+                // button to change the name of the node
+                var button = document.createElement("button");
+                button.innerHTML = "Change name";
+                button.onclick = function() {
+                    var new_name = prompt("Please enter the new name", nodeLabel);
+                    if (new_name != null) {
+                        // call the python function change_name to change the name of the node
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://localhost:5000/change_name", true);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(JSON.stringify({"old_name": nodeLabel, "new_name": new_name}));
+                        xhr.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                // change the name of the node
+                                node.options.label = new_name;
+                                node.options.title = node.options.title.replace(nodeLabel, new_name);
+                                nodeLabel = new_name;
+                                nodeTitle = node.options.title;
+                                // update the popup
+                                popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull);
+                            }
+                        };
+                    }
+                };
+                popup.appendChild(button);
+                    
             }
         };
-        popup.appendChild(button);       
-        popup.classList.toggle("show");       
+        
+    
+        popup.classList.toggle("show");
+        // update body size to take into account the popup
+        network.setSize("100%", "100%");       
     }
     });
     """
     html_popup = """
-    <div class="popup" id="myPopup"></div>
+    <div class="popup" id="myPopup"></div>    
     """
+    
+    style = """
+    <style>
+    .lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    top: 5%;
+    width: 90px;
+    height: 90px;
+    }
+    .lds-ellipsis div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #cef;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    .lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+    }
+    @keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+    }
+    @keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(24px, 0);
+    }
+    }
+    </style>
+    """
+    
     
 
 
@@ -306,7 +571,7 @@ def construct_graph():
 
     # Add the event listener code to the generated HTML file
     with open("graph.html", "a") as file:
-        file.write(html_popup + "<script>" + event_listener_code + "</script>")
+        file.write(html_popup + style + "<script>" + event_listener_code + "</script>")
         
     
     

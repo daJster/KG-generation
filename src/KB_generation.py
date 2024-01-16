@@ -166,24 +166,33 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
     return kb, partial_model_time
 
 
+def clear_num(text):
+    result = []
+    for word in text.split(" "):
+        try :
+            int_val = int(word)
+            result.append(str(int_val))
+        except ValueError :
+            clean_word = [l for l in word if not l.isdigit()]
+            if len(clean_word) > 1:
+                result.append("".join(clean_word))
+
+    return " ".join(result) 
+
+
+
+        
+
+
 def clear_str(word):
     # remove all caractere like : ',|- and replace them by space
     word = re.sub(r'[\',\|\-]', ' ', word)
 
     # if their are repetition of a word like : "the the" we remove the second "the" until there is no more repetition
     while re.search(r'(\w+) \1', word) :
-        word = re.sub(r'(\w+) \1', r'\1', word)
-        
+        word = re.sub(r'(\w+) \1', r'\1', word)    
     # if a word is ending with numbers without space like : "the2" we remove the numbers
-    for w in word.split() :
-        if re.search(r'\w+\d+', w) :
-            word = re.sub(r'\d+', '', word)
-            
-    # same if a word is starting with numbers without space like : "2the" we remove the numbers
-    for w in word.split() :
-        if re.search(r'\d+\w+', w) :
-            word = re.sub(r'\d+', '', word)
-            
+    word = clear_num(word)
     # delete double space
     word = re.sub(r' +', ' ', word)
     
