@@ -1,15 +1,11 @@
 import math
 import torch
-import wikipedia
-from neo4j import GraphDatabase 
-from rdflib import Graph, URIRef, Literal, Namespace, RDF, RDFS
-from urllib.parse import quote
+from neo4j import GraphDatabase
 import re
-import uuid
-import json
 from merge_RDF import similarity_score
 from params import tokenizer, rdf_model, PATH_TO_RDF_FILES, ACTIVATE_SIMILARITY, DEVICE
 from all_mini import compare_with_all_mini
+import time
 
 # knowledge base class for meta data collection
 class KB():
@@ -134,8 +130,9 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
       "num_return_sequences": num_return_sequences,
       "forced_bos_token_id": None,
     }
-
-
+    
+    partial_model_time = 0
+    start_time = time.time()
     generated_tokens = rdf_model.generate(
       inputs["input_ids"].to(rdf_model.device),
       attention_mask=inputs["attention_mask"].to(rdf_model.device),
@@ -150,6 +147,8 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
     decoded_preds = tokenizer.batch_decode(generated_tokens, skip_special_tokens=False)
     torch.cuda.empty_cache()
 
+    # extract relations
+    partial_model_time = time.time() - start_time
     i = 0
     for sentence_pred in decoded_preds:
         current_span_index = i // num_return_sequences
@@ -164,47 +163,7 @@ def get_kb(text, span_length=128, verbose=False, kb=KB(), pdf_name=""):
             kb.add_relation(relation)
         i += 1
 
-    return kb
-
-
-# def store_kb(kb):
-#     """
-#     Store the knowledge base (KB) as JSON and RDF files.
-
-#     Args:
-#         kb (KnowledgeBase): The knowledge base object containing the entities and relations.
-
-#     Returns:
-#         bool: True if the KB is successfully stored, False otherwise.
-#     """
-#     mode = "w"
-#     store_fname = "new"
-
-#     # Your existing code to create and populate the RDF graph
-#     relations = []
-
-#     # Iterate over each relation and add it to the relations list
-#     for relation in kb.relations:
-#         # check if head, relation_type, and tail are URI safe
-#         head = relation["head"]
-#         relation_type = relation["type"]
-#         tail = relation["tail"]
-#         fname = relation["fname"]
-#         # Add the triple to the list
-#         relation_dict = {
-#             "head": head,
-#             "type": relation_type,
-#             "tail": tail,
-#             "fname" : fname
-#         }
-#         relations.append(relation_dict)
-
-#     # Save the list of triples to a JSON file
-#     json_filename = "../RDFs/" + store_fname + '_r.json'
-#     with open(json_filename, 'w') as json_file:
-#         json.dump(relations, json_file)
-
-#     return True
+    return kb, partial_model_time
 
 
 def clear_str(word):
@@ -352,7 +311,7 @@ def store_kb(kb):
     with GraphDatabase.driver(URI, auth=AUTH) as client:
         # Check the connection
         client.verify_connectivity()
-
+        partial_merge_time = 0
         history=[]
                 
         for r in kb.relations :
@@ -392,6 +351,7 @@ def store_kb(kb):
                     best_score_head = 0
                     best_node_tail = ""
                     best_score_tail = 0
+                    start_time = time.time()
                     for node in nodes_with_same_head_type and nodes_with_same_tail_type :
                         score_text_compare = text_compare(node, head)
                         if score_text_compare > 0.8 :
@@ -427,7 +387,8 @@ def store_kb(kb):
                         tail = best_node_tail
                         print("c    ", tail, "is the same as", best_node_tail)
                         
-                
+                    partial_merge_time += time.time() - start_time
+                    
                 # check if head with head_type is aleady in the database memgraph
                 query = f"MATCH (n:`{head_type}`) WHERE n.name = '{head}' RETURN n"
                 with client.session() as session:
@@ -489,3 +450,5 @@ def store_kb(kb):
             for query in history:
                 f.write(query + "\n")
         
+        print("c    stored.")
+    return True, partial_merge_time

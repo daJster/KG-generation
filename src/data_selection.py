@@ -1,7 +1,5 @@
 import os
 from params import PATH_TO_PDF_FILES, PATH_TO_RDF_FILES
-from rdflib import Graph, URIRef, Literal
-from rdflib.plugins.sparql import prepareQuery
 
 def get_files(path):
     """

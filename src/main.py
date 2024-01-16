@@ -1,7 +1,5 @@
-from data_selection import get_files
 from text_selection import get_text
 from KB_generation import get_kb, store_kb, KB
-from graph_generation import get_graph, get_graph2
 import time
 import streamlit as st #  export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
@@ -20,26 +18,42 @@ def main() :
     if files != [] : 
         with st.status("Generating graph...", expanded=True) as status:
             start_time = time.time()
+            model_time = 0
+            merge_time = 0
+            model_time = 0
             kb = KB()
-            for file in files :
+            for idx, file in enumerate(files) :
                 st.write("Generating graph for : ", file.name)
                 pourcentage_progress_bar = st.progress(0)
                 text = get_text(file)
-                for i in range(0, len(text), 1000):
-                    text_part = text[i:i+1000]
-                    kb = get_kb(text_part, verbose=False, kb=kb, pdf_name=file.name)
+                batch_size = 34000
+                for i in range(0, len(text), batch_size):
+                    if i+batch_size > len(text) :
+                        text_part = text[i:]
+                    else :
+                        text_part = text[i:i+batch_size]
+                    kb, partial_model_time = get_kb(text_part, verbose=False, kb=kb, pdf_name=file.name)
                     if i % batch_size_save == 0 :
-                        is_stored = store_kb(kb)
+                        is_stored, partial_merge_time = store_kb(kb)
                         # reset kb
                         kb = KB()
                     pourcentage_progress_bar.progress(int(i/len(text)*100))
-                    
+                    model_time += partial_model_time
+                    merge_time += partial_merge_time
                         
-                is_stored = store_kb(kb)
+                is_stored, partial_merge_time = store_kb(kb)
+                merge_time += partial_merge_time
+                
                 end_time = time.time()
                 execution_time = end_time - start_time
+                print(f"c    ################# Generation Time : {model_time:.4f} seconds #################")
+                print(f"c    ################# Merge Time : {merge_time:.4f} seconds #################")
+                print(f"c    ################# Total Time : {execution_time:.4f} seconds #################")
+                print(f"c    #################  {idx} #################")
                 pourcentage_progress_bar.progress(int(100))
-                st.write(f"Execution Time for {file.name}: {execution_time:.4f} seconds")         
+                st.write(f"Total Time for {file.name}: {execution_time:.4f} seconds.")
+                st.write(f"Model Time for {file.name}: {model_time:.4f} seconds.")
+                st.write(f"Merge Time for {file.name}: {merge_time:.4f} seconds.")      
             st.success(f"graph generated.")
     
 
