@@ -1,5 +1,5 @@
 import hashlib
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
 from rdflib import Graph
 from flask_cors import CORS
 import networkx as nx
@@ -407,9 +407,9 @@ def construct_graph():
         return `
         <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <h1>${nodeHeadFull}</h1>
-                    <p>From : ${nodeFname}</p>
+                <div class="col-12 text-center mt-5">
+                    <h1 class="display-4">${nodeHeadFull}</h1>
+                    <p class="lead">From: ${nodeFname}</p>
                 </div>
             </div>
         </div>
@@ -438,7 +438,15 @@ def construct_graph():
         var nodeTailFull = node.options.tail_full;
         var nodeHeadType = node.options.head_type;
         var nodeTailType = node.options.tail_type;
-        
+        var div_loader = `<div class="loader">
+                                <div class="lds-ellipsis">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>`;
+                        
         var popup = document.getElementById("myPopup");
         
         popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull, nodeHeadType, nodeTailType);
@@ -448,20 +456,24 @@ def construct_graph():
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-        console.log("nodeLabel : ", nodeLabel, "nodeHeadType : ", nodeHeadType, "nodeTailType : ", nodeTailType);
         xhr.send(JSON.stringify({"node": nodeLabel, "node_type": nodeHeadType, "node_tail_type": nodeTailType}));
         // loading animation
-        popup.innerHTML += '<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
+        popup.innerHTML += div_loader;
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var details = JSON.parse(this.responseText);
-                popup.innerHTML += details["html"];
+                var text_info = document.createElement("div");
+                text_info.innerHTML += details["html"];
+                popup.appendChild(text_info);
                 //popup.appendChild(button);       
                 // loading animation stop
-                popup.innerHTML = popup.innerHTML.replace('<div class="loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>', "");                    
+                popup.innerHTML = popup.innerHTML.replace(div_loader, "");                    
                 
                 // button to change the name of the node
+                var container = document.createElement("div");
+                container.classList.add("container", "text-center", "col-md-12");
                 var button = document.createElement("button");
+                button.classList.add("btn", "btn-primary", "btn-sm", "rounded", "p-2", "col-md-3");
                 button.innerHTML = "Change name";
                 button.onclick = function() {
                     var new_name = prompt("Please enter the new name", nodeLabel);
@@ -484,12 +496,13 @@ def construct_graph():
                         };
                     }
                 };
-                popup.appendChild(button);
-                    
+                document.querySelectorAll('h1').forEach(element => {element.className = 'display-4';});
+                container.appendChild(button);
+                popup.appendChild(container);
+                                    
             }
         };
         
-    
         popup.classList.toggle("show");
         // update body size to take into account the popup
         network.setSize("100%", "100%");       
@@ -644,6 +657,18 @@ def create_graph_from_db():
         g.save_graph("graph.html")
         return send_file("graph.html", mimetype='text/html')
     
+@app.route('/get_entities', methods=['GET'])
+def get_entities():
+    # Define correct URI and AUTH arguments (no AUTH by default)
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        entities, _, _= client.execute_query(
+            "MATCH (n) RETURN n.name, n.head_type;",
+            database_="memgraph",
+        )
+        return jsonify(entities)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

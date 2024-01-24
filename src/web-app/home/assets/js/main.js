@@ -282,7 +282,6 @@
     const htmlFrame = document.getElementById("htmlFrame");
     function loadAndRenderHTML() {
         // Fetch the HTML content from Flask
-        console.log("check inside fun")
 
         fetch('/generate_html', {
             method: 'POST',
@@ -302,26 +301,11 @@
                 iframeDocument.open();
                 iframeDocument.write(htmlContent);
                 iframeDocument.close();
-                loadingAnimation.style.display = "none";
             })
             .catch(error => {
                 console.error(error);
-                loadingAnimation.style.display = "none";
             });
 
-        // fetch(`/get_graph_file/${search_entity}`)
-        //     .then(response => response.text())
-        //     .then(htmlContent => {
-        //         const iframeDocument = htmlFrame.contentDocument || htmlFrame.contentWindow.document;
-        //         iframeDocument.open();
-        //         iframeDocument.write(htmlContent);
-        //         iframeDocument.close();
-        //         loadingAnimation.style.display = "none";
-        //     })
-        //     .catch(error => {
-        //         console.error(error);
-        //         loadingAnimation.style.display = "none";
-        //     });
     }
 
     loadAndRenderHTML()
@@ -335,29 +319,54 @@
 
   // SEARCH BAR CODE
 
-  // Simulated database with words and types
-  const database = [
-    { word: 'example1', type: 'concept' },
-    { word: 'example2', type: 'unknown' },
-    { word: 'example3', type: 'organization' },
-    { word: 'example1', type: 'concept' },
-    { word: 'example2', type: 'unknown' },
-    { word: 'example3', type: 'organization' },
-    { word: 'example1', type: 'concept' },
-    { word: 'example2', type: 'unknown' },
-    { word: 'example3', type: 'organization' },
-    { word: 'example1', type: 'concept' },
-    { word: 'example2', type: 'unknown' },
-    { word: 'example3', type: 'organization' },
-    // Add more data as needed
-  ];
+
+  // FETCH ENTITIES HERE
+  async function fetchEntities() {
+    try {
+        const response = await fetch('/get_entities', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const entities = await response.json();
+        return entities;
+    } catch (error) {
+        console.error(error);
+        throw error;  // Re-throw the error to be caught by the caller
+    }
+  }
+
+
+  var database = []
+  // Populate Database
+  async function initializeDatabase() {
+      try {
+          let response = await fetchEntities();
+          response.forEach(entity => {
+              database.push({ word: entity[0], type: entity[1] });
+          })
+          return response;
+      } catch (error) {
+          // Handle error if needed
+          console.error(error);
+      }
+  }
+
+  // FORMAT :  { word: 'example1', type: 'example_type' },
+  initializeDatabase();
 
   const suggestedButtonsDiv = document.getElementById('suggestedButtons');
 
   // Function to filter suggestions based on user input
   function filterSuggestions(input) {
-    // JAVA FETCH FUNCTION
-    const filteredWords = database.filter(entry => entry.word.includes(input));
+    // FILTER WORDS HERE
+    const filteredWords = database.filter(entry => entry.word.toLowerCase().includes(input.toLowerCase()));
     return filteredWords;
   }
 
@@ -387,7 +396,7 @@
       } else {
         switchPLaceholderGlow("hidden");
         suggestions.forEach((entry, index) => {
-            const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `<span class="highlight">${match}</span>`);
+            const highlightedWord = entry.word.replace(new RegExp(input, 'gi'), match => `${match}`);
         
             const button = createSuggestionButton(highlightedWord, entry.type);
             suggestedButtonsDiv.appendChild(button);
@@ -407,8 +416,27 @@
 
       
     } else {
-      switchPLaceholderGlow("shown");
+      switchPLaceholderGlow("hidden");
       // GET ALL ENTITIES
+      setTimeout(() => {
+        database.forEach(entity => {
+          const button = createSuggestionButton(entity.word, entity.type);
+          suggestedButtonsDiv.appendChild(button);
+          suggestedButtonsDiv.style.overflowY = 'scroll';
+          suggestedButtonsDiv.style.overflowX = 'hidden';
+      
+          // Triggering reflow to apply transition on dynamically added elements
+          void button.offsetWidth;
+      
+          // Set a timeout to add a class after 300ms
+          setTimeout(() => {
+            button.classList.add('visible');
+          }, 300);
+      
+          button.addEventListener('click', () => addSelectedWord(entity.word));
+        });
+      }, 200)
+      
     }
     
   }
@@ -417,15 +445,24 @@
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'btn btn-light mb-2 p-2 col-md-12 text-left d-flex shadow bg-white rounded suggestion';
-    button.innerHTML = highlightedWord;
-  
-    const typeElement = document.createElement('div');
-    typeElement.className = 'text-center';
+
+    const wordElement = document.createElement('span');
+    wordElement.className = 'font-weight-bold col-md-8 text-justify';
+    wordElement.innerText = highlightedWord;
+
+    const typeElement = document.createElement('span');
+    typeElement.className = 'font-weight-light font-italic col-md-2 text-right bg-light rounded p-1';
+    typeElement.style.opacity = '0.5';
     typeElement.innerText = type;
-    typeElement.style.opacity = 0; // Start with opacity 0
-  
+
+    // Add some space between the two elements
+    const spaceElement = document.createTextNode(' ');
+
+    // Append the elements to the button
+    button.appendChild(wordElement);
+    button.appendChild(spaceElement);
     button.appendChild(typeElement);
-  
+
     return button;
   }
   
@@ -437,7 +474,7 @@
     searchInput.value = word;
 
     // Clear the suggestions and reset the input value for better user experience
-    document.querySelector('#suggestions').innerHTML = '';
+    suggestedButtonsDiv.innerHTML = '';
   }
 
   // Function to handle the search and show graph
@@ -453,6 +490,26 @@
   // Attach event listeners
   document.querySelector('#searchInput').addEventListener('input', displaySuggestions);
   switchPLaceholderGlow("shown");
+  // GET ALL ENTITIES
+  setTimeout(() => {
+    database.forEach(entity => {
+      const button = createSuggestionButton(entity.word, entity.type);
+      suggestedButtonsDiv.appendChild(button);
+      suggestedButtonsDiv.style.overflowY = 'scroll';
+      suggestedButtonsDiv.style.overflowX = 'hidden';
+  
+      // Triggering reflow to apply transition on dynamically added elements
+      void button.offsetWidth;
+  
+      // Set a timeout to add a class after 300ms
+      setTimeout(() => {
+        button.classList.add('visible');
+      }, 300);
+  
+      button.addEventListener('click', () => addSelectedWord(entity.word));
+    });
+  }, 200)
+  switchPLaceholderGlow("hidden");
 })()
 
 

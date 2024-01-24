@@ -1220,6 +1220,7 @@ section {
 
 .placeholder-glow.shown {
   display: block;
+  opacity: 0.5;
 }
 
 .placeholder-glow.hidden {
