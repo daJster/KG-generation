@@ -485,6 +485,30 @@
 
     // Implement your logic to show the graph based on the input parameters
     console.log(`Search Input: ${searchInput}, Group By: ${groupBy}, Radius: ${radius}`);
+    // post request to flask
+    
+    fetch('/load_data_from_db_with_node_and_radius', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({search_term: searchInput, group_by: groupBy, radius: radius}),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text(); // Assuming the server returns HTML content
+        })
+        .then(htmlContent => {
+            const iframeDocument = htmlFrame.contentDocument || htmlFrame.contentWindow.document;
+            iframeDocument.open();
+            iframeDocument.write(htmlContent);
+            iframeDocument.close();
+        })
+        .catch(error => {
+            console.error(error);
+        });
   }
 
   // Attach event listeners

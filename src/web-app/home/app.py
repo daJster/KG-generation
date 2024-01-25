@@ -53,6 +53,8 @@ def transform_to_json(input_data):
     
     for entry in input_data:
         output_data.append(record_str_to_dict(str(entry)))
+        
+    print(output_data)
     return output_data
 
 
@@ -100,11 +102,10 @@ def load_data_from_db():
         relations = [dict(record) for record in relations] # convert to dict
         return relations
     
-    
 def load_data_from_db_with_node_and_radius(node_name, radius):
     URI = "bolt://localhost:7687"
     AUTH = ("", "")
- 
+     
     with GraphDatabase.driver(URI, auth=AUTH) as client:
         # Check the connection
         client.verify_connectivity()
@@ -117,11 +118,19 @@ def load_data_from_db_with_node_and_radius(node_name, radius):
         
         #! TODO  convert to dict with transform_to_json(relations)
         
+        
         relations = convert_to_desired_format(transform_to_json(relations))
         
         return relations       
 
     
+@app.route('/load_data_partialy', methods=['POST'])
+def construct_graph_partialy():
+    print("\nconstruct_graph_partialy\n")
+    data = request.get_json()
+    node_name = data["search_term"]
+    radius = data["radius"]
+    construct_graph(all_relations=False, node_name=node_name, radius=radius)
     
 
 
@@ -297,12 +306,15 @@ def get_news(node, node_type):
 
 
 @app.route('/generate_html', methods=['POST'])
-def construct_graph():
+def construct_graph(all_relations=True, node_name=None, radius=None):
     data = request.get_json()
 
     relations_clean = []
-    relations = load_data_from_db()
-    # relations = load_data_from_db_with_node_and_radius('Audi A1', 3)
+    if all_relations:
+        relations = load_data_from_db()
+    else: 
+        print("load_data_from_db_with_node_and_radius ==> node_name : ", node_name, "radius : ", radius)
+        relations = load_data_from_db_with_node_and_radius(node_name, radius)
 
     # Iterate over the RDF triples and extract 'head,' 'type,' and 'tail' information
     for relation in relations:
@@ -399,192 +411,15 @@ def construct_graph():
     # Sauvegarde du graph
     net.save_graph("graph.html")
     
-    event_listener_code = """
-    
-    
-    // function to get wikipedia details of a node    
-    function details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull, nodeHeadType, nodeTailType) {
-        return `
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center mt-5">
-                    <h1 class="display-4">${nodeHeadFull}</h1>
-                    <p class="lead">From: ${nodeFname}</p>
-                </div>
-            </div>
-        </div>
-        `;
-    }
-    
-    
-    
-    network.on("click", function (params) {
-    if (params.nodes.length > 0) {
-        var nodeId = params.nodes[0];
-        network.focus(nodeId, {
-        scale: 1.5,  // Adjust the scale as needed
-        locked: false,
-        animation: {
-            duration: 1000,
-            easingFunction: "easeInOutQuad"
-        }
-        });
-        
-        var node = network.body.nodes[nodeId];
-        var nodeLabel = node.options.label;
-        var nodeTitle = node.options.title;
-        var nodeFname = node.options.fname;
-        var nodeHeadFull = node.options.head_full;
-        var nodeTailFull = node.options.tail_full;
-        var nodeHeadType = node.options.head_type;
-        var nodeTailType = node.options.tail_type;
-        var div_loader = `<div class="loader">
-                                <div class="lds-ellipsis">
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                </div>
-                            </div>`;
-                        
-        var popup = document.getElementById("myPopup");
-        
-        popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull, nodeHeadType, nodeTailType);
-              
-        
-        // call the python function wikipedia_details to get the html details code of the node
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify({"node": nodeLabel, "node_type": nodeHeadType, "node_tail_type": nodeTailType}));
-        // loading animation
-        popup.innerHTML += div_loader;
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var details = JSON.parse(this.responseText);
-                var text_info = document.createElement("div");
-                text_info.innerHTML += details["html"];
-                popup.appendChild(text_info);
-                //popup.appendChild(button);       
-                // loading animation stop
-                popup.innerHTML = popup.innerHTML.replace(div_loader, "");                    
-                
-                // button to change the name of the node
-                var container = document.createElement("div");
-                container.classList.add("container", "text-center", "col-md-12");
-                var button = document.createElement("button");
-                button.classList.add("btn", "btn-primary", "btn-sm", "rounded", "p-2", "col-md-3");
-                button.innerHTML = "Change name";
-                button.onclick = function() {
-                    var new_name = prompt("Please enter the new name", nodeLabel);
-                    if (new_name != null) {
-                        // call the python function change_name to change the name of the node
-                        var xhr = new XMLHttpRequest();
-                        xhr.open("POST", "http://localhost:5000/change_name", true);
-                        xhr.setRequestHeader("Content-Type", "application/json");
-                        xhr.send(JSON.stringify({"old_name": nodeLabel, "new_name": new_name}));
-                        xhr.onreadystatechange = function() {
-                            if (this.readyState == 4 && this.status == 200) {
-                                // change the name of the node
-                                node.options.label = new_name;
-                                node.options.title = node.options.title.replace(nodeLabel, new_name);
-                                nodeLabel = new_name;
-                                nodeTitle = node.options.title;
-                                // update the popup
-                                popup.innerHTML = details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull);
-                            }
-                        };
-                    }
-                };
-                document.querySelectorAll('h1').forEach(element => {element.className = 'display-4';});
-                container.appendChild(button);
-                popup.appendChild(container);
-                                    
-            }
-        };
-        
-        popup.classList.toggle("show");
-        // update body size to take into account the popup
-        network.setSize("100%", "100%");       
-    }
-    });
-    """
     html_popup = """
-    <div class="popup" id="myPopup"></div>    
-    """
+    <div class="popup container col-md-12 p-3" id="myPopup"></div>
+    <link rel='stylesheet' type='text/css' href='assets/css/loader.css'>
+    <script src='assets/js/get_details.js'></script>"""
     
-    style = """
-    <style>
-    .lds-ellipsis {
-    display: inline-block;
-    position: relative;
-    left: 50%;
-    top: 5%;
-    width: 90px;
-    height: 90px;
-    }
-    .lds-ellipsis div {
-    position: absolute;
-    top: 33px;
-    width: 13px;
-    height: 13px;
-    border-radius: 50%;
-    background: #cef;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-    }
-    .lds-ellipsis div:nth-child(1) {
-    left: 8px;
-    animation: lds-ellipsis1 0.6s infinite;
-    }
-    .lds-ellipsis div:nth-child(2) {
-    left: 8px;
-    animation: lds-ellipsis2 0.6s infinite;
-    }
-    .lds-ellipsis div:nth-child(3) {
-    left: 32px;
-    animation: lds-ellipsis2 0.6s infinite;
-    }
-    .lds-ellipsis div:nth-child(4) {
-    left: 56px;
-    animation: lds-ellipsis3 0.6s infinite;
-    }
-    @keyframes lds-ellipsis1 {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
-    }
-    @keyframes lds-ellipsis3 {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(0);
-    }
-    }
-    @keyframes lds-ellipsis2 {
-    0% {
-        transform: translate(0, 0);
-    }
-    100% {
-        transform: translate(24px, 0);
-    }
-    }
-    </style>
-    """
-    
-    
-
-
-    # Add the event listener code to the HTML file
-    # g.set_edge_smooth("continuous")
-    # g.show_buttons()
 
     # Add the event listener code to the generated HTML file
     with open("graph.html", "a") as file:
-        file.write(html_popup + style + "<script>" + event_listener_code + "</script>")
+        file.write(html_popup)
         
     
     
