@@ -14,79 +14,14 @@ import re
 import wikipedia
 from GoogleNews import GoogleNews
 from googlesearch import search
-
+import ast
 
 app = Flask(__name__, template_folder='./', static_folder='assets')
 CORS(app)
 
 
-# Chargement du graph 
-# with open('../../../RDFs/new_r.json', "r") as json_file:
-#     relations = json.load(json_file)
-
-def record_str_to_dict(record_str):
-    # Pattern to match relationships
-    rel_pattern = re.compile(r"<Relationship element_id='(\d+)' nodes=\((.*?)\) type='(.*?)' properties={(.*?)}>\]")
-    # Pattern to match nodes
-    node_pattern = re.compile(r"<Node element_id='(\d+)' labels=frozenset\((.*?)\) properties={(.*?)}>")
-    
-    # Extract relationships
-    rel_matches = rel_pattern.findall(record_str)
-    relationships = [{'element_id': rel[0], 
-                      'nodes': [{'element_id': node[0], 
-                                 'labels': eval(node[1]), 
-                                 'properties': eval(node[2])} 
-                                for node in [tuple(part.strip() for part in node.split(',')) for node in rel[1].split('),')]], 
-                      'type': rel[2], 
-                      'properties': eval(rel[3])} for rel in rel_matches]
-    
-    # Extract nodes
-    node_matches = node_pattern.findall(record_str)
-    nodes = [{'element_id': node[0], 
-              'labels': eval(node[1]), 
-              'properties': eval(node[2])} for node in node_matches]
-    
-    return {'relationships': relationships, 'nodes': nodes}
-
-def transform_to_json(input_data):
-    output_data = []
-    
-    for entry in input_data:
-        output_data.append(record_str_to_dict(str(entry)))
-        
-    print(output_data)
-    return output_data
-
-
-def convert_to_desired_format(data):
-    result_list = []
-    
-    for json in data:
-
-        for rel in json["relationships"]:
-            if rel != None:
-                start_node_id = rel["start"]
-                end_node_id = rel["end"]
-                relationship_type = rel["label"]
-
-                start_node = next(node for node in json["nodes"] if node["id"] == start_node_id)
-                end_node = next(node for node in json["nodes"] if node["id"] == end_node_id)
-
-                result_dict = {
-                    "head": start_node["properties"]["name"],
-                    "tail": end_node["properties"]["name"],
-                    "type": relationship_type,
-                    "fname": start_node["properties"]["fname"]
-                }
-                
-                # avoid duplicates
-                if result_dict not in result_list:
-                    result_list.append(result_dict)
-
-    return result_list
-
-
 def load_data_from_db():
+    print("load_data_from_db")
     URI = "bolt://localhost:7687"
     AUTH = ("", "")
  
@@ -103,25 +38,45 @@ def load_data_from_db():
         return relations
     
 def load_data_from_db_with_node_and_radius(node_name, radius):
+    print("load_data_from_db_with_node_and_radius", node_name, radius)
     URI = "bolt://localhost:7687"
     AUTH = ("", "")
-     
     with GraphDatabase.driver(URI, auth=AUTH) as client:
         # Check the connection
         client.verify_connectivity()
         # Get all the relations connected to the node with a range of radius in maximum
-        
+        print(f"MATCH path = (startNode {{name: '{node_name}'}})-[*1..{radius}]-(endNode) RETURN relationships(path) AS relationships, nodes(path) AS nodes;")
         relations, summary, keys = client.execute_query(
-            f"MATCH path = (startNode {{name: '{node_name}'}})-[*1..{radius}]-(endNode) RETURN relationships(path) AS relationships,  nodes(path) AS nodes;",
+            f"MATCH path = (startNode {{name: '{node_name}'}})-[*1..{radius}]-(endNode) RETURN relationships(path) AS relationships, nodes(path) AS nodes;",
             database_="memgraph",
         )
+        # convert to json :  [<Record relationships=[<Relationship element_id='4999' nodes=(<Node element_id='4484' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte des vignerons du Midi'}>, <Node element_id='4485' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte Des gueux'}>) type='part of' properties={}>] nodes=[<Node element_id='4484' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte des vignerons du Midi'}>, <Node element_id='4485' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte Des gueux'}>]>, <Record relationships=[<Relationship element_id='5001' nodes=(<Node element_id='4484' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte des vignerons du Midi'}>, <Node element_id='4488' labels=frozenset({'per'}) propert
         
-        #! TODO  convert to dict with transform_to_json(relations)
         
-        print(relations)
-        relations = convert_to_desired_format(transform_to_json(relations))
+        relations = [dict(record) for record in relations] # convert to dict
+        list_of_relations = []
+        for relation in relations :
+            dict_relation = {}
+            for i in range (len(relation["relationships"])) :
+                relationships = relation["relationships"][i]
+                rel_patern = re.compile(r"<Relationship element_id='(\d+)' nodes=\((.*?)\) type='(.*?)' properties={(.*?)}>")
+                rel_matches = rel_patern.findall(str(relationships))
+                node_patern = re.compile(r"<Node element_id='(\d+)' labels=(.*?) properties={(.*?)}>")
+                node_matches = node_patern.findall(str(rel_matches[0][1]))
+                node_matches[0] = (node_matches[0][0], node_matches[0][1], dict(ast.literal_eval('{'+node_matches[0][2]+'}')))
+                node_matches[1] = (node_matches[1][0], node_matches[1][1], dict(ast.literal_eval('{'+node_matches[1][2]+'}')))
+                dict_relation["head"] = node_matches[0][2]["name"]
+                dict_relation["type_head"] = node_matches[0][2]["head_type"]
+                dict_relation["tail"] = node_matches[1][2]["name"]
+                dict_relation["type_tail"] = node_matches[1][2]["head_type"]
+                dict_relation["type"] = rel_matches[0][2]
+                dict_relation["fname"] = node_matches[0][2]["fname"]
+                list_of_relations.append(dict_relation)
         
-        return relations       
+        # for relation in list_of_relations :
+        #     print("head : ", relation["head"], " type : ", relation["type"], " tail : ", relation["tail"])
+        
+        return list_of_relations       
 
     
 @app.route('/load_data_partially', methods=['POST'])
@@ -130,10 +85,119 @@ def construct_graph_partialy():
     data = request.get_json()
     node_name = data["search_term"]
     radius = data["radius"]
-    if radius == "":
-        construct_graph(all_relations=True, node_name=node_name, radius=radius)
-    construct_graph(all_relations=False, node_name=node_name, radius=radius)
+    group_by = data["group_by"]
     
+    relations_clean = []
+    relations = load_data_from_db_with_node_and_radius(node_name, radius)
+
+    # Iterate over the RDF triples and extract 'head,' 'type,' and 'tail' information
+    for relation in relations:
+        head = str(relation["head"])
+        relation_type = str(relation["type"])
+        tail = str(relation["tail"])
+        fname = str(relation["fname"])
+
+        # Clean and process each component
+        head = clean_string(head)
+        relation_type = clean_string(relation_type)
+        tail = clean_string(tail)
+        # fname = clean_string(fname)
+
+        # Skip the iteration if the node is equal to the filename
+        relation = {
+            # if len(head) > 20 take the first 20 characters else take the whole string
+            "head": head[:20] + "..." if len(head) > 20 else head,
+            "head_full": head,
+            "head_type": relation["type_head"],
+            "type": relation_type + "..." if len(relation_type) > 20 else relation_type,
+            "tail": tail[:20] + "..." if len(tail) > 20 else tail,
+            "tail_type": relation["type_tail"],
+            "tail_full": tail,
+            "fname": fname
+        }
+        relations_clean.append(relation)
+        
+    # create graph
+    g = nx.DiGraph()
+
+   # Add entities
+    for r in relations_clean:
+        g.add_node(r['head'], label=r['head'], title=f" from file : {r['fname']} \n full name : {r['head_full']}", color=create_color_from_string(r['fname'], group_by, r['head_type']), fname=r['fname'], head_full=r['head_full'], head_type=r['head_type'])
+        if r['tail'] not in g.nodes:
+            g.add_node(r['tail'], label=r['tail'], title=f" from file : {r['fname']} \n full name : {r['tail_full']}", color=create_color_from_string(r['fname'], group_by, r['head_type']), fname=r['fname'], head_full=r['tail_full'], tail_type=r['head_type'])
+
+
+
+
+    # Add relations
+    for r in relations_clean:
+        # orientated graph
+        g.add_edge(r["head"], r["tail"], label=r["type"], color=create_color_from_string(r['fname'], group_by, r["type"]), arrows='to')
+    
+    # Create a Network instance from the directed graph
+    net = Network(height="600px", width="100%", directed=True, notebook=True, cdn_resources='remote')
+
+    # Add nodes and edges from the directed graph to the Network instance
+    net.from_nx(g)
+    net.barnes_hut()
+        
+    # Définition des options en tant que dictionnaire Python
+    options = {
+        # for more lisible graph avoid overlap of nodes and edges
+        "edges": {
+            "smooth": {
+                "forceDirection": "none",
+                "roundness": 0.15
+            }
+        },
+        "nodes": {
+            "shape": "dot",
+            "size": 16
+        },
+        "physics": {
+            "forceAtlas2Based": {
+                "gravitationalConstant": -26,
+                "centralGravity": 0.005,
+                "springLength": 230,
+                "springConstant": 0.18
+            },
+            "maxVelocity": 146,
+            "solver": "forceAtlas2Based",
+            "timestep": 0.35,
+            "stabilization": {
+                "enabled": True,
+                "iterations": 2000,
+                "updateInterval": 25
+            }
+        },
+        "interaction": {
+            "hover": True,
+        }
+    }
+
+    # Conversion du dictionnaire en chaîne JSON
+    options_str = json.dumps(options)
+
+    # Activation du zoom lors du clic sur un nœud
+    net.set_options(options_str)
+        
+        
+    # Sauvegarde du graph
+    net.save_graph("graph.html")
+    
+    html_popup = """
+    <div class="popup container col-md-12 p-3" id="myPopup"></div>
+    <link rel='stylesheet' type='text/css' href='assets/css/loader.css'>
+    <script src='assets/js/get_details.js'></script>"""
+    
+
+    # Add the event listener code to the generated HTML file
+    with open("graph.html", "a") as file:
+        file.write(html_popup)
+        
+    
+    
+    return send_file("graph.html", mimetype='text/html')
 
 
 # Function to clean and process a string
@@ -308,15 +372,11 @@ def get_news(node, node_type):
 
 
 @app.route('/generate_html', methods=['POST'])
-def construct_graph(all_relations=True, node_name=None, radius=None):
+def construct_graph():
+    print("\nconstruct_graph")
     data = request.get_json()
-
     relations_clean = []
-    if all_relations:
-        relations = load_data_from_db()
-    else: 
-        print("load_data_from_db_with_node_and_radius ==> node_name : ", node_name, "radius : ", radius)
-        relations = load_data_from_db_with_node_and_radius(node_name, radius)
+    relations = load_data_from_db()
 
     # Iterate over the RDF triples and extract 'head,' 'type,' and 'tail' information
     for relation in relations:
@@ -452,12 +512,246 @@ def change_name():
         )
         
         return "ok"
+
+
+@app.route('/delete_node', methods=['POST'])
+def delete_node(node_name, node_type):
+    data = request.get_json()
+    node_name = data["node_name"]
+    node_type = data["node_type"]
     
+    # Connect to the database and run 2 queries
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
+    
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        # Check the connection
+        client.verify_connectivity()
+        # Get all the relations with type of relation
+        relations, summary, keys = client.execute_query(
+            f"MATCH (n)-[r]->(m) WHERE n.name = '{node_name}' AND n.head_type = '{node_type}' DETACH DELETE n, r;",
+            database_="memgraph",
+        )
+        
+        relations, summary, keys = client.execute_query(
+            f"MATCH (n)-[r]->(m) WHERE m.name = '{node_name}' AND m.head_type = '{node_type}' DETACH DELETE r, m;",
+            database_="memgraph",
+        )
+        
+        return "ok"
+    
+@app.route('/delete_relation', methods=['POST'])
+def delete_relation():
+    data = request.get_json()
+    head = data["head"]
+    tail = data["tail"]
+    head_type = data["head_type"]
+    tail_type = data["tail_type"]
+    
+    # Connect to the database and run 2 queries
+    URI = "bolt://localhost:7687"
+    AUTH = ("", "")
+    
+    with GraphDatabase.driver(URI, auth=AUTH) as client:
+        # Check the connection
+        client.verify_connectivity()
+        # Get all the relations with type of relation
+        relations, summary, keys = client.execute_query(
+            f"MATCH (n)-[r]->(m) WHERE n.name = '{head}' AND m.name = '{tail}' AND n.head_type = '{head_type}' AND m.head_type = '{tail_type}' DELETE r;",
+            database_="memgraph",
+        )
+        
+        relations, summary, keys = client.execute_query(
+            f"MATCH (n)-[r]->(m) WHERE n.name = '{tail}' AND m.name = '{head}' AND n.head_type = '{tail_type}' AND m.head_type = '{head_type}' DELETE r;",
+            database_="memgraph",
+        )
+        
+        return "ok"
+    
+    
+def clear_num(text):
+    result = []
+    for word in text.split(" "):
+        try :
+            int_val = int(word)
+            result.append(str(int_val))
+        except ValueError :
+            clean_word = [l for l in word if not l.isdigit()]
+            if len(clean_word) > 1: # TO CHANGE STV XD
+                result.append("".join(clean_word))
+
+    return " ".join(result) 
+
+
+
+        
+
+
+def clear_str(word):
+    # remove all caractere like : ',|- and replace them by space
+    word = re.sub(r'[\',\|\-]', ' ', word)
+
+    # if their are repetition of a word like : "the the" we remove the second "the" until there is no more repetition
+    while re.search(r'(\w+) \1', word) :
+        word = re.sub(r'(\w+) \1', r'\1', word)
+        
+    # if a word is ending with numbers without space like : "the2" we remove the numbers
+    
+                
+    word = clear_num(word)
+    # delete double space
+    word = re.sub(r' +', ' ', word)
+    
+    return word    
+
+@app.route('/create_relation', methods=['POST'])
+def create_relation():
+    data = request.get_json()
+                    # xhr.send(JSON.stringify({"head": new_head, "head_type": new_head_type, "fname1": new_fname1, "tail": new_tail, "tail_type": new_tail_type, "fname2": new_fname2, "relation": new_relation}));
     
 
-def create_color_from_string(string):
+    head = data["head"]
+    head_type = data["head_type"]
+    fname1 = data["fname1"]
+    tail = data["tail"]
+    tail_type = data["tail_type"]
+    fname2 = data["fname2"]
+    relation = data["relation"]
+    
+    head = clear_str(head)
+    tail = clear_str(tail)
+    head_type = clear_str(head_type)
+    tail_type = clear_str(tail_type)
+    relation_type = clear_str(relation_type)
+    fname = clear_str(fname)
+    
+    if head != "" and tail != "" and relation_type != "" and head != tail and head != relation_type and tail != relation_type :
+        # get all node's name where node's head_type is the same as the head_type of the current head node
+        query_head = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
+        query_tail = f"MATCH (n) WHERE n.head_type = '{head_type}' RETURN n.name"
+        
+        URI = "bolt://localhost:7687"
+        AUTH = ("", "")
+        
+        with GraphDatabase.driver(URI, auth=AUTH) as client:
+            try :
+                result = session.run(query_head)
+            except :
+                print("query error : ", query_head)
+            nodes_with_same_head_type = [r["n.name"] for r in result]
+            
+            try :
+                result = session.run(query_tail)
+            except :
+                print("query error : ", query_tail)
+            nodes_with_same_tail_type = [r["n.name"] for r in result]
+            
+            best_node_head = ""
+            best_score_head = 0
+            best_node_tail = ""
+            best_score_tail = 0
+            start_time = time.time()
+            for node in nodes_with_same_head_type and nodes_with_same_tail_type :
+                score_text_compare = text_compare(node, head)
+                if score_text_compare > 0.8 :
+                    best_node_head = node
+                    best_score_head = score_text_compare
+                    break
+                else :
+                    score_head = compare_with_all_mini(head, node)
+                    # print("We need to use all_mini, score is : ", score_head)
+                score_text_compare = text_compare(node, tail)   
+                if score_text_compare > 0.8 :
+                    best_node_tail = node
+                    best_score_tail = score_text_compare
+                    break
+                else :
+                    score_tail = compare_with_all_mini(tail, node)
+                    # print("We need to use all_mini, score is : ", score_head)
+                
+                if score_head > best_score_head :
+                    best_score_head = score_head
+                    best_node_head = node
+                    
+                if score_tail > best_score_tail :
+                    best_score_tail = score_tail
+                    best_node_tail = node
+                    
+            if best_score_head > 0.8 :
+                head = best_node_head
+                print("c    ", head, "is the same as", best_node_head)
+                
+
+            if best_score_tail > 0.8 :
+                tail = best_node_tail
+                print("c    ", tail, "is the same as", best_node_tail)
+                
+            partial_merge_time += time.time() - start_time
+            
+        # check if head with head_type is aleady in the database memgraph
+        query = f"MATCH (n:`{head_type}`) WHERE n.name = '{head}' RETURN n"
+        with client.session() as session:
+            try :
+                result = session.run(query)
+            except :
+                print("query error : ", query)
+            if not result.single():
+                # add head with head_type to the database memgraph
+                query = f"CREATE (n:`{head_type}` {{name: '{head}', fname: '{fname}', head_type: '{head_type}'}})"
+                with client.session() as session:
+                    try :
+                        result = session.run(query)
+                    except :
+                        print("query error : ", query)
+                    history.append(query)
+            else :
+                print("c    ", query, "already in the database")
+                
+        # check if tail with tail_type is aleady in the database memgraph
+        query = f"MATCH (n:`{tail_type}`) WHERE n.name = '{tail}' RETURN n"
+        with client.session() as session:
+            result = session.run(query)
+            if not result.single():
+                # add tail with tail_type to the database memgraph
+                query = f"CREATE (n:`{tail_type}` {{name: '{tail}', fname: '{fname}', head_type: '{tail_type}'}})"
+                with client.session() as session:
+                    try :
+                        result = session.run(query)
+                    except :
+                        print("query error : ", query)
+                    history.append(query)
+            else :
+                print("c    ", query, "already in the database")
+                
+        # check if relation between head and tail is aleady in the database memgraph
+        query = f"MATCH (n:`{head_type}`)-[r:`{relation_type}`]->(m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' RETURN n"
+        with client.session() as session:
+            try :
+                result = session.run(query)
+            except :
+                print("query error : ", query)
+            if not result.single():
+                # add relation between head and tail to the database memgraph
+                query = f"MATCH (n:`{head_type}`), (m:`{tail_type}`) WHERE n.name = '{head}' AND m.name = '{tail}' CREATE (n)-[r:`{relation_type}`]->(m)"
+                with client.session() as session:
+                    try :
+                        result = session.run(query)
+                    except :
+                        print("query error : ", query)
+                    history.append(query)
+            else :
+                print("c    ", query, "already in the database")
+    else :
+        print("something is wrong with the relation : ", head, relation_type, tail)
+
+
+def create_color_from_string(string, group_by="File", node_type=""):
     # Create a color based on the string
-    color = hashlib.md5(string.encode()).hexdigest()[:6]
+    color = ""
+    if group_by == "file":
+        color = hashlib.md5(string.encode()).hexdigest()[:6]
+    elif group_by == "nodeType":
+        color = hashlib.md5(node_type.encode()).hexdigest()[:6]
     return f"#{color}"
 
     

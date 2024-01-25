@@ -307,8 +307,13 @@
             });
 
     }
-
-    loadAndRenderHTML()
+    if (document.querySelector('#searchInput').value == "" && document.querySelector('#radius').value == "") {
+      console.log("No search term or radius entered");
+      loadAndRenderHTML()
+    }
+    else {
+      console.log("Search term or radius entered");
+    }
   });
 
   
