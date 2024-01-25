@@ -487,7 +487,7 @@
     console.log(`Search Input: ${searchInput}, Group By: ${groupBy}, Radius: ${radius}`);
     // post request to flask
     
-    fetch('/load_data_from_db_with_node_and_radius', {
+    fetch('/load_data_partially', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',

@@ -118,18 +118,20 @@ def load_data_from_db_with_node_and_radius(node_name, radius):
         
         #! TODO  convert to dict with transform_to_json(relations)
         
-        
+        print(relations)
         relations = convert_to_desired_format(transform_to_json(relations))
         
         return relations       
 
     
-@app.route('/load_data_partialy', methods=['POST'])
+@app.route('/load_data_partially', methods=['POST'])
 def construct_graph_partialy():
     print("\nconstruct_graph_partialy\n")
     data = request.get_json()
     node_name = data["search_term"]
     radius = data["radius"]
+    if radius == "":
+        construct_graph(all_relations=True, node_name=node_name, radius=radius)
     construct_graph(all_relations=False, node_name=node_name, radius=radius)
     
 
