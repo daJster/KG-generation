@@ -1,16 +1,4 @@
 // function to get wikipedia details of a node    
-/**
- * Generates HTML details for a node.
- * 
- * @param {string} nodeLabel - The label of the node.
- * @param {string} nodeTitle - The title of the node.
- * @param {string} nodeFname - The filename of the node.
- * @param {string} nodeHeadFull - The full head of the node.
- * @param {string} nodeTailFull - The full tail of the node.
- * @param {string} nodeHeadType - The type of the head node.
- * @param {string} nodeTailType - The type of the tail node.
- * @returns {string} The generated HTML details.
- */
 function details(nodeLabel, nodeTitle, nodeFname, nodeHeadFull, nodeTailFull, nodeHeadType, nodeTailType) {
     return `
     <div class="container">
@@ -73,6 +61,7 @@ if (params.nodes.length > 0) {
             var text_info = document.createElement("div");
             text_info.innerHTML += details["html"];
             popup.appendChild(text_info);
+            //popup.appendChild(button);       
             // loading animation stop
             popup.innerHTML = popup.innerHTML.replace(div_loader, "");                    
             
@@ -106,6 +95,9 @@ if (params.nodes.length > 0) {
             document.querySelectorAll('h1').forEach(element => {element.className = 'display-4';});
             container.appendChild(button);
             popup.appendChild(container);
+
+
+
         }
     };
     
