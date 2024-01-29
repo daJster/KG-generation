@@ -118,9 +118,16 @@ Visit http://localhost:8501 in your web browser to access the admin web-app.
 
 ### User interface (graph visualization)
 To run the UI interface :
+1) Go to the web-app folder :
 ```bash
-python3 src/web-app/app.py
+cd src/web-app
 ```
+2) Run the app.py file :
+```bash
+python3 app.py
+```
+
+> :warning: **DO NOT run python3 src/web-app directly**: otherwise you won't be able to use radius search in the graph
 
 ## Folder Structure
 ```
