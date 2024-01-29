@@ -58,14 +58,17 @@ The pipeline consists of the following steps:
 
 2) Relation Extraction: Utilize NLP libraries such as nltk, llm, and transformers for relation extraction from the extracted text.
 
-3) Graph Generation: Construct a knowledge graph using extracted relations. Pygraft and rdflib are used for graph creation.
+3) Merge entities: Avoid duplicate entities by merging entities. Use the AI model including All_Mini to identify same semantic entities.
 
-4) Admin interface: Automize pipeline use with streamlit and choose any pdf file to run in our model.
+4) Graph Generation: Construct a knowledge graph using extracted relations. Pygraft and rdflib are used for graph creation.
 
-5) User Interface (UI): Create a Streamlit frontend application (app.py) for users to interact with the generated knowledge graph.
+5) Admin interface: Automize pipeline use with streamlit and choose any pdf file to run in our model.
+
+6) User Interface (UI): Create a Streamlit frontend application (app.py) for users to interact with the generated knowledge graph.
 
 
 ## Running the Application
+### Admin interface
 Run the main.py file for the first time to build streamlit web-app and to execute the knowledge graph generation process :
 
 ```bash
@@ -78,48 +81,60 @@ Then run the streamlit web-app :
 streamlit run main.py
 ```
 
+If you encounter any issues, run the following command in the terminal and run the Streamlit app again.
+
+```bash
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+```
+
 Visit http://localhost:8501 in your web browser to access the admin web-app.
 
-To run the UI interface :
 
+### User interface (graph visualization)
+To run the UI interface :
 ```bash
 python3 app.py
 ```
 
 ## Folder Structure
 ```
-KG-generation/  
-├── RDFs/  
-│ ├── db.json  
-│   └── db.ttl  
-├── src/  
-│   ├── web-app/  
-│   │   └── home/  
-│   │       ├── assets/  
-│   │       │   ├── css/  
-│   │       │   │   └── style.css  
-│   │       │   ├── js/  
-│   │       │   │   └── main.js  
-│   │       │   ├── img/ *  
-│   │       │   └── vendor/ *  
-│   │       ├── forms/  
-│   │       │   └── contact.php  
-│   │       ├── lib/ *  
-│   │       ├── app.py  <--
-│   │       └── index.html  
-│   ├── main.py  <--
-│   ├── data_selection.py  
-│   ├── text_selection.py  
-│   ├── graph_generation.py  
-│   ├── KB_generation.py  
-│   ├── merge_RDF.py    
-│   └── params.py  
-├── Knowledge Graphs.pdf  
-├── README.md  
-└── requirements.txt  
+└── KG-generation
+    ├── Knowledge Graphs.pdf
+    ├── README.md
+    ├── datasets
+    │   ├── acronyms.txt
+    │   ├── differences.txt
+    │   ├── nearly_similarities.txt
+    │   ├── plurals.txt
+    │   └── similarities.txt
+    ├── dockerfile
+    ├── notebooks
+    │   ├── Entities.ipynb
+    │   ├── Evaluation_Metrics.ipynb
+    │   ├── Merge.ipynb
+    │   ├── NLP_for_economy.ipynb
+    │   └── NLPlanet.ipynb
+    ├── requirements.txt
+    └── src
+        ├── KB_generation.py
+        ├── all_mini.py
+        ├── data_selection.py
+        ├── emissions.csv
+        ├── game_of_thrones.html
+        ├── graph_generation.py
+        ├── main.py
+        ├── merge_RDF.py
+        ├── params.py
+        ├── plot_stats.py
+        ├── plot_times.png
+        ├── test_text_compare.py
+        ├── text_selection.py
+        └── web-app
+            └── home
+                ├── app.py
+                ├── graph.html
+                ├── index.html
+                └── lib
+                    ├── bindings
+                       └── utils.js
 ```
-
-## Acknowledgments
-- libraries, papers, projects ...
-
-
