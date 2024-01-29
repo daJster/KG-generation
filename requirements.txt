@@ -10,7 +10,6 @@ langdetect
 transformers
 flask
 streamlit
-sentence-transformers
 flask_cors
 neo4j
 GoogleNews

@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  memgraph:
+    image: memgraph/memgraph-platform
+    ports:
+      - "7687:7687"
+      - "7444:7444"
+      - "3000:3000"
+    networks:
+      - memgraph-network
+
+  your_custom_service:
+    build:
+      context: ./dockerfile
+    depends_on:
+      - memgraph
+    networks:
+      - memgraph-network
+
+networks:
+  memgraph-network:
+    driver: bridge

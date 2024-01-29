@@ -13,34 +13,7 @@ class KB():
         self.relations = []
         self.pdf_name = ""
 
-    # def are_relations_equal(self, r1, r2, similarity_threshold=0.8):
-    #     is_equal = all(r1[attr] == r2[attr] for attr in ["head", "type", "tail"])
-    #     if ACTIVATE_SIMILARITY :
-    #         sim_score = similarity_score(r1, r2)
-    #         is_equal = is_equal or sim_score > similarity_threshold
-    #     return is_equal
-
-    # def exists_relation(self, r1):
-    #     # check if relations are equal among those with the same "head_type" for head and "tail_type" for tail, to limit the number of comparisons
-        
-    #     # get all relations with the same "head_type" for head and "tail_type" for tail
-    #     relations_with_same_head_type = [r for r in self.relations if r["head_type"] == r1["head_type"]]
-    #     relations_with_same_tail_type = [r for r in self.relations if r["tail_type"] == r1["tail_type"]]
-                
-    #     return any(self.are_relations_equal(r1, r) for r in relations_with_same_head_type) or any(self.are_relations_equal(r1, r) for r in relations_with_same_tail_type)
-
-    # def merge_relations(self, r1):
-    #     r2 = [r for r in self.relations
-    #           if self.are_relations_equal(r1, r)][0]
-    #     spans_to_add = [span for span in r1["meta"]["spans"]
-    #                     if span not in r2["meta"]["spans"]]
-    #     r2["meta"]["spans"] += spans_to_add
-
     def add_relation(self, r):
-        # if not self.exists_relation(r):
-        #     self.relations.append(r)
-        # else:
-        #     self.merge_relations(r)
         self.relations.append(r)
 
     def print(self):

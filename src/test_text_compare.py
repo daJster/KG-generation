@@ -1,5 +1,6 @@
 import re
 from dateutil import parser
+
 def clear_str(word):
     # remove all caractere like : ',|- and replace them by space
     word = re.sub(r'[\',\|\-]', ' ', word)
@@ -146,10 +147,6 @@ def clear_num(text):
     return " ".join(result) 
 
 
-
-        
-
-
 def clear_str(word):
     # remove all caractere like : ',|- and replace them by space
     word = re.sub(r'[\',\|\-]', ' ', word)
@@ -167,8 +164,9 @@ def clear_str(word):
     
     return word
 
-print(clear_str("the the"))
-print(clear_str("1the2"))
-print(clear_str("the2122"))
-print(clear_str("Ceci 1est 34 3un1 test2")) 
-print(clear_str("223 234"))
+if __name__ == "__main__" :
+    print(clear_str("the the"))
+    print(clear_str("1the2"))
+    print(clear_str("the2122"))
+    print(clear_str("Ceci 1est 34 3un1 test2")) 
+    print(clear_str("223 234"))
