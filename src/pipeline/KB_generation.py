@@ -233,23 +233,23 @@ def text_compare(text1, text2):
         
     if first_letters1 == text2 :
         print("text2", text2, "is the acronym of text1", text1)
-        add_in_file(text1 + " = " + text2, "../datasets/acronyms.txt")
+        # add_in_file(text1 + " = " + text2, "../../datasets/acronyms.txt")
         return 1
     if first_letters2 == text1 :
         print("text1", text1, "is the acronym of text2", text2)
-        add_in_file(text2 + " = " + text1, "../datasets/acronyms.txt")
+        # add_in_file(text2 + " = " + text1, "../../datasets/acronyms.txt")
         return 1
     
     # if it's just the plural of the other text
     if nb_cara1 >= nb_cara2 + 1 and nb_cara1 <= nb_cara2 + nb_words2 + 1 :
         if text2 in text1 and (text1[-1] == "s" or text1[-1] == "x") and (text2[-1] != "s" and text2[-1] != "x") :
             print("text1", text1, "is the plural of text2", text2)
-            add_in_file(text1 + " = " + text2, "../datasets/plurals.txt")
+            # add_in_file(text1 + " = " + text2, "../../datasets/plurals.txt")
             return 1
     elif nb_cara2 >= nb_cara1 + 1 and nb_cara2 <= nb_cara1 + nb_words1 + 1:
         if text1 in text2 and (text2[-1] == "s" or text2[-1] == "x") and (text1[-1] != "s" and text1[-1] != "x") :
             print("text2", text2, "is the plural of text1", text1)
-            add_in_file(text2 + " = " + text1, "../datasets/plurals.txt")
+            # add_in_file(text2 + " = " + text1, "../../datasets/plurals.txt")
             return 1
     
     # get the number of words in common between the two text consider capital letters or not as the same
@@ -262,11 +262,11 @@ def text_compare(text1, text2):
                     nb_letters_in_common += 1
             
     score = nb_letters_in_common / (max(len(text1), len(text2)))
-    if score > 0.8 :
-        print("score = ", score, "text1 = ", text1, "text2 = ", text2)
-        add_in_file(text1 + " = " + text2, "../datasets/similarities.txt")
-    elif score > 0.5 :
-        add_in_file(text1 + " ~ " + text2, "../datasets/nearly_similarities.txt")
+    # if score > 0.8 :
+    #     print("score = ", score, "text1 = ", text1, "text2 = ", text2)
+    #     add_in_file(text1 + " = " + text2, "../../datasets/similarities.txt")
+    # elif score > 0.5 :
+    #     add_in_file(text1 + " ~ " + text2, "../../datasets/nearly_similarities.txt")
     ##else :
         ##add_in_file(text1 + " != " + text2, "../datasets/differences.txt")
     return score
@@ -427,10 +427,6 @@ def store_kb(kb):
             else :
                 print("something is wrong with the relation : ", head, relation_type, tail)
             
-        # save the history of queries
-        with open("../RDFs/_history.txt", "w") as f:
-            for query in history:
-                f.write(query + "\n")
         
         print("c    stored.")
     return True, partial_merge_time

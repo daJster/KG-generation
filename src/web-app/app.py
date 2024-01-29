@@ -19,7 +19,19 @@ CORS(app)
 
 
 def load_data_from_db():
-    print("load_data_from_db")
+    """
+    Load data from the database.
+
+    Returns:
+        list: A list of dictionaries representing the relations in the database.
+              Each dictionary contains the following keys:
+              - 'head': The name of the head node.
+              - 'type_head': The type of the head node.
+              - 'tail': The name of the tail node.
+              - 'type_tail': The type of the tail node.
+              - 'type': The type of the relation.
+              - 'fname': The file name associated with the relation.
+    """
     URI = "bolt://localhost:7687"
     AUTH = ("", "")
  
@@ -28,7 +40,6 @@ def load_data_from_db():
         client.verify_connectivity()
         # Get all the relations with type of relation
         relations, summary, keys = client.execute_query(
-            # "MATCH (n)-[r]->(m) RETURN n.name AS head, m.name AS tail,  type(r) AS type, n.fname AS fname;",
             "MATCH (n)-[r]->(m) RETURN n.name AS head, n.head_type AS type_head, m.name AS tail, m.head_type AS type_tail, type(r) AS type, n.fname AS fname;",
             database_="memgraph",
         )        
@@ -36,21 +47,35 @@ def load_data_from_db():
         return relations
     
 def load_data_from_db_with_node_and_radius(node_name, radius):
-    print("load_data_from_db_with_node_and_radius", node_name, radius)
+    """
+    Load data from the database based on a given node name and radius.
+
+    Args:
+        node_name (str): The name of the node.
+        radius (int): The maximum range of the radius.
+
+    Returns:
+        list: A list of dictionaries representing the relationships and nodes connected to the given node.
+              Each dictionary contains the following keys:
+              - 'head': The name of the head node.
+              - 'type_head': The type of the head node.
+              - 'tail': The name of the tail node.
+              - 'type_tail': The type of the tail node.
+              - 'type': The type of the relationship.
+              - 'fname': The filename associated with the head node.
+
+    """
     URI = "bolt://localhost:7687"
     AUTH = ("", "")
     with GraphDatabase.driver(URI, auth=AUTH) as client:
         # Check the connection
         client.verify_connectivity()
         # Get all the relations connected to the node with a range of radius in maximum
-        print(f"MATCH path = (startNode {{name: '{node_name}'}})-[*1..{radius}]-(endNode) RETURN relationships(path) AS relationships, nodes(path) AS nodes;")
         relations, summary, keys = client.execute_query(
             f"MATCH path = (startNode {{name: '{node_name}'}})-[*1..{radius}]-(endNode) RETURN relationships(path) AS relationships, nodes(path) AS nodes;",
             database_="memgraph",
         )
-        # convert to json :  [<Record relationships=[<Relationship element_id='4999' nodes=(<Node element_id='4484' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte des vignerons du Midi'}>, <Node element_id='4485' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte Des gueux'}>) type='part of' properties={}>] nodes=[<Node element_id='4484' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte des vignerons du Midi'}>, <Node element_id='4485' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte Des gueux'}>]>, <Record relationships=[<Relationship element_id='5001' nodes=(<Node element_id='4484' labels=frozenset({'concept'}) properties={'fname': '14 Emmanuel Petit Christophe Leveque.pdf', 'head_type': 'concept', 'name': 'révolte des vignerons du Midi'}>, <Node element_id='4488' labels=frozenset({'per'}) propert
-        
-        
+
         relations = [dict(record) for record in relations] # convert to dict
         list_of_relations = []
         for relation in relations :
@@ -70,16 +95,22 @@ def load_data_from_db_with_node_and_radius(node_name, radius):
                 dict_relation["type"] = rel_matches[0][2]
                 dict_relation["fname"] = node_matches[0][2]["fname"]
                 list_of_relations.append(dict_relation)
-        
-        # for relation in list_of_relations :
-        #     print("head : ", relation["head"], " type : ", relation["type"], " tail : ", relation["tail"])
-        
-        return list_of_relations       
+
+        return list_of_relations
 
     
 @app.route('/load_data_partially', methods=['POST'])
 def construct_graph_partialy():
-    print("\nconstruct_graph_partialy\n")
+    """
+    Constructs a graph partially based on the given input data.
+    
+    This function takes input data in JSON format and constructs a graph using NetworkX library.
+    It extracts information from the RDF triples and adds nodes and edges to the graph.
+    The graph is then visualized using the Network library and saved as an HTML file.
+    
+    Returns:
+        A Flask response object containing the generated graph HTML file.
+    """
     data = request.get_json()
     node_name = data["search_term"]
     radius = data["radius"]
@@ -101,9 +132,7 @@ def construct_graph_partialy():
         tail = clean_string(tail)
         # fname = clean_string(fname)
 
-        # Skip the iteration if the node is equal to the filename
         relation = {
-            # if len(head) > 20 take the first 20 characters else take the whole string
             "head": head[:20] + "..." if len(head) > 20 else head,
             "head_full": head,
             "head_type": relation["type_head"],
@@ -139,9 +168,7 @@ def construct_graph_partialy():
     net.from_nx(g)
     net.barnes_hut()
         
-    # Définition des options en tant que dictionnaire Python
     options = {
-        # for more lisible graph avoid overlap of nodes and edges
         "edges": {
             "smooth": {
                 "forceDirection": "none",
@@ -173,14 +200,10 @@ def construct_graph_partialy():
         }
     }
 
-    # Conversion du dictionnaire en chaîne JSON
     options_str = json.dumps(options)
 
-    # Activation du zoom lors du clic sur un nœud
     net.set_options(options_str)
         
-        
-    # Sauvegarde du graph
     net.save_graph("graph.html")
     
     html_popup = """
@@ -193,64 +216,62 @@ def construct_graph_partialy():
     with open("graph.html", "a") as file:
         file.write(html_popup)
         
-    
-    
     return send_file("graph.html", mimetype='text/html')
 
 
 # Function to clean and process a string
 def clean_string(value):
-    # Replace %20 and %C3%A9 with spaces
+    """
+    Cleans a string by replacing %20 and %C3%A9 with spaces,
+    removing special characters and accents, replacing underscores with spaces,
+    and taking the last element after splitting by '/'.
+
+    Args:
+        value (str): The string to be cleaned.
+
+    Returns:
+        str: The cleaned string.
+    """
     value = re.sub(r'%20|%C3%A9', ' ', value)
-    
-    # Remove special characters and accents using unidecode
     value = unidecode(value)
-    
-    # Replace underscores with spaces
     value = value.replace("_", " ")
-    
-    # Take the last element after splitting by '/'
     value = value.split('/')[-1]
-    
     return value
 
 @app.route('/') #, methods=['GET', 'POST'])
 def index():
-    # if request.method == 'POST':
-    #     search_term = request.form['search']
-    #     return construct_graph(search_term)
-    # else:
     return render_template('index.html')
-
-
-
-        # var xhr = new XMLHttpRequest();
-        # xhr.open("POST", "http://localhost:5000/wikipedia_details", true);
-        # xhr.setRequestHeader("Content-Type", "application/json");
-        # xhr.send(JSON.stringify({"node": nodeLabel}));
-        # xhr.onreadystatechange = function() {
-        #     if (this.readyState == 4 && this.status == 200) {
-        #         var details = JSON.parse(this.responseText);
-        #         popup.innerHTML = details["html"];
-        #         popup.appendChild(button);
-        #     }
-        # };
         
 @app.route('/wikipedia_details', methods=['POST'])
 def wikipedia_details():
+    """
+    Retrieves internet details for a given node.
+
+    Returns:
+        dict: A dictionary containing the HTML content.
+    """
     data = request.get_json()
     node = data["node"]
     try : 
         node_type = data["node_type"]
     except :
         node_type = data["node_tail_type"]
-    print("node : ", node, "node_type : ", node_type)
     html, wiki = get_wikipedia(node, node_type)
     html = get_google(node, node_type, wiki, html)
     html += get_news(node, node_type)
     return {"html": html}
 
 def get_wikipedia(node, node_type):
+    """
+    Retrieves information from Wikipedia about a given node.
+
+    Args:
+        node (str): The name of the node.
+        node_type (str): The type of the node.
+
+    Returns:
+        tuple: A tuple containing the HTML content and a flag indicating if the information was found on Wikipedia.
+    """
     wiki = 0
     try :
         ## give a summury of the wikipedia page and then a button to go to the wikipedia page
@@ -294,7 +315,18 @@ def get_wikipedia(node, node_type):
         """
     return html, wiki
 def get_google(node, node_type, wiki, html):
-    ## return html code of the google search
+    """
+    Retrieves the HTML code of the Google search results for a given node and node type.
+
+    Args:
+        node (str): The node to search for.
+        node_type (str): The type of the node.
+        wiki (int): Flag indicating whether a Wikipedia page was found for the node.
+        html (str): The existing HTML code.
+
+    Returns:
+        str: The updated HTML code with the Google search results.
+    """
     html += f"""
     <div class="container">
         <div class="row">
@@ -332,14 +364,23 @@ def get_google(node, node_type, wiki, html):
 
 
 def get_news(node, node_type):
-    ## return html code of the news (max 5 news summary)
-    try :
+    """
+    Get news related to a given node and node type.
+
+    Args:
+        node (str): The node to search for news.
+        node_type (str): The type of the node.
+
+    Returns:
+        str: HTML code containing the news summary.
+    """
+    try:
         googlenews = GoogleNews()
         googlenews.search(node + " " + node_type)
         result = googlenews.result()
-    except :
+    except:
         result = []
-        
+
     html = f"""
     <div class="container">
         <div class="row">
@@ -347,10 +388,10 @@ def get_news(node, node_type):
                 <h1>News</h1>
                 <ul>
     """
-    i=0
+    i = 0
     for news in result[:5]:
         if len(news["title"]) > 5:
-            i+=1
+            i += 1
             html += f"""
             <li>
                 <p>{news["title"]}</p>
@@ -371,7 +412,13 @@ def get_news(node, node_type):
 
 @app.route('/generate_html', methods=['POST'])
 def construct_graph():
-    print("\nconstruct_graph")
+    """
+    Constructs a graph based on the RDF triples extracted from the database.
+    The graph is visualized using the NetworkX library and saved as an HTML file.
+
+    Returns:
+        The graph HTML file as a Flask response.
+    """
     data = request.get_json()
     relations_clean = []
     relations = load_data_from_db()
@@ -427,7 +474,6 @@ def construct_graph():
     net.from_nx(g)
     net.barnes_hut()
         
-    # Définition des options en tant que dictionnaire Python
     options = {
         # for more lisible graph avoid overlap of nodes and edges
         "edges": {
@@ -461,14 +507,10 @@ def construct_graph():
         }
     }
 
-    # Conversion du dictionnaire en chaîne JSON
     options_str = json.dumps(options)
 
-    # Activation du zoom lors du clic sur un nœud
     net.set_options(options_str)
         
-        
-    # Sauvegarde du graph
     net.save_graph("graph.html")
     
     html_popup = """
@@ -480,13 +522,20 @@ def construct_graph():
     # Add the event listener code to the generated HTML file
     with open("graph.html", "a") as file:
         file.write(html_popup)
-        
-    
     
     return send_file("graph.html", mimetype='text/html')
 
 @app.route('/change_name', methods=['POST'])
 def change_name():
+    """
+    Change the name of a node in the graph database.
+
+    This function receives a JSON object containing the old name and the new name of the node.
+    It connects to the graph database, executes two queries to update the node's name and returns "ok" if successful.
+
+    Returns:
+        str: A string indicating the success of the operation ("ok").
+    """
     data = request.get_json()
     old_name = data["old_name"]
     new_name = data["new_name"]
@@ -514,6 +563,16 @@ def change_name():
 
 @app.route('/delete_node', methods=['POST'])
 def delete_node(node_name, node_type):
+    """
+    Deletes a node and its related relationships from the database.
+
+    Args:
+        node_name (str): The name of the node to be deleted.
+        node_type (str): The type of the node to be deleted.
+
+    Returns:
+        str: A message indicating the success of the deletion.
+    """
     data = request.get_json()
     node_name = data["node_name"]
     node_type = data["node_type"]
@@ -540,6 +599,20 @@ def delete_node(node_name, node_type):
     
 @app.route('/delete_relation', methods=['POST'])
 def delete_relation():
+    """
+    Deletes a relation between two nodes in the graph database.
+
+    The relation is specified by the head, tail, head_type, and tail_type parameters.
+
+    Args:
+        head (str): The name of the head node.
+        tail (str): The name of the tail node.
+        head_type (str): The type of the head node.
+        tail_type (str): The type of the tail node.
+
+    Returns:
+        str: A message indicating the success of the deletion.
+    """
     data = request.get_json()
     head = data["head"]
     tail = data["tail"]
@@ -568,6 +641,15 @@ def delete_relation():
     
     
 def clear_num(text):
+    """
+    Removes numbers from the given text and returns the modified text.
+
+    Parameters:
+    text (str): The input text.
+
+    Returns:
+    str: The modified text with numbers removed.
+    """
     result = []
     for word in text.split(" "):
         try :
@@ -578,7 +660,7 @@ def clear_num(text):
             if len(clean_word) > 1: # TO CHANGE STV XD
                 result.append("".join(clean_word))
 
-    return " ".join(result) 
+    return " ".join(result)
 
 
 
@@ -586,6 +668,16 @@ def clear_num(text):
 
 
 def clear_str(word):
+    """
+    Clear the given string by removing certain characters, removing repeated words, removing numbers at the end of words,
+    and removing double spaces.
+
+    Args:
+        word (str): The string to be cleared.
+
+    Returns:
+        str: The cleared string.
+    """
     # remove all caractere like : ',|- and replace them by space
     word = re.sub(r'[\',\|\-]', ' ', word)
 
@@ -600,12 +692,33 @@ def clear_str(word):
     # delete double space
     word = re.sub(r' +', ' ', word)
     
-    return word    
+    return word
 
 @app.route('/create_relation', methods=['POST'])
 def create_relation():
+    """
+    Creates a relation between two nodes in the database memgraph.
+
+    The function takes a JSON object as input, containing the following fields:
+    - head: the name of the head node
+    - head_type: the type of the head node
+    - fname1: the filename associated with the head node
+    - tail: the name of the tail node
+    - tail_type: the type of the tail node
+    - fname2: the filename associated with the tail node
+    - relation: the type of relation between the head and tail nodes
+
+    The function performs the following steps:
+    1. Cleans the input strings by removing any unwanted characters.
+    2. Checks if the head and tail nodes already exist in the database. If not, adds them.
+    3. Checks if the relation between the head and tail nodes already exists in the database. If not, adds it.
+
+    If any of the input fields are empty or if the head and tail nodes are the same or if the head and tail nodes are the same as the relation type,
+    an error message is printed.
+
+    Note: This function assumes the existence of a GraphDatabase driver and a session for executing Cypher queries.
+    """
     data = request.get_json()
-                    # xhr.send(JSON.stringify({"head": new_head, "head_type": new_head_type, "fname1": new_fname1, "tail": new_tail, "tail_type": new_tail_type, "fname2": new_fname2, "relation": new_relation}));
     
 
     head = data["head"]
@@ -657,7 +770,6 @@ def create_relation():
                     break
                 else :
                     score_head = compare_with_all_mini(head, node)
-                    # print("We need to use all_mini, score is : ", score_head)
                 score_text_compare = text_compare(node, tail)   
                 if score_text_compare > 0.8 :
                     best_node_tail = node
@@ -665,7 +777,6 @@ def create_relation():
                     break
                 else :
                     score_tail = compare_with_all_mini(tail, node)
-                    # print("We need to use all_mini, score is : ", score_head)
                 
                 if score_head > best_score_head :
                     best_score_head = score_head
@@ -744,7 +855,17 @@ def create_relation():
 
 
 def create_color_from_string(string, group_by="File", node_type=""):
-    # Create a color based on the string
+    """
+    Create a color based on the given string.
+
+    Parameters:
+    string (str): The input string to create the color from.
+    group_by (str, optional): The grouping criteria for color creation. Defaults to "File".
+    node_type (str, optional): The node type for color creation. Defaults to an empty string.
+
+    Returns:
+    str: The generated color in hexadecimal format.
+    """
     color = ""
     if group_by == "file":
         color = hashlib.md5(string.encode()).hexdigest()[:6]
@@ -755,6 +876,12 @@ def create_color_from_string(string, group_by="File", node_type=""):
     
 # function to create graph from memgraph database
 def create_graph_from_db():
+    """
+    Creates a graph from the relations in the database and saves it as an HTML file.
+
+    Returns:
+        The HTML file as a response object.
+    """
     # Define correct URI and AUTH arguments (no AUTH by default)
     URI = "bolt://localhost:7687"
     AUTH = ("", "")
