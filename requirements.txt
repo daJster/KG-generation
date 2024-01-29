@@ -1,7 +1,6 @@
 nltk
 llm
 pygraft
-rdflib
 torch
 torchvision
 torchaudio

@@ -2,7 +2,14 @@ from text_selection import get_text
 from KB_generation import get_kb, store_kb, KB
 import time
 import streamlit as st #  export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+from codecarbon import EmissionsTracker, track_emissions
 
+@track_emissions(
+    measure_power_secs=30,
+    api_call_interval=4,
+    experiment_id="KGGen",
+    save_to_api=True,
+)
 def main() :
     """
     Main function for Knowledge Graph Generation.
@@ -11,6 +18,8 @@ def main() :
     extract text from the files, and generate a knowledge graph based on the extracted text.
     The generated graph is then stored and the execution time is displayed.
     """
+    tracker = EmissionsTracker(api_key="835030e3-24cb-4cc6-bfdd-ac8201fb3a31", save_to_file=True, output_file="emissions.csv")
+    tracker.start()
     batch_size_save = 10
     st.title("Knowledge Graph Generation")
     files = st.file_uploader("Upload a directory contaning PDF files", accept_multiple_files=True, type="pdf")
@@ -22,11 +31,11 @@ def main() :
             merge_time = 0
             model_time = 0
             kb = KB()
-            for idx, file in enumerate(files) :
+            for idx, file in enumerate(files):
                 st.write("Generating graph for : ", file.name)
                 pourcentage_progress_bar = st.progress(0)
                 text = get_text(file)
-                batch_size = 34000
+                batch_size = 15000
                 for i in range(0, len(text), batch_size):
                     if i+batch_size > len(text) :
                         text_part = text[i:]
@@ -55,6 +64,7 @@ def main() :
                 st.write(f"Model Time for {file.name}: {model_time:.4f} seconds.")
                 st.write(f"Merge Time for {file.name}: {merge_time:.4f} seconds.")      
             st.success(f"graph generated.")
+            tracker.stop()
     
 
 if __name__ == "__main__" :
