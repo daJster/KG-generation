@@ -11,3 +11,11 @@ transformers
 flask
 streamlit
 sentence-transformers
+flask_cors
+neo4j
+GoogleNews
+googlesearch-python
+codecarbon
+wikipedia
+PyPDF2
+networkx

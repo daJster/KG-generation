@@ -10,8 +10,11 @@ COPY . /KG-generation
 # Install any needed packages specified in requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+# Set the working directory to src/
+WORKDIR /KG-generation/src
+
 # Define environment variable
 ENV NAME KG-Gen
 
-# Run app.py when the container launches
-CMD ["python3", "src/web-app/home/app.py"]
+# Run streamlit when the container launches
+CMD ["streamlit", "run", "main.py"]

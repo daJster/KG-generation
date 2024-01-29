@@ -1,6 +1,5 @@
 import hashlib
 from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
-from rdflib import Graph
 from flask_cors import CORS
 import networkx as nx
 import json
@@ -9,7 +8,6 @@ from unidecode import unidecode
 from neo4j import GraphDatabase
 from pyvis.network import Network
 import networkx as nx
-from rdflib import Graph, Namespace
 import re
 import wikipedia
 from GoogleNews import GoogleNews
